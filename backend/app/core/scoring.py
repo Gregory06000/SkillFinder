@@ -101,6 +101,7 @@ def rank_businesses(
             "name": biz["name"],
             "address": biz.get("address", ""),
             "global_rating": biz.get("global_rating", 0),
+            "review_count": biz.get("review_count", 0),
             "match_score": score_data["weighted_score"],
             "raw_score": score_data["raw_score"],
             "frequency": score_data["frequency"],
