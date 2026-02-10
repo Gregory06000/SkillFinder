@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { BusinessResult } from "@/lib/api";
 import { getPhotoUrl } from "@/lib/api";
+import { hasVoted as checkVoted } from "@/lib/gamification";
 
 interface ResultCardProps {
   result: BusinessResult;
@@ -62,12 +63,11 @@ export default function ResultCard({
   const [imgError, setImgError] = useState(false);
   const hasPhoto = result.photo_name && !imgError;
 
-  // Check if user already voted (localStorage)
-  const voteKey = `verify_${result.name}`;
+  // Check if user already voted (gamification module)
   const [hasVoted, setHasVoted] = useState(false);
   useEffect(() => {
-    setHasVoted(!!localStorage.getItem(voteKey));
-  }, [voteKey]);
+    setHasVoted(checkVoted(result.name));
+  }, [result.name]);
 
   const totalVotes = result.verification_yes + result.verification_no;
   const isVerified = result.verification_yes >= 3 && result.verification_yes > result.verification_no;
@@ -76,7 +76,6 @@ export default function ResultCard({
   function handleVote(vote: "yes" | "no") {
     if (hasVoted || !onVerify) return;
     onVerify(result.name, vote);
-    localStorage.setItem(voteKey, vote);
     setHasVoted(true);
   }
   const snippets = result.snippets?.length > 0 ? result.snippets :

@@ -12,6 +12,15 @@ const config: Config = {
           700: "#1d4ed8",
         },
       },
+      keyframes: {
+        "fly-up": {
+          "0%": { opacity: "1", transform: "translateY(0) scale(1)" },
+          "100%": { opacity: "0", transform: "translateY(-60px) scale(1.5)" },
+        },
+      },
+      animation: {
+        "fly-up": "fly-up 1.2s ease-out forwards",
+      },
     },
   },
   plugins: [],

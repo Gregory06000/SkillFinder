@@ -1,17 +1,27 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
 import ResultsMap from "@/components/ResultsMap";
 import ComparisonModal from "@/components/ComparisonModal";
+import UserStats from "@/components/UserStats";
+import ConversionModal from "@/components/ConversionModal";
+import LeaderboardWidget from "@/components/LeaderboardWidget";
 import {
   searchBusinesses,
   compareBusinesses,
   verifyBusiness,
+  reverseGeocode,
   type BusinessResult,
   type CompareResponse,
 } from "@/lib/api";
+import {
+  loadRewards,
+  earnPoints,
+  markVoted,
+  type RewardsData,
+} from "@/lib/gamification";
 
 function SkeletonCard() {
   return (
@@ -54,6 +64,31 @@ export default function Home() {
 
   // Verify state
   const [verifyLoading, setVerifyLoading] = useState(false);
+
+  // Gamification state
+  const [rewards, setRewards] = useState<RewardsData>({
+    points: 0, pseudo: "Guest", city: "", weekStart: "", weeklyPoints: 0,
+  });
+  const [flyingText, setFlyingText] = useState<string | null>(null);
+  const [showConversion, setShowConversion] = useState(false);
+
+  // Load rewards from localStorage on mount
+  useEffect(() => {
+    setRewards(loadRewards());
+  }, []);
+
+  // Resolve city from search center for leaderboard
+  useEffect(() => {
+    if (searchCenter && !rewards.city) {
+      reverseGeocode(searchCenter.lat, searchCenter.lng).then((city) => {
+        setRewards((prev) => {
+          const updated = { ...prev, city };
+          localStorage.setItem("sf_rewards", JSON.stringify(updated));
+          return updated;
+        });
+      });
+    }
+  }, [searchCenter, rewards.city]);
 
   async function handleSearch(service: string, keyword: string, location: string, radiusKm: number) {
     setIsLoading(true);
@@ -136,12 +171,28 @@ export default function Home() {
             : r
         )
       );
+
+      // Gamification: mark voted + earn points + trigger flying badge
+      markVoted(placeId);
+      const { newData, increment, hitMilestone } = earnPoints(rewards);
+      setRewards(newData);
+      if (increment > 0) {
+        setFlyingText(`+${increment}`);
+      }
+      if (hitMilestone) {
+        // Small delay so user sees the flying badge first
+        setTimeout(() => setShowConversion(true), 1400);
+      }
     } catch {
       // Silent fail — vote feedback is non-critical
     } finally {
       setVerifyLoading(false);
     }
   }
+
+  const handleFlyingDone = useCallback(() => {
+    setFlyingText(null);
+  }, []);
 
   const hasResults = results.length > 0 && !isLoading;
   const hasCoords = results.some((r) => r.lat != null && r.lng != null);
@@ -150,6 +201,13 @@ export default function Home() {
   return (
     <div className="space-y-6">
       <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+
+      {/* Gamification: User Stats */}
+      <UserStats
+        rewards={rewards}
+        flyingText={flyingText}
+        onFlyingDone={handleFlyingDone}
+      />
 
       {error && (
         <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-700">
@@ -246,6 +304,16 @@ export default function Home() {
                   verifyLoading={verifyLoading}
                 />
               ))}
+
+              {/* Leaderboard widget below results */}
+              {rewards.city && (
+                <LeaderboardWidget
+                  city={rewards.city}
+                  userPseudo={rewards.pseudo}
+                  userWeeklyPoints={rewards.weeklyPoints}
+                  userTotalPoints={rewards.points}
+                />
+              )}
             </div>
 
             {/* Map panel */}
@@ -297,6 +365,11 @@ export default function Home() {
           error={compareError}
           onClose={handleCloseCompare}
         />
+      )}
+
+      {/* Conversion modal (100-point milestone) */}
+      {showConversion && (
+        <ConversionModal onClose={() => setShowConversion(false)} />
       )}
     </div>
   );

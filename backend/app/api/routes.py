@@ -188,6 +188,44 @@ async def verify(req: VerifyRequest):
     return VerifyResponse(success=True, message="Vote enregistré !")
 
 
+@router.get("/leaderboard")
+async def leaderboard(city: str = ""):
+    """Get weekly top 10 leaderboard for a city."""
+    from app.services.supabase import is_enabled as supabase_enabled, get_leaderboard
+
+    if not supabase_enabled() or not city:
+        return {"entries": []}
+
+    try:
+        entries = await get_leaderboard(city)
+        return {"entries": entries}
+    except Exception:
+        return {"entries": []}
+
+
+@router.post("/leaderboard")
+async def update_leaderboard(
+    pseudo: str = "",
+    city: str = "",
+    weekly_points: int = 0,
+    total_points: int = 0,
+):
+    """Upsert a user's leaderboard entry for the current week."""
+    from app.services.supabase import is_enabled as supabase_enabled, upsert_leaderboard
+
+    if not supabase_enabled():
+        return {"success": False}
+
+    if not pseudo or not city:
+        return {"success": False}
+
+    try:
+        await upsert_leaderboard(pseudo, city, weekly_points, total_points)
+        return {"success": True}
+    except Exception:
+        return {"success": False}
+
+
 @router.get("/categories")
 async def categories():
     return {

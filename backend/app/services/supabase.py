@@ -1,5 +1,5 @@
 """
-Supabase REST API client for the community verification system.
+Supabase REST API client for community verification + leaderboard.
 Uses httpx to call the Supabase PostgREST API — no extra dependencies needed.
 
 Required env vars:
@@ -7,13 +7,28 @@ Required env vars:
   SUPABASE_KEY  – the "anon" public key (safe for server-side usage)
 
 SQL to run in Supabase SQL Editor:
+
+  -- Verification votes
   CREATE TABLE verifications (
       id          BIGSERIAL PRIMARY KEY,
-      place_id    TEXT NOT NULL,         -- business name used as stable id
+      place_id    TEXT NOT NULL,
       vote        TEXT NOT NULL CHECK (vote IN ('yes', 'no')),
       created_at  TIMESTAMPTZ DEFAULT NOW()
   );
   CREATE INDEX idx_verifications_place ON verifications (place_id);
+
+  -- Leaderboard scores
+  CREATE TABLE leaderboard (
+      id              BIGSERIAL PRIMARY KEY,
+      pseudo          TEXT NOT NULL,
+      city            TEXT NOT NULL,
+      weekly_points   INT NOT NULL DEFAULT 0,
+      total_points    INT NOT NULL DEFAULT 0,
+      week_start      DATE NOT NULL,
+      updated_at      TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE (pseudo, city, week_start)
+  );
+  CREATE INDEX idx_leaderboard_city_week ON leaderboard (city, week_start);
 """
 
 import os
@@ -91,3 +106,64 @@ async def get_stats(place_ids: list[str]) -> dict[str, dict]:
             stats[pid]["no"] += 1
 
     return stats
+
+
+# ── Leaderboard ──────────────────────────────
+
+def _current_week_start() -> str:
+    """Return ISO date string of Monday 00:00 for the current week."""
+    from datetime import date, timedelta
+    today = date.today()
+    monday = today - timedelta(days=today.weekday())
+    return monday.isoformat()
+
+
+async def get_leaderboard(city: str) -> list[dict]:
+    """Fetch top 10 contributors for a city this week."""
+    if not is_enabled() or not city:
+        return []
+
+    week = _current_week_start()
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            _rest_url("leaderboard"),
+            headers={
+                "apikey": _SUPABASE_KEY,
+                "Authorization": f"Bearer {_SUPABASE_KEY}",
+            },
+            params={
+                "select": "pseudo,weekly_points,total_points,city",
+                "city": f"eq.{city}",
+                "week_start": f"eq.{week}",
+                "order": "weekly_points.desc",
+                "limit": "10",
+            },
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+
+async def upsert_leaderboard(
+    pseudo: str, city: str, weekly_points: int, total_points: int
+) -> None:
+    """Insert or update a leaderboard entry for this week."""
+    if not is_enabled():
+        return
+
+    week = _current_week_start()
+    async with httpx.AsyncClient() as client:
+        resp = await client.post(
+            _rest_url("leaderboard"),
+            headers={
+                **_headers(),
+                "Prefer": "resolution=merge-duplicates,return=minimal",
+            },
+            json={
+                "pseudo": pseudo,
+                "city": city,
+                "weekly_points": weekly_points,
+                "total_points": total_points,
+                "week_start": week,
+            },
+        )
+        resp.raise_for_status()
