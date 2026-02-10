@@ -90,10 +90,18 @@ export default function ResultCard({ result, rank }: ResultCardProps) {
             </div>
 
             {/* Metadata row */}
-            <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+            <div className="flex items-center gap-3 mt-2 text-xs text-gray-500 flex-wrap">
               <span>Note globale : {result.global_rating.toFixed(1)}/5</span>
               <span className="text-gray-300">|</span>
               <span>{result.frequency} mention{result.frequency > 1 ? "s" : ""}</span>
+              {result.distance_km != null && (
+                <>
+                  <span className="text-gray-300">|</span>
+                  <span className="text-brand-600 font-medium">
+                    à {result.distance_km} km
+                  </span>
+                </>
+              )}
             </div>
 
             {/* Review snippets */}

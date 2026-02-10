@@ -5,6 +5,8 @@ class SearchRequest(BaseModel):
     service: str          # e.g. "Coiffeur", "Pizzeria"
     keyword: str          # e.g. "Permanente", "Pâte fine"
     synonyms: list[str] = []
+    location: str = ""    # e.g. "Nice", "12 rue de la Paix, Paris"
+    radius_km: int = 10   # search radius in km
 
 
 class BusinessResult(BaseModel):
@@ -18,6 +20,7 @@ class BusinessResult(BaseModel):
     snippets: list[str] = []
     photo_name: str = ""
     maps_url: str = ""
+    distance_km: float | None = None
 
 
 class SearchResponse(BaseModel):

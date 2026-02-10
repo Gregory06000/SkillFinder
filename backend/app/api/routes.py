@@ -17,11 +17,23 @@ def _is_google_enabled() -> bool:
 @router.post("/search", response_model=SearchResponse)
 async def search(req: SearchRequest):
     if _is_google_enabled():
-        from app.services.google_maps import search_places
+        from app.services.google_maps import search_places, geocode
+
+        # Geocode location if provided
+        center = None
+        if req.location:
+            center = await geocode(req.location)
 
         query = f"{req.service} {req.keyword}"
+        if req.location:
+            query = f"{req.service} {req.keyword} {req.location}"
+
         try:
-            businesses = await search_places(query)
+            businesses = await search_places(
+                query=query,
+                center=center,
+                radius_km=req.radius_km if center else None,
+            )
         except RuntimeError as e:
             raise HTTPException(status_code=502, detail=str(e))
 
@@ -52,7 +64,6 @@ async def photo_proxy(ref: str):
     """
     Proxy endpoint for Google Places photos.
     Keeps the API key server-side so it's never exposed to the frontend.
-    Usage: /api/photo?ref=places/PLACE_ID/photos/PHOTO_REF
     """
     if not ref or not _is_google_enabled():
         raise HTTPException(status_code=404, detail="Photo not available")

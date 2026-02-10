@@ -9,6 +9,7 @@ export interface BusinessResult {
   snippets: string[];
   photo_name: string;
   maps_url: string;
+  distance_km: number | null;
 }
 
 export interface SearchResponse {
@@ -26,12 +27,20 @@ export function getPhotoUrl(photoName: string): string {
 export async function searchBusinesses(
   service: string,
   keyword: string,
+  location: string = "",
+  radiusKm: number = 10,
   synonyms: string[] = []
 ): Promise<SearchResponse> {
   const res = await fetch(`${API_BASE}/api/search`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ service, keyword, synonyms }),
+    body: JSON.stringify({
+      service,
+      keyword,
+      synonyms,
+      location,
+      radius_km: radiusKm,
+    }),
   });
 
   if (!res.ok) {

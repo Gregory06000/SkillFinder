@@ -33,13 +33,13 @@ export default function Home() {
     keyword: string;
   } | null>(null);
 
-  async function handleSearch(service: string, keyword: string) {
+  async function handleSearch(service: string, keyword: string, location: string, radiusKm: number) {
     setIsLoading(true);
     setError(null);
     setResults([]);
 
     try {
-      const data = await searchBusinesses(service, keyword);
+      const data = await searchBusinesses(service, keyword, location, radiusKm);
       setResults(data.results);
       setLastSearch({ service, keyword });
     } catch (err) {
