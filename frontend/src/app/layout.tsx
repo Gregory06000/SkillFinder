@@ -15,7 +15,7 @@ export default function RootLayout({
     <html lang="fr">
       <body className="min-h-screen">
         <header className="bg-white border-b border-gray-200 px-4 py-4">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             <h1 className="text-xl font-bold text-brand-700 tracking-tight">
               SkillFinder
             </h1>
@@ -24,7 +24,7 @@ export default function RootLayout({
             </p>
           </div>
         </header>
-        <main className="max-w-2xl mx-auto px-4 py-6">{children}</main>
+        <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
       </body>
     </html>
   );
