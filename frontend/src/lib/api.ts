@@ -6,6 +6,9 @@ export interface BusinessResult {
   raw_score: number;
   frequency: number;
   best_snippet: string;
+  snippets: string[];
+  photo_name: string;
+  maps_url: string;
 }
 
 export interface SearchResponse {
@@ -15,6 +18,10 @@ export interface SearchResponse {
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
+
+export function getPhotoUrl(photoName: string): string {
+  return `${API_BASE}/api/photo?ref=${encodeURIComponent(photoName)}`;
+}
 
 export async function searchBusinesses(
   service: string,

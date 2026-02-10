@@ -15,6 +15,9 @@ class BusinessResult(BaseModel):
     raw_score: float
     frequency: int
     best_snippet: str
+    snippets: list[str] = []
+    photo_name: str = ""
+    maps_url: str = ""
 
 
 class SearchResponse(BaseModel):

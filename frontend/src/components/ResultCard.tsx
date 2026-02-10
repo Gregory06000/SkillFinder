@@ -1,4 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import type { BusinessResult } from "@/lib/api";
+import { getPhotoUrl } from "@/lib/api";
 
 interface ResultCardProps {
   result: BusinessResult;
@@ -6,7 +10,6 @@ interface ResultCardProps {
 }
 
 function renderSnippet(snippet: string) {
-  // Convert **bold** markers from the API into styled spans
   const parts = snippet.split(/\*\*(.*?)\*\*/g);
   return parts.map((part, i) =>
     i % 2 === 1 ? (
@@ -33,49 +36,97 @@ function ScoreBadge({ score }: { score: number }) {
 }
 
 export default function ResultCard({ result, rank }: ResultCardProps) {
+  const [imgError, setImgError] = useState(false);
+  const hasPhoto = result.photo_name && !imgError;
+  const snippets = result.snippets?.length > 0 ? result.snippets :
+    result.best_snippet ? [result.best_snippet] : [];
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm
-                    hover:shadow-md transition-shadow">
-      <div className="flex items-start gap-4">
-        {/* Rank badge */}
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-600 text-white
-                        flex items-center justify-center text-sm font-bold">
-          {rank}
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden
+                    shadow-sm hover:shadow-md transition-shadow">
+      {/* Cover photo */}
+      {hasPhoto && (
+        <div className="relative h-40 w-full bg-gray-100">
+          <img
+            src={getPhotoUrl(result.photo_name)}
+            alt={result.name}
+            className="w-full h-full object-cover"
+            onError={() => setImgError(true)}
+          />
+          <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-brand-600
+                          text-white flex items-center justify-center text-sm font-bold
+                          shadow-lg">
+            {rank}
+          </div>
         </div>
+      )}
 
-        {/* Main content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <h3 className="font-semibold text-gray-900 truncate">
-                {result.name}
-              </h3>
-              <p className="text-xs text-gray-500 mt-0.5">{result.address}</p>
+      <div className="p-4">
+        <div className="flex items-start gap-4">
+          {/* Rank badge (only if no photo) */}
+          {!hasPhoto && (
+            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-600 text-white
+                            flex items-center justify-center text-sm font-bold">
+              {rank}
             </div>
-
-            {/* Match score - big and highlighted */}
-            <div className="flex-shrink-0 text-right">
-              <ScoreBadge score={result.match_score} />
-              <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-wide">
-                Match Score
-              </p>
-            </div>
-          </div>
-
-          {/* Metadata row */}
-          <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
-            <span>Note globale : {result.global_rating.toFixed(1)}/5</span>
-            <span className="text-gray-300">|</span>
-            <span>{result.frequency} mention{result.frequency > 1 ? "s" : ""}</span>
-          </div>
-
-          {/* Review snippet */}
-          {result.best_snippet && (
-            <blockquote className="mt-3 text-sm text-gray-600 italic border-l-2
-                                   border-brand-500 pl-3 leading-relaxed">
-              &ldquo;{renderSnippet(result.best_snippet)}&rdquo;
-            </blockquote>
           )}
+
+          {/* Main content */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h3 className="font-semibold text-gray-900 truncate">
+                  {result.name}
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">{result.address}</p>
+              </div>
+
+              <div className="flex-shrink-0 text-right">
+                <ScoreBadge score={result.match_score} />
+                <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-wide">
+                  Match Score
+                </p>
+              </div>
+            </div>
+
+            {/* Metadata row */}
+            <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
+              <span>Note globale : {result.global_rating.toFixed(1)}/5</span>
+              <span className="text-gray-300">|</span>
+              <span>{result.frequency} mention{result.frequency > 1 ? "s" : ""}</span>
+            </div>
+
+            {/* Review snippets */}
+            {snippets.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {snippets.map((snippet, i) => (
+                  <blockquote
+                    key={i}
+                    className="text-sm text-gray-600 italic border-l-2
+                               border-brand-500 pl-3 leading-relaxed"
+                  >
+                    &ldquo;{renderSnippet(snippet)}&rdquo;
+                  </blockquote>
+                ))}
+              </div>
+            )}
+
+            {/* Action button */}
+            {result.maps_url && (
+              <a
+                href={result.maps_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium
+                           text-brand-600 hover:text-brand-700 transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                </svg>
+                Voir sur Google Maps
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </div>

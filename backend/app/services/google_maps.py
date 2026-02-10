@@ -23,6 +23,7 @@ FIELD_MASK = ",".join([
     "places.userRatingCount",
     "places.reviews",
     "places.photos",
+    "places.googleMapsUri",
 ])
 
 
@@ -36,18 +37,30 @@ def _get_api_key() -> str:
     return key
 
 
-async def search_places(query: str, location: str = "France") -> list[dict]:
+def get_photo_url(photo_name: str, max_width: int = 600, max_height: int = 400) -> str:
+    """Build a Google Places photo URL from a photo resource name."""
+    api_key = _get_api_key()
+    return (
+        f"https://places.googleapis.com/v1/{photo_name}/media"
+        f"?maxWidthPx={max_width}&maxHeightPx={max_height}&key={api_key}"
+    )
+
+
+async def fetch_photo_bytes(photo_name: str) -> tuple[bytes, str]:
+    """Fetch photo binary from Google and return (bytes, content_type)."""
+    url = get_photo_url(photo_name)
+    async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
+        resp = await client.get(url)
+    if resp.status_code != 200:
+        raise RuntimeError(f"Photo fetch failed: {resp.status_code}")
+    content_type = resp.headers.get("content-type", "image/jpeg")
+    return resp.content, content_type
+
+
+async def search_places(query: str) -> list[dict]:
     """
     Call Google Places Text Search (New) and return a list of businesses
-    in the format expected by rank_businesses():
-
-        {
-            "name": str,
-            "address": str,
-            "global_rating": float,
-            "reviews": list[str],
-            "photo_url": str | None,
-        }
+    in the format expected by rank_businesses().
     """
     api_key = _get_api_key()
 
@@ -80,6 +93,7 @@ def _transform_place(place: dict) -> dict:
     name = place.get("displayName", {}).get("text", "Unknown")
     address = place.get("formattedAddress", "")
     rating = place.get("rating", 0.0)
+    maps_url = place.get("googleMapsUri", "")
 
     # Extract review texts — gracefully handle places with no reviews
     raw_reviews = place.get("reviews", [])
@@ -89,9 +103,9 @@ def _transform_place(place: dict) -> dict:
         if text:
             reviews.append(text)
 
-    # Get first photo reference (for future use in the UI)
+    # Get first photo reference for the cover image
     photos = place.get("photos", [])
-    photo_name = photos[0].get("name", "") if photos else None
+    photo_name = photos[0].get("name", "") if photos else ""
 
     return {
         "name": name,
@@ -99,4 +113,5 @@ def _transform_place(place: dict) -> dict:
         "global_rating": rating,
         "reviews": reviews,
         "photo_name": photo_name,
+        "maps_url": maps_url,
     }

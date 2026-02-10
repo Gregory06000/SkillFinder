@@ -1,6 +1,7 @@
 import os
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import Response
 
 from app.models.schemas import SearchRequest, SearchResponse, BusinessResult
 from app.core.scoring import rank_businesses
@@ -16,7 +17,6 @@ def _is_google_enabled() -> bool:
 @router.post("/search", response_model=SearchResponse)
 async def search(req: SearchRequest):
     if _is_google_enabled():
-        # Real data from Google Places API
         from app.services.google_maps import search_places
 
         query = f"{req.service} {req.keyword}"
@@ -31,7 +31,6 @@ async def search(req: SearchRequest):
                 detail=f"No results found for '{query}'.",
             )
     else:
-        # Fallback to mock data
         businesses = get_businesses_by_category(req.service)
         if not businesses:
             available = get_all_categories()
@@ -45,6 +44,30 @@ async def search(req: SearchRequest):
         service=req.service,
         keyword=req.keyword,
         results=[BusinessResult(**r) for r in ranked],
+    )
+
+
+@router.get("/photo")
+async def photo_proxy(ref: str):
+    """
+    Proxy endpoint for Google Places photos.
+    Keeps the API key server-side so it's never exposed to the frontend.
+    Usage: /api/photo?ref=places/PLACE_ID/photos/PHOTO_REF
+    """
+    if not ref or not _is_google_enabled():
+        raise HTTPException(status_code=404, detail="Photo not available")
+
+    from app.services.google_maps import fetch_photo_bytes
+
+    try:
+        image_bytes, content_type = await fetch_photo_bytes(ref)
+    except RuntimeError:
+        raise HTTPException(status_code=502, detail="Failed to fetch photo")
+
+    return Response(
+        content=image_bytes,
+        media_type=content_type,
+        headers={"Cache-Control": "public, max-age=86400"},
     )
 
 

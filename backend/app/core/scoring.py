@@ -13,6 +13,8 @@ from app.core.nlp import (
     highlight_keyword,
 )
 
+MAX_SNIPPETS = 3
+
 
 def calculate_attribute_score(
     reviews: list[str],
@@ -22,23 +24,8 @@ def calculate_attribute_score(
     """
     Calculate a keyword-specific sentiment score from a list of reviews.
 
-    Algorithm:
-      1. Extract all sentences mentioning the keyword (or synonyms).
-      2. Run sentiment analysis on each matching sentence.
-      3. Average the sentence-level scores → raw_score (1-5).
-      4. Count total keyword mentions → frequency.
-      5. Apply a confidence weight based on frequency so that
-         businesses with more mentions get a boost, but it
-         saturates (log scale) to avoid gaming.
-
-    Returns:
-        {
-            "raw_score": float,        # average sentiment (1-5), 0 if no mentions
-            "weighted_score": float,   # final score after confidence weighting (0-5)
-            "frequency": int,          # total keyword mentions
-            "matched_sentences": [...], # sentences that matched
-            "best_snippet": str,       # highest-sentiment sentence (highlighted)
-        }
+    Returns up to MAX_SNIPPETS highlighted review excerpts, sorted by
+    sentiment (best first) to showcase the strongest evidence.
     """
     all_matched: list[str] = []
     for review in reviews:
@@ -52,7 +39,7 @@ def calculate_attribute_score(
             "raw_score": 0.0,
             "weighted_score": 0.0,
             "frequency": 0,
-            "matched_sentences": [],
+            "snippets": [],
             "best_snippet": "",
         }
 
@@ -66,16 +53,26 @@ def calculate_attribute_score(
     confidence = min(1.0, math.log(frequency + 1) / math.log(8))
     weighted_score = round(raw_score * confidence, 2)
 
-    # Pick the sentence with the highest sentiment as the best snippet
-    best_idx = scores.index(max(scores))
-    best_snippet = highlight_keyword(all_matched[best_idx], keyword, synonyms)
+    # Sort sentences by sentiment (best first), pick top N, deduplicate
+    scored_pairs = sorted(
+        zip(scores, all_matched), key=lambda x: x[0], reverse=True
+    )
+    seen = set()
+    snippets = []
+    for _, sentence in scored_pairs:
+        normalized = sentence.strip().lower()
+        if normalized not in seen:
+            seen.add(normalized)
+            snippets.append(highlight_keyword(sentence, keyword, synonyms))
+            if len(snippets) >= MAX_SNIPPETS:
+                break
 
     return {
         "raw_score": round(raw_score, 2),
         "weighted_score": weighted_score,
         "frequency": frequency,
-        "matched_sentences": all_matched,
-        "best_snippet": best_snippet,
+        "snippets": snippets,
+        "best_snippet": snippets[0] if snippets else "",
     }
 
 
@@ -91,8 +88,11 @@ def rank_businesses(
         - "name": str
         - "global_rating": float
         - "reviews": list[str]
+    Optional:
+        - "photo_name": str
+        - "maps_url": str
 
-    Returns a list of ranked results sorted by weighted_score descending.
+    Returns a sorted list (top 10) by weighted_score descending.
     """
     results = []
     for biz in businesses:
@@ -105,7 +105,10 @@ def rank_businesses(
             "raw_score": score_data["raw_score"],
             "frequency": score_data["frequency"],
             "best_snippet": score_data["best_snippet"],
+            "snippets": score_data["snippets"],
+            "photo_name": biz.get("photo_name", ""),
+            "maps_url": biz.get("maps_url", ""),
         })
 
     results.sort(key=lambda x: x["match_score"], reverse=True)
-    return results
+    return results[:10]
