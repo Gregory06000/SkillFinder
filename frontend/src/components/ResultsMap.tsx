@@ -14,6 +14,8 @@ interface ResultsMapProps {
   results: BusinessResult[];
   selectedIndex: number | null;
   onSelect: (index: number | null) => void;
+  searchCenter?: { lat: number; lng: number } | null;
+  searchRadiusKm?: number | null;
 }
 
 function scoreColor(score: number): string {
@@ -136,12 +138,54 @@ function MarkerWithInfo({
   );
 }
 
+/** Draws a blue transparent circle to visualize the search radius. */
+function SearchRadiusCircle({
+  center,
+  radiusKm,
+}: {
+  center: { lat: number; lng: number };
+  radiusKm: number;
+}) {
+  const map = useMap();
+  const circleRef = useRef<google.maps.Circle | null>(null);
+
+  useEffect(() => {
+    if (!map) return;
+
+    if (!circleRef.current) {
+      circleRef.current = new google.maps.Circle({
+        map,
+        center,
+        radius: radiusKm * 1000,
+        fillColor: "#3b82f6",
+        fillOpacity: 0.08,
+        strokeColor: "#3b82f6",
+        strokeOpacity: 0.3,
+        strokeWeight: 2,
+        clickable: false,
+      });
+    } else {
+      circleRef.current.setCenter(center);
+      circleRef.current.setRadius(radiusKm * 1000);
+      circleRef.current.setMap(map);
+    }
+
+    return () => {
+      circleRef.current?.setMap(null);
+    };
+  }, [map, center, radiusKm]);
+
+  return null;
+}
+
 const DEFAULT_CENTER = { lat: 46.603354, lng: 1.888334 }; // France center
 
 export default function ResultsMap({
   results,
   selectedIndex,
   onSelect,
+  searchCenter,
+  searchRadiusKm,
 }: ResultsMapProps) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || "";
 
@@ -174,6 +218,14 @@ export default function ResultsMap({
         className="w-full h-full rounded-xl"
       >
         <FitBounds results={results} />
+        {searchCenter && searchRadiusKm && (
+          <>
+            <SearchRadiusCircle center={searchCenter} radiusKm={searchRadiusKm} />
+            <AdvancedMarker position={searchCenter} zIndex={0}>
+              <div className="w-3 h-3 rounded-full bg-blue-500 border-2 border-white shadow-md" />
+            </AdvancedMarker>
+          </>
+        )}
         {results.map((result, i) => (
           <MarkerWithInfo
             key={`${result.name}-${i}`}

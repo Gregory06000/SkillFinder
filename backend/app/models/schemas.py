@@ -29,3 +29,6 @@ class SearchResponse(BaseModel):
     service: str
     keyword: str
     results: list[BusinessResult]
+    center_lat: float | None = None
+    center_lng: float | None = None
+    radius_km: int | None = None

@@ -4,7 +4,7 @@ import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
 import ResultsMap from "@/components/ResultsMap";
-import { searchBusinesses, type BusinessResult } from "@/lib/api";
+import { searchBusinesses, type BusinessResult, type SearchResponse } from "@/lib/api";
 
 function SkeletonCard() {
   return (
@@ -35,6 +35,8 @@ export default function Home() {
   } | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
+  const [searchCenter, setSearchCenter] = useState<{ lat: number; lng: number } | null>(null);
+  const [searchRadiusKm, setSearchRadiusKm] = useState<number | null>(null);
 
   async function handleSearch(service: string, keyword: string, location: string, radiusKm: number) {
     setIsLoading(true);
@@ -46,6 +48,13 @@ export default function Home() {
       const data = await searchBusinesses(service, keyword, location, radiusKm);
       setResults(data.results);
       setLastSearch({ service, keyword });
+      if (data.center_lat != null && data.center_lng != null) {
+        setSearchCenter({ lat: data.center_lat, lng: data.center_lng });
+        setSearchRadiusKm(data.radius_km);
+      } else {
+        setSearchCenter(null);
+        setSearchRadiusKm(null);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Une erreur est survenue");
     } finally {
@@ -164,6 +173,8 @@ export default function Home() {
                   results={results}
                   selectedIndex={selectedIndex}
                   onSelect={setSelectedIndex}
+                  searchCenter={searchCenter}
+                  searchRadiusKm={searchRadiusKm}
                 />
               </div>
             )}

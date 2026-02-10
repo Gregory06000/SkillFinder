@@ -18,6 +18,9 @@ export interface SearchResponse {
   service: string;
   keyword: string;
   results: BusinessResult[];
+  center_lat: number | null;
+  center_lng: number | null;
+  radius_km: number | null;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";

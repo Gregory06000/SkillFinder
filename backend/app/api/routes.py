@@ -56,6 +56,9 @@ async def search(req: SearchRequest):
         service=req.service,
         keyword=req.keyword,
         results=[BusinessResult(**r) for r in ranked],
+        center_lat=center[0] if center else None,
+        center_lng=center[1] if center else None,
+        radius_km=req.radius_km if center else None,
     )
 
 
