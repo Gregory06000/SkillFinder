@@ -1,8 +1,7 @@
 """
 Gemini LLM integration for SkillFinder comparative analysis.
 
-Uses the same GOOGLE_API_KEY as the Places API.
-Requires the "Generative Language API" to be enabled in Google Cloud Console.
+Uses GEMINI_API_KEY (from Google AI Studio).
 """
 
 import os
@@ -20,9 +19,9 @@ GEMINI_URL = (
 
 
 def _get_api_key() -> str:
-    key = os.environ.get("GOOGLE_API_KEY")
+    key = os.environ.get("GEMINI_API_KEY")
     if not key:
-        raise RuntimeError("GOOGLE_API_KEY is not set.")
+        raise RuntimeError("GEMINI_API_KEY is not set.")
     return key
 
 
