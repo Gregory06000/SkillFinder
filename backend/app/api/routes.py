@@ -82,6 +82,18 @@ async def photo_proxy(ref: str):
     )
 
 
+@router.get("/reverse-geocode")
+async def reverse_geocode_endpoint(lat: float, lng: float):
+    """Convert lat/lng to a readable city name."""
+    if not _is_google_enabled():
+        return {"location": f"{lat:.4f}, {lng:.4f}"}
+
+    from app.services.google_maps import reverse_geocode
+
+    name = await reverse_geocode(lat, lng)
+    return {"location": name}
+
+
 @router.get("/categories")
 async def categories():
     return {

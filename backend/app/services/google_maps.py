@@ -81,6 +81,41 @@ async def geocode(address: str) -> tuple[float, float] | None:
     return (loc["lat"], loc["lng"])
 
 
+async def reverse_geocode(lat: float, lng: float) -> str:
+    """
+    Convert (latitude, longitude) to a human-readable location name.
+    Returns the city/locality name, or a formatted address as fallback.
+    """
+    api_key = _get_api_key()
+    params = {
+        "latlng": f"{lat},{lng}",
+        "key": api_key,
+        "language": "fr",
+        "result_type": "locality|sublocality|administrative_area_level_1",
+    }
+
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        resp = await client.get(GEOCODING_URL, params=params)
+
+    if resp.status_code != 200:
+        return f"{lat:.4f}, {lng:.4f}"
+
+    data = resp.json()
+    results = data.get("results", [])
+    if not results:
+        # Fallback: try without result_type filter
+        params.pop("result_type")
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(GEOCODING_URL, params=params)
+        data = resp.json()
+        results = data.get("results", [])
+
+    if not results:
+        return f"{lat:.4f}, {lng:.4f}"
+
+    return results[0].get("formatted_address", f"{lat:.4f}, {lng:.4f}")
+
+
 def get_photo_url(photo_name: str, max_width: int = 600, max_height: int = 400) -> str:
     """Build a Google Places photo URL from a photo resource name."""
     api_key = _get_api_key()

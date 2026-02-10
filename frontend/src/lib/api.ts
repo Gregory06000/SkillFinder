@@ -24,6 +24,15 @@ export function getPhotoUrl(photoName: string): string {
   return `${API_BASE}/api/photo?ref=${encodeURIComponent(photoName)}`;
 }
 
+export async function reverseGeocode(lat: number, lng: number): Promise<string> {
+  const res = await fetch(
+    `${API_BASE}/api/reverse-geocode?lat=${lat}&lng=${lng}`
+  );
+  if (!res.ok) return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  const data = await res.json();
+  return data.location || `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+}
+
 export async function searchBusinesses(
   service: string,
   keyword: string,
