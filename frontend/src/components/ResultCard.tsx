@@ -49,6 +49,7 @@ export default function ResultCard({
   const hasPhoto = result.photo_name && !imgError;
   const snippets = result.snippets?.length > 0 ? result.snippets :
     result.best_snippet ? [result.best_snippet] : [];
+  const isWinner = rank === 1;
 
   useEffect(() => {
     if (isSelected && cardRef.current) {
@@ -56,13 +57,19 @@ export default function ResultCard({
     }
   }, [isSelected]);
 
+  const borderClass = isSelected
+    ? "border-brand-500 ring-2 ring-brand-500/20"
+    : isWinner
+      ? "border-yellow-400 ring-2 ring-yellow-400/20 shadow-md"
+      : "border-gray-200";
+
   return (
     <div
       ref={cardRef}
       onClick={onClick}
       className={`bg-white rounded-xl border overflow-hidden
                     shadow-sm hover:shadow-md transition-all cursor-pointer
-                    ${isSelected ? "border-brand-500 ring-2 ring-brand-500/20" : "border-gray-200"}`}
+                    ${borderClass}`}
     >
       {/* Cover photo */}
       {hasPhoto && (
@@ -73,11 +80,18 @@ export default function ResultCard({
             className="w-full h-full object-cover"
             onError={() => setImgError(true)}
           />
-          <div className="absolute top-2 left-2 w-8 h-8 rounded-full bg-brand-600
+          <div className={`absolute top-2 left-2 w-8 h-8 rounded-full
                           text-white flex items-center justify-center text-sm font-bold
-                          shadow-lg">
+                          shadow-lg ${isWinner ? "bg-gradient-to-br from-yellow-400 to-amber-500" : "bg-brand-600"}`}>
             {rank}
           </div>
+          {isWinner && (
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full
+                            bg-gradient-to-r from-yellow-400 to-amber-500
+                            text-white text-[10px] font-bold uppercase tracking-wide shadow-lg">
+              Meilleur match
+            </div>
+          )}
         </div>
       )}
 
@@ -85,8 +99,9 @@ export default function ResultCard({
         <div className="flex items-start gap-4">
           {/* Rank badge (only if no photo) */}
           {!hasPhoto && (
-            <div className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-600 text-white
-                            flex items-center justify-center text-sm font-bold">
+            <div className={`flex-shrink-0 w-8 h-8 rounded-full text-white
+                            flex items-center justify-center text-sm font-bold
+                            ${isWinner ? "bg-gradient-to-br from-yellow-400 to-amber-500" : "bg-brand-600"}`}>
               {rank}
             </div>
           )}
@@ -95,9 +110,18 @@ export default function ResultCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="font-semibold text-gray-900 truncate">
-                  {result.name}
-                </h3>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-gray-900 truncate">
+                    {result.name}
+                  </h3>
+                  {isWinner && !hasPhoto && (
+                    <span className="flex-shrink-0 px-1.5 py-0.5 rounded-full
+                                     bg-gradient-to-r from-yellow-400 to-amber-500
+                                     text-white text-[9px] font-bold uppercase tracking-wide">
+                      Meilleur match
+                    </span>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 mt-0.5">{result.address}</p>
               </div>
 
