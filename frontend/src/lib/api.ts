@@ -13,6 +13,10 @@ export interface BusinessResult {
   lat: number | null;
   lng: number | null;
   reviews: string[];
+  // Community verification
+  verification_yes: number;
+  verification_no: number;
+  verification_last: string | null;
 }
 
 export interface SearchResponse {
@@ -107,6 +111,24 @@ export async function compareBusinesses(
         global_rating: biz2.global_rating,
       },
     }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ detail: "Request failed" }));
+    throw new Error(error.detail || `HTTP ${res.status}`);
+  }
+
+  return res.json();
+}
+
+export async function verifyBusiness(
+  placeId: string,
+  vote: "yes" | "no"
+): Promise<{ success: boolean; message: string }> {
+  const res = await fetch(`${API_BASE}/api/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ place_id: placeId, vote }),
   });
 
   if (!res.ok) {

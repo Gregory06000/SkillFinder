@@ -24,6 +24,10 @@ class BusinessResult(BaseModel):
     lat: float | None = None
     lng: float | None = None
     reviews: list[str] = []
+    # Community verification
+    verification_yes: int = 0
+    verification_no: int = 0
+    verification_last: str | None = None
 
 
 class SearchResponse(BaseModel):
@@ -66,3 +70,14 @@ class CompareResponse(BaseModel):
     business_2_analysis: BusinessAnalysis
     business_2_match_score: float
     verdict: str
+
+
+# --- Community verification ---
+
+class VerifyRequest(BaseModel):
+    place_id: str      # business name used as stable identifier
+    vote: str          # "yes" or "no"
+
+class VerifyResponse(BaseModel):
+    success: bool
+    message: str

@@ -8,6 +8,7 @@ import ComparisonModal from "@/components/ComparisonModal";
 import {
   searchBusinesses,
   compareBusinesses,
+  verifyBusiness,
   type BusinessResult,
   type CompareResponse,
 } from "@/lib/api";
@@ -50,6 +51,9 @@ export default function Home() {
   const [compareLoading, setCompareLoading] = useState(false);
   const [compareData, setCompareData] = useState<CompareResponse | null>(null);
   const [compareError, setCompareError] = useState<string | null>(null);
+
+  // Verify state
+  const [verifyLoading, setVerifyLoading] = useState(false);
 
   async function handleSearch(service: string, keyword: string, location: string, radiusKm: number) {
     setIsLoading(true);
@@ -113,6 +117,30 @@ export default function Home() {
     setShowCompare(false);
     setCompareData(null);
     setCompareError(null);
+  }
+
+  async function handleVerify(placeId: string, vote: "yes" | "no") {
+    setVerifyLoading(true);
+    try {
+      await verifyBusiness(placeId, vote);
+      // Optimistically update the local results
+      setResults((prev) =>
+        prev.map((r) =>
+          r.name === placeId
+            ? {
+                ...r,
+                verification_yes: r.verification_yes + (vote === "yes" ? 1 : 0),
+                verification_no: r.verification_no + (vote === "no" ? 1 : 0),
+                verification_last: new Date().toISOString(),
+              }
+            : r
+        )
+      );
+    } catch {
+      // Silent fail — vote feedback is non-critical
+    } finally {
+      setVerifyLoading(false);
+    }
   }
 
   const hasResults = results.length > 0 && !isLoading;
@@ -214,6 +242,8 @@ export default function Home() {
                   isCompareSelected={compareSet.has(i)}
                   onCompareToggle={() => handleCompareToggle(i)}
                   compareDisabled={compareSet.size >= 2}
+                  onVerify={handleVerify}
+                  verifyLoading={verifyLoading}
                 />
               ))}
             </div>

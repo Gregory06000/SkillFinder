@@ -6,6 +6,7 @@ from fastapi.responses import Response
 from app.models.schemas import (
     SearchRequest, SearchResponse, BusinessResult,
     CompareRequest, CompareResponse, BusinessAnalysis,
+    VerifyRequest, VerifyResponse,
 )
 from app.core.scoring import rank_businesses
 from app.data.mock_data import get_businesses_by_category, get_all_categories
@@ -55,10 +56,27 @@ async def search(req: SearchRequest):
             )
 
     ranked = rank_businesses(businesses, req.keyword, req.synonyms or None)
+    results = [BusinessResult(**r) for r in ranked]
+
+    # Merge community verification stats if Supabase is configured
+    from app.services.supabase import is_enabled as supabase_enabled, get_stats
+    if supabase_enabled():
+        place_ids = [r.name for r in results]
+        try:
+            stats = await get_stats(place_ids)
+            for r in results:
+                s = stats.get(r.name)
+                if s:
+                    r.verification_yes = s["yes"]
+                    r.verification_no = s["no"]
+                    r.verification_last = s.get("last_vote")
+        except Exception:
+            pass  # Verification stats are non-critical
+
     return SearchResponse(
         service=req.service,
         keyword=req.keyword,
-        results=[BusinessResult(**r) for r in ranked],
+        results=results,
         center_lat=center[0] if center else None,
         center_lng=center[1] if center else None,
         radius_km=req.radius_km if center else None,
@@ -146,6 +164,28 @@ async def reverse_geocode_endpoint(lat: float, lng: float):
 
     name = await reverse_geocode(lat, lng)
     return {"location": name}
+
+
+@router.post("/verify", response_model=VerifyResponse)
+async def verify(req: VerifyRequest):
+    """Community verification: record a yes/no vote for a business."""
+    if req.vote not in ("yes", "no"):
+        raise HTTPException(status_code=400, detail="Vote must be 'yes' or 'no'")
+
+    from app.services.supabase import is_enabled as supabase_enabled, add_vote
+
+    if not supabase_enabled():
+        raise HTTPException(
+            status_code=503,
+            detail="Le système de vérification n'est pas configuré.",
+        )
+
+    try:
+        await add_vote(req.place_id, req.vote)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"Erreur base de données: {e}")
+
+    return VerifyResponse(success=True, message="Vote enregistré !")
 
 
 @router.get("/categories")
