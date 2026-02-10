@@ -225,4 +225,6 @@ def _transform_place(
         "photo_name": photo_name,
         "maps_url": maps_url,
         "distance_km": distance_km,
+        "lat": place_lat,
+        "lng": place_lng,
     }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
+import ResultsMap from "@/components/ResultsMap";
 import { searchBusinesses, type BusinessResult } from "@/lib/api";
 
 function SkeletonCard() {
@@ -32,11 +33,14 @@ export default function Home() {
     service: string;
     keyword: string;
   } | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [mobileView, setMobileView] = useState<"list" | "map">("list");
 
   async function handleSearch(service: string, keyword: string, location: string, radiusKm: number) {
     setIsLoading(true);
     setError(null);
     setResults([]);
+    setSelectedIndex(null);
 
     try {
       const data = await searchBusinesses(service, keyword, location, radiusKm);
@@ -48,6 +52,10 @@ export default function Home() {
       setIsLoading(false);
     }
   }
+
+  const hasResults = results.length > 0 && !isLoading;
+  const hasCoords = results.some((r) => r.lat != null && r.lng != null);
+  const showMap = hasResults && hasCoords;
 
   return (
     <div className="space-y-6">
@@ -74,14 +82,6 @@ export default function Home() {
         </div>
       )}
 
-      {lastSearch && results.length > 0 && !isLoading && (
-        <p className="text-sm text-gray-500">
-          <strong>{results.length}</strong> résultat{results.length > 1 ? "s" : ""} pour{" "}
-          <strong>{lastSearch.keyword}</strong> dans{" "}
-          <strong>{lastSearch.service}</strong> :
-        </p>
-      )}
-
       {lastSearch && results.length === 0 && !isLoading && !error && (
         <div className="text-center py-12">
           <p className="text-gray-400 text-4xl mb-3">:/</p>
@@ -94,12 +94,81 @@ export default function Home() {
         </div>
       )}
 
-      {!isLoading && (
-        <div className="space-y-4">
-          {results.map((result, i) => (
-            <ResultCard key={`${result.name}-${i}`} result={result} rank={i + 1} />
-          ))}
-        </div>
+      {hasResults && (
+        <>
+          {/* Header + mobile toggle */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-500">
+              <strong>{results.length}</strong> résultat{results.length > 1 ? "s" : ""} pour{" "}
+              <strong>{lastSearch?.keyword}</strong> dans{" "}
+              <strong>{lastSearch?.service}</strong> :
+            </p>
+
+            {showMap && (
+              <div className="flex sm:hidden rounded-lg border border-gray-300 overflow-hidden text-xs">
+                <button
+                  onClick={() => setMobileView("list")}
+                  className={`px-3 py-1.5 ${
+                    mobileView === "list"
+                      ? "bg-brand-600 text-white"
+                      : "bg-white text-gray-600"
+                  }`}
+                >
+                  Liste
+                </button>
+                <button
+                  onClick={() => setMobileView("map")}
+                  className={`px-3 py-1.5 ${
+                    mobileView === "map"
+                      ? "bg-brand-600 text-white"
+                      : "bg-white text-gray-600"
+                  }`}
+                >
+                  Carte
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Split layout: list + map */}
+          <div className={`flex gap-6 ${showMap ? "items-start" : ""}`}>
+            {/* List panel */}
+            <div
+              className={`space-y-4 ${
+                showMap
+                  ? "sm:w-[40%] sm:max-h-[calc(100vh-260px)] sm:overflow-y-auto sm:pr-2"
+                  : "w-full"
+              } ${showMap && mobileView === "map" ? "hidden sm:block" : "w-full"}`}
+            >
+              {results.map((result, i) => (
+                <ResultCard
+                  key={`${result.name}-${i}`}
+                  result={result}
+                  rank={i + 1}
+                  isSelected={selectedIndex === i}
+                  onClick={() =>
+                    setSelectedIndex(selectedIndex === i ? null : i)
+                  }
+                />
+              ))}
+            </div>
+
+            {/* Map panel */}
+            {showMap && (
+              <div
+                className={`sm:w-[60%] sm:sticky sm:top-4 h-[500px] sm:h-[calc(100vh-260px)] ${
+                  mobileView === "list" ? "hidden sm:block" : "w-full"
+                }`}
+              >
+                <ResultsMap
+                  results={results}
+                  selectedIndex={selectedIndex}
+                  onSelect={setSelectedIndex}
+                />
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );

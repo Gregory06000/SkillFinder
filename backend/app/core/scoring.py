@@ -109,6 +109,8 @@ def rank_businesses(
             "photo_name": biz.get("photo_name", ""),
             "maps_url": biz.get("maps_url", ""),
             "distance_km": biz.get("distance_km"),
+            "lat": biz.get("lat"),
+            "lng": biz.get("lng"),
         })
 
     results.sort(key=lambda x: x["match_score"], reverse=True)

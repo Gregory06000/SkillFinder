@@ -21,6 +21,8 @@ class BusinessResult(BaseModel):
     photo_name: str = ""
     maps_url: str = ""
     distance_km: float | None = None
+    lat: float | None = None
+    lng: float | None = None
 
 
 class SearchResponse(BaseModel):

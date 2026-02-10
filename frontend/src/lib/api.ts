@@ -10,6 +10,8 @@ export interface BusinessResult {
   photo_name: string;
   maps_url: string;
   distance_km: number | null;
+  lat: number | null;
+  lng: number | null;
 }
 
 export interface SearchResponse {

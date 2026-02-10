@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import type { BusinessResult } from "@/lib/api";
 import { getPhotoUrl } from "@/lib/api";
 
 interface ResultCardProps {
   result: BusinessResult;
   rank: number;
+  isSelected?: boolean;
+  onClick?: () => void;
 }
 
 function renderSnippet(snippet: string) {
@@ -35,15 +37,27 @@ function ScoreBadge({ score }: { score: number }) {
   );
 }
 
-export default function ResultCard({ result, rank }: ResultCardProps) {
+export default function ResultCard({ result, rank, isSelected, onClick }: ResultCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const [imgError, setImgError] = useState(false);
   const hasPhoto = result.photo_name && !imgError;
   const snippets = result.snippets?.length > 0 ? result.snippets :
     result.best_snippet ? [result.best_snippet] : [];
 
+  useEffect(() => {
+    if (isSelected && cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [isSelected]);
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden
-                    shadow-sm hover:shadow-md transition-shadow">
+    <div
+      ref={cardRef}
+      onClick={onClick}
+      className={`bg-white rounded-xl border overflow-hidden
+                    shadow-sm hover:shadow-md transition-all cursor-pointer
+                    ${isSelected ? "border-brand-500 ring-2 ring-brand-500/20" : "border-gray-200"}`}
+    >
       {/* Cover photo */}
       {hasPhoto && (
         <div className="relative h-40 w-full bg-gray-100">
