@@ -2,6 +2,7 @@ export interface BusinessResult {
   name: string;
   address: string;
   global_rating: number;
+  review_count: number;
   match_score: number;
   raw_score: number;
   frequency: number;

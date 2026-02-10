@@ -192,6 +192,7 @@ def _transform_place(
     name = place.get("displayName", {}).get("text", "Unknown")
     address = place.get("formattedAddress", "")
     rating = place.get("rating", 0.0)
+    review_count = place.get("userRatingCount", 0)
     maps_url = place.get("googleMapsUri", "")
 
     # Extract review texts
@@ -221,6 +222,7 @@ def _transform_place(
         "name": name,
         "address": address,
         "global_rating": rating,
+        "review_count": review_count,
         "reviews": reviews,
         "photo_name": photo_name,
         "maps_url": maps_url,

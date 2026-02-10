@@ -13,6 +13,7 @@ class BusinessResult(BaseModel):
     name: str
     address: str
     global_rating: float
+    review_count: int = 0
     match_score: float
     raw_score: float
     frequency: int
