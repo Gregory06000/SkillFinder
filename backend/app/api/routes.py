@@ -3,7 +3,10 @@ import os
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
 
-from app.models.schemas import SearchRequest, SearchResponse, BusinessResult
+from app.models.schemas import (
+    SearchRequest, SearchResponse, BusinessResult,
+    CompareRequest, CompareResponse, BusinessAnalysis,
+)
 from app.core.scoring import rank_businesses
 from app.data.mock_data import get_businesses_by_category, get_all_categories
 
@@ -16,11 +19,11 @@ def _is_google_enabled() -> bool:
 
 @router.post("/search", response_model=SearchResponse)
 async def search(req: SearchRequest):
+    center = None
+
     if _is_google_enabled():
         from app.services.google_maps import search_places, geocode
 
-        # Geocode location if provided
-        center = None
         if req.location:
             center = await geocode(req.location)
 
@@ -59,6 +62,54 @@ async def search(req: SearchRequest):
         center_lat=center[0] if center else None,
         center_lng=center[1] if center else None,
         radius_km=req.radius_km if center else None,
+    )
+
+
+@router.post("/compare", response_model=CompareResponse)
+async def compare(req: CompareRequest):
+    """Compare two businesses using Gemini LLM analysis."""
+    if not _is_google_enabled():
+        raise HTTPException(
+            status_code=400,
+            detail="La comparaison nécessite une clé API Google.",
+        )
+
+    from app.services.llm import compare_businesses
+
+    try:
+        analysis = await compare_businesses(
+            biz1_name=req.business_1.name,
+            biz1_reviews=req.business_1.reviews,
+            biz2_name=req.business_2.name,
+            biz2_reviews=req.business_2.reviews,
+            keyword=req.keyword,
+        )
+    except RuntimeError as e:
+        raise HTTPException(status_code=502, detail=str(e))
+
+    biz1 = analysis.get("business_1", {})
+    biz2 = analysis.get("business_2", {})
+
+    return CompareResponse(
+        business_1_name=req.business_1.name,
+        business_1_analysis=BusinessAnalysis(
+            strengths=biz1.get("strengths", []),
+            weaknesses=biz1.get("weaknesses", []),
+            price_range=biz1.get("price_range"),
+            vibe=biz1.get("vibe"),
+            service_speed=biz1.get("service_speed"),
+        ),
+        business_1_match_score=req.business_1.match_score,
+        business_2_name=req.business_2.name,
+        business_2_analysis=BusinessAnalysis(
+            strengths=biz2.get("strengths", []),
+            weaknesses=biz2.get("weaknesses", []),
+            price_range=biz2.get("price_range"),
+            vibe=biz2.get("vibe"),
+            service_speed=biz2.get("service_speed"),
+        ),
+        business_2_match_score=req.business_2.match_score,
+        verdict=analysis.get("verdict", ""),
     )
 
 

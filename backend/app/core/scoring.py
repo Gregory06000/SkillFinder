@@ -111,6 +111,7 @@ def rank_businesses(
             "distance_km": biz.get("distance_km"),
             "lat": biz.get("lat"),
             "lng": biz.get("lng"),
+            "reviews": biz.get("reviews", []),
         })
 
     results.sort(key=lambda x: x["match_score"], reverse=True)

@@ -23,6 +23,7 @@ class BusinessResult(BaseModel):
     distance_km: float | None = None
     lat: float | None = None
     lng: float | None = None
+    reviews: list[str] = []
 
 
 class SearchResponse(BaseModel):
@@ -32,3 +33,36 @@ class SearchResponse(BaseModel):
     center_lat: float | None = None
     center_lng: float | None = None
     radius_km: int | None = None
+
+
+# --- Comparison ---
+
+class CompareBusinessInput(BaseModel):
+    name: str
+    reviews: list[str]
+    match_score: float
+    global_rating: float
+
+
+class CompareRequest(BaseModel):
+    keyword: str
+    business_1: CompareBusinessInput
+    business_2: CompareBusinessInput
+
+
+class BusinessAnalysis(BaseModel):
+    strengths: list[str] = []
+    weaknesses: list[str] = []
+    price_range: str | None = None
+    vibe: str | None = None
+    service_speed: str | None = None
+
+
+class CompareResponse(BaseModel):
+    business_1_name: str
+    business_1_analysis: BusinessAnalysis
+    business_1_match_score: float
+    business_2_name: str
+    business_2_analysis: BusinessAnalysis
+    business_2_match_score: float
+    verdict: str

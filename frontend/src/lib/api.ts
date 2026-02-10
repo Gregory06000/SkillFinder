@@ -12,6 +12,7 @@ export interface BusinessResult {
   distance_km: number | null;
   lat: number | null;
   lng: number | null;
+  reviews: string[];
 }
 
 export interface SearchResponse {
@@ -21,6 +22,24 @@ export interface SearchResponse {
   center_lat: number | null;
   center_lng: number | null;
   radius_km: number | null;
+}
+
+export interface BusinessAnalysis {
+  strengths: string[];
+  weaknesses: string[];
+  price_range: string | null;
+  vibe: string | null;
+  service_speed: string | null;
+}
+
+export interface CompareResponse {
+  business_1_name: string;
+  business_1_analysis: BusinessAnalysis;
+  business_1_match_score: number;
+  business_2_name: string;
+  business_2_analysis: BusinessAnalysis;
+  business_2_match_score: number;
+  verdict: string;
 }
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
@@ -54,6 +73,39 @@ export async function searchBusinesses(
       synonyms,
       location,
       radius_km: radiusKm,
+    }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ detail: "Request failed" }));
+    throw new Error(error.detail || `HTTP ${res.status}`);
+  }
+
+  return res.json();
+}
+
+export async function compareBusinesses(
+  keyword: string,
+  biz1: BusinessResult,
+  biz2: BusinessResult
+): Promise<CompareResponse> {
+  const res = await fetch(`${API_BASE}/api/compare`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      keyword,
+      business_1: {
+        name: biz1.name,
+        reviews: biz1.reviews,
+        match_score: biz1.match_score,
+        global_rating: biz1.global_rating,
+      },
+      business_2: {
+        name: biz2.name,
+        reviews: biz2.reviews,
+        match_score: biz2.match_score,
+        global_rating: biz2.global_rating,
+      },
     }),
   });
 

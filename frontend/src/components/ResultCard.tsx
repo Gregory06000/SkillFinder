@@ -9,6 +9,9 @@ interface ResultCardProps {
   rank: number;
   isSelected?: boolean;
   onClick?: () => void;
+  isCompareSelected?: boolean;
+  onCompareToggle?: () => void;
+  compareDisabled?: boolean;
 }
 
 function renderSnippet(snippet: string) {
@@ -37,7 +40,10 @@ function ScoreBadge({ score }: { score: number }) {
   );
 }
 
-export default function ResultCard({ result, rank, isSelected, onClick }: ResultCardProps) {
+export default function ResultCard({
+  result, rank, isSelected, onClick,
+  isCompareSelected, onCompareToggle, compareDisabled,
+}: ResultCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [imgError, setImgError] = useState(false);
   const hasPhoto = result.photo_name && !imgError;
@@ -133,21 +139,45 @@ export default function ResultCard({ result, rank, isSelected, onClick }: Result
               </div>
             )}
 
-            {/* Action button */}
-            {result.maps_url && (
-              <a
-                href={result.maps_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium
-                           text-brand-600 hover:text-brand-700 transition-colors"
-              >
-                <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                </svg>
-                Voir sur Google Maps
-              </a>
-            )}
+            {/* Action row */}
+            <div className="flex items-center gap-4 mt-3">
+              {result.maps_url && (
+                <a
+                  href={result.maps_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium
+                             text-brand-600 hover:text-brand-700 transition-colors"
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                  </svg>
+                  Voir sur Google Maps
+                </a>
+              )}
+              {onCompareToggle && (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCompareToggle();
+                  }}
+                  disabled={compareDisabled && !isCompareSelected}
+                  className={`inline-flex items-center gap-1.5 text-xs font-medium
+                              transition-colors
+                              ${isCompareSelected
+                                ? "text-purple-600 hover:text-purple-700"
+                                : "text-gray-400 hover:text-gray-600"}
+                              disabled:opacity-30 disabled:cursor-not-allowed`}
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H6.414l2.293 2.293a1 1 0 01-1.414 1.414L5 6.414V8a1 1 0 01-2 0V4zm9 1a1 1 0 110-2h4a1 1 0 011 1v4a1 1 0 11-2 0V6.414l-2.293 2.293a1 1 0 11-1.414-1.414L13.586 5H12zm-9 7a1 1 0 112 0v1.586l2.293-2.293a1 1 0 111.414 1.414L5.414 15H7a1 1 0 110 2H3a1 1 0 01-1-1v-4zm13.707 4.707a1 1 0 010-1.414L15.414 13H14a1 1 0 110-2h4a1 1 0 011 1v4a1 1 0 11-2 0v-1.586l-2.293 2.293a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                  {isCompareSelected ? "Sélectionné" : "Comparer"}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
