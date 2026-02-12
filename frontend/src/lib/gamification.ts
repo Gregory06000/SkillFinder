@@ -28,7 +28,7 @@ export interface Tier {
   maxLevel: number;
 }
 
-const TIERS: Tier[] = [
+export const TIERS: Tier[] = [
   { palier: 1, title: "Apprenti Dénicheur", minLevel: 1, maxLevel: 20 },
   { palier: 2, title: "Éclaireur Urbain", minLevel: 21, maxLevel: 40 },
   { palier: 3, title: "Guide Certifié", minLevel: 41, maxLevel: 60 },

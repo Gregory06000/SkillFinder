@@ -1,9 +1,23 @@
 import type { Metadata } from "next";
+import { DM_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-dm-sans",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "SkillFinder",
-  description: "Find businesses by what they're actually good at",
+  title: "SkillFinder — Trouvez le meilleur",
+  description:
+    "Comparez les professionnels près de chez vous selon vos critères précis.",
 };
 
 export default function RootLayout({
@@ -12,20 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body className="min-h-screen">
-        <header className="bg-white border-b border-gray-200 px-4 py-4">
-          <div className="max-w-7xl mx-auto">
-            <h1 className="text-xl font-bold text-brand-700 tracking-tight">
-              SkillFinder
-            </h1>
-            <p className="text-sm text-gray-500">
-              Trouvez le meilleur pour ce qui compte vraiment
-            </p>
-          </div>
-        </header>
-        <main className="max-w-7xl mx-auto px-4 py-6">{children}</main>
-      </body>
+    <html lang="fr" className={`${dmSans.variable} ${playfair.variable}`}>
+      <body className="min-h-screen font-sans">{children}</body>
     </html>
   );
 }
