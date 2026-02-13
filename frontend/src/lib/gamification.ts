@@ -29,12 +29,16 @@ export interface Tier {
 }
 
 export const TIERS: Tier[] = [
-  { palier: 1, title: "Apprenti Dénicheur", minLevel: 1, maxLevel: 20 },
-  { palier: 2, title: "Éclaireur Urbain", minLevel: 21, maxLevel: 40 },
-  { palier: 3, title: "Guide Certifié", minLevel: 41, maxLevel: 60 },
-  { palier: 4, title: "Expert Local", minLevel: 61, maxLevel: 80 },
-  { palier: 5, title: "Maître de la Ville", minLevel: 81, maxLevel: 100 },
-  { palier: 6, title: "Légende Vivante", minLevel: 101, maxLevel: 200 },
+  { palier: 1, title: "Apprenti Dénicheur", minLevel: 1, maxLevel: 100 },
+  { palier: 2, title: "Éclaireur Urbain", minLevel: 101, maxLevel: 200 },
+  { palier: 3, title: "Guide Certifié", minLevel: 201, maxLevel: 300 },
+  { palier: 4, title: "Expert Local", minLevel: 301, maxLevel: 400 },
+  { palier: 5, title: "Maître de la Ville", minLevel: 401, maxLevel: 500 },
+  { palier: 6, title: "Légende Vivante", minLevel: 501, maxLevel: 600 },
+  { palier: 7, title: "Gardien du Temple", minLevel: 601, maxLevel: 700 },
+  { palier: 8, title: "Oracle des Quartiers", minLevel: 701, maxLevel: 800 },
+  { palier: 9, title: "Architecte du Savoir", minLevel: 801, maxLevel: 900 },
+  { palier: 10, title: "Divinité Suprême", minLevel: 901, maxLevel: 1000 },
 ];
 
 /**
@@ -62,7 +66,7 @@ export interface UserRank {
 export function getUserRank(points: number): UserRank {
   const level = getLevel(points);
 
-  // Find current tier
+  // Find current tier (default to last tier if beyond all ranges)
   let tier = TIERS[TIERS.length - 1];
   for (const t of TIERS) {
     if (level >= t.minLevel && level <= t.maxLevel) {
@@ -71,25 +75,10 @@ export function getUserRank(points: number): UserRank {
     }
   }
 
-  // Palier 7+: "Gardien du Temple" for every 100 pts beyond level 200
-  if (level > 200) {
-    const extraPaliers = Math.floor((level - 201) / 100);
-    const palier = 7 + extraPaliers;
-    const base = 200 + extraPaliers * 100;
-    const nextThreshold = base + 100;
-    return {
-      title: "Gardien du Temple",
-      palier,
-      level,
-      points,
-      nextThreshold,
-      progress: (level - base) / 100,
-    };
-  }
-
   const rangeSize = tier.maxLevel - tier.minLevel + 1;
   const progress = (level - tier.minLevel) / rangeSize;
-  const nextThreshold = tier.maxLevel + 1;
+  const isLastTier = tier.palier === TIERS[TIERS.length - 1].palier;
+  const nextThreshold = isLastTier ? tier.maxLevel : tier.maxLevel + 1;
 
   return {
     title: tier.title,

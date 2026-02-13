@@ -60,7 +60,9 @@ export default function UserStats({
               {rank.title} &middot; Palier {rank.palier}
             </div>
             <div className="text-xs text-sf-text-light">
-              Prochain palier : niveau {rank.nextThreshold}
+              {rank.palier >= 10
+                ? "Niveau maximum atteint"
+                : `Prochain palier : niveau ${rank.nextThreshold}`}
             </div>
           </div>
         </div>

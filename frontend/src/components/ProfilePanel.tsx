@@ -114,11 +114,7 @@ export default function ProfilePanel({
     setEditingPseudo(false);
   }
 
-  // All displayable tiers including Gardien du Temple
-  const allTiers = [
-    ...TIERS,
-    { palier: 7, title: "Gardien du Temple", minLevel: 201, maxLevel: 999 },
-  ];
+  const allTiers = TIERS;
 
   return (
     <div
@@ -325,8 +321,7 @@ export default function ProfilePanel({
                         {tier.title}
                       </span>
                       <span className="text-[10px] text-sf-text-light flex-shrink-0">
-                        Niv. {tier.minLevel}
-                        {tier.maxLevel < 999 ? `–${tier.maxLevel}` : "+"}
+                        Niv. {tier.minLevel}–{tier.maxLevel}
                       </span>
                     </div>
 
