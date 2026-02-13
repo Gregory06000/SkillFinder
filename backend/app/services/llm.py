@@ -29,6 +29,73 @@ def _get_api_key() -> str:
     return key
 
 
+# ---------------------------------------------------------------------------
+# Synonym expansion — enrich keyword with related terms
+# ---------------------------------------------------------------------------
+
+async def generate_synonyms(service: str, keyword: str) -> list[str]:
+    """
+    Ask Gemini for 5-10 synonyms / related terms that a reviewer might use
+    when talking about the concept behind *keyword* in the context of *service*.
+
+    Returns a list of lowercase French terms.  Fast call (~100 tokens out).
+    """
+    api_key = _get_api_key()
+
+    prompt = f"""Tu es un expert linguistique français spécialisé dans les avis clients.
+
+Contexte : un utilisateur cherche « {keyword} » dans la catégorie « {service} ».
+
+Donne-moi 5 à 10 mots ou expressions courtes qu'un CLIENT utiliserait dans un AVIS GOOGLE
+pour parler de cette même chose, même indirectement.
+
+Règles :
+- Inclus des synonymes directs, des variantes orthographiques, des termes familiers
+- Inclus des descriptions physiques que quelqu'un utiliserait dans un avis
+- PAS de répétition du mot original « {keyword} »
+- PAS de phrases longues, juste des mots ou groupes de 2-3 mots
+- Réponds UNIQUEMENT en JSON : {{"synonyms": ["mot1", "mot2", ...]}}
+
+Exemples :
+- « Permanente » (Coiffeur) → boucles, frisé, ondulation, bouclé, ondulé, mise en pli, curly
+- « Pâte fine » (Pizzeria) → fine, croustillante, craquante, légère, napolitaine, thin crust
+- « Baguette trop cuite » (Boulangerie) → bien cuite, dorée, croûte sombre, croustillante, croquante"""
+
+    body = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.3,
+            "maxOutputTokens": 256,
+            "responseMimeType": "application/json",
+        },
+    }
+
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
+
+    if resp.status_code != 200:
+        logger.warning("Synonym generation failed (%s)", resp.status_code)
+        return []
+
+    data = resp.json()
+    try:
+        text = data["candidates"][0]["content"]["parts"][0]["text"]
+    except (KeyError, IndexError):
+        return []
+
+    text = text.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1]
+        text = text.rsplit("```", 1)[0]
+
+    try:
+        result = json.loads(text)
+        synonyms = result.get("synonyms", [])
+        return [s.strip().lower() for s in synonyms if isinstance(s, str) and s.strip()]
+    except (json.JSONDecodeError, AttributeError):
+        return []
+
+
 ## ---------------------------------------------------------------------------
 # Intent-based review scoring
 # ---------------------------------------------------------------------------

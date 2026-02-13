@@ -65,6 +65,23 @@ async def search(req: SearchRequest):
                 detail=f"No mock data for '{req.service}'. Available: {available}",
             )
 
+    # --- Synonym expansion (enrich keyword with related terms) ---
+    synonyms = list(req.synonyms) if req.synonyms else []
+    try:
+        from app.services.llm import generate_synonyms
+
+        ai_synonyms = await generate_synonyms(req.service, req.keyword)
+        # Merge without duplicates, keep order
+        existing = {s.lower() for s in synonyms}
+        for s in ai_synonyms:
+            if s.lower() not in existing:
+                synonyms.append(s)
+                existing.add(s.lower())
+    except Exception:
+        pass  # Continue without extra synonyms
+
+    effective_synonyms = synonyms or None
+
     # --- LLM intent-based scoring (falls back to lexicon if unavailable) ---
     llm_scores = None
     try:
@@ -73,15 +90,22 @@ async def search(req: SearchRequest):
         llm_scores = await score_reviews_batch(
             service=req.service,
             keyword=req.keyword,
-            synonyms=req.synonyms or None,
+            synonyms=effective_synonyms,
             businesses=businesses,
         )
     except Exception:
         pass  # Lexicon fallback — no LLM cost
 
     ranked = rank_businesses(
-        businesses, req.keyword, req.synonyms or None, llm_scores
+        businesses, req.keyword, effective_synonyms, llm_scores
     )
+
+    # If LLM scored but filtered everything out, fall back to lexicon
+    if not ranked and llm_scores is not None:
+        ranked = rank_businesses(
+            businesses, req.keyword, effective_synonyms, None
+        )
+
     results = [BusinessResult(**r) for r in ranked]
 
     # Merge community verification stats if Supabase is configured
@@ -108,12 +132,13 @@ async def search(req: SearchRequest):
         radius_km=req.radius_km if center else None,
     )
 
-    # --- Save to cache ---
-    save_search_to_cache(
-        city=req.location, service=req.service,
-        keyword=req.keyword, radius_km=req.radius_km,
-        data=response.model_dump(),
-    )
+    # --- Save to cache (only if we have results) ---
+    if results:
+        save_search_to_cache(
+            city=req.location, service=req.service,
+            keyword=req.keyword, radius_km=req.radius_km,
+            data=response.model_dump(),
+        )
 
     return response
 

@@ -64,7 +64,15 @@ def get_cached_search(
         conn.commit()
         return None
 
-    return json.loads(row[0])
+    cached = json.loads(row[0])
+
+    # Don't serve cached empty results — let the search retry
+    if not cached.get("results"):
+        conn.execute("DELETE FROM search_cache WHERE search_key = ?", (key,))
+        conn.commit()
+        return None
+
+    return cached
 
 
 def save_search_to_cache(
