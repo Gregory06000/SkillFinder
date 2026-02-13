@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState } from "react";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
 import ResultsMap from "@/components/ResultsMap";
@@ -8,26 +8,11 @@ import ComparisonModal from "@/components/ComparisonModal";
 import UserStats from "@/components/UserStats";
 import ConversionModal from "@/components/ConversionModal";
 import LeaderboardWidget from "@/components/LeaderboardWidget";
-import ProfilePanel, { getAvatarData } from "@/components/ProfilePanel";
-import {
-  searchBusinesses,
-  compareBusinesses,
-  verifyBusiness,
-  reverseGeocode,
-  type BusinessResult,
-  type CompareResponse,
-} from "@/lib/api";
-import {
-  loadRewards,
-  saveRewards,
-  earnPoints,
-  markVoted,
-  getUserRank,
-  type RewardsData,
-} from "@/lib/gamification";
-
-type SortMode = "match" | "distance" | "rating";
-const AI_REASONING_KEY = "sf_show_reasoning";
+import ProfilePanel from "@/components/ProfilePanel";
+import { verifyBusiness } from "@/lib/api";
+import { useSearch, type SortMode } from "@/lib/useSearch";
+import { useRewards } from "@/lib/useRewards";
+import { useCompare } from "@/lib/useCompare";
 
 function SkeletonCard() {
   return (
@@ -49,161 +34,30 @@ function SkeletonCard() {
 }
 
 export default function Home() {
-  const [results, setResults] = useState<BusinessResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [lastSearch, setLastSearch] = useState<{
-    service: string;
-    keyword: string;
-  } | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
-  const [searchCenter, setSearchCenter] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
-  const [searchRadiusKm, setSearchRadiusKm] = useState<number | null>(null);
-  const [sortMode, setSortMode] = useState<SortMode>("match");
-
-  // Compare state
-  const [compareSet, setCompareSet] = useState<Set<number>>(new Set());
-  const [showCompare, setShowCompare] = useState(false);
-  const [compareLoading, setCompareLoading] = useState(false);
-  const [compareData, setCompareData] = useState<CompareResponse | null>(null);
-  const [compareError, setCompareError] = useState<string | null>(null);
-
-  // Verify state
   const [verifyLoading, setVerifyLoading] = useState(false);
 
-  // Gamification state
-  const [rewards, setRewards] = useState<RewardsData>({
-    points: 0,
-    pseudo: "Guest",
-    city: "",
-    weekStart: "",
-    weeklyPoints: 0,
-  });
-  const [flyingText, setFlyingText] = useState<string | null>(null);
-  const [showConversion, setShowConversion] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
-  const [avatarData, setAvatarData] = useState({ avatarColor: "#C45D3E", avatarPhoto: null as string | null });
-  const [showReasoning, setShowReasoning] = useState(false);
+  const search = useSearch();
+  const rewards = useRewards(search.searchCenter);
+  const compare = useCompare();
 
-  useEffect(() => {
-    setRewards(loadRewards());
-    setAvatarData(getAvatarData());
-    setShowReasoning(localStorage.getItem(AI_REASONING_KEY) === "true");
-  }, []);
-
-  useEffect(() => {
-    if (searchCenter && !rewards.city) {
-      reverseGeocode(searchCenter.lat, searchCenter.lng).then((city) => {
-        setRewards((prev) => {
-          const updated = { ...prev, city };
-          localStorage.setItem("sf_rewards", JSON.stringify(updated));
-          return updated;
-        });
-      });
-    }
-  }, [searchCenter, rewards.city]);
-
-  // Sorted results
-  const sortedResults = useMemo(() => {
-    const copy = [...results];
-    switch (sortMode) {
-      case "distance":
-        return copy.sort(
-          (a, b) => (a.distance_km ?? 999) - (b.distance_km ?? 999),
-        );
-      case "rating":
-        return copy.sort((a, b) => b.global_rating - a.global_rating);
-      default:
-        return copy.sort((a, b) => b.match_score - a.match_score);
-    }
-  }, [results, sortMode]);
-
-  async function handleSearch(
+  function onSearch(
     service: string,
     keyword: string,
     location: string,
     radiusKm: number,
   ) {
-    setIsLoading(true);
-    setError(null);
-    setResults([]);
     setSelectedIndex(null);
-    setCompareSet(new Set());
-    setSortMode("match");
-
-    try {
-      const data = await searchBusinesses(
-        service,
-        keyword,
-        location,
-        radiusKm,
-      );
-      setResults(data.results);
-      setLastSearch({ service, keyword });
-      if (data.center_lat != null && data.center_lng != null) {
-        setSearchCenter({ lat: data.center_lat, lng: data.center_lng });
-        setSearchRadiusKm(data.radius_km);
-      } else {
-        setSearchCenter(null);
-        setSearchRadiusKm(null);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Une erreur est survenue");
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  const handleCompareToggle = useCallback((index: number) => {
-    setCompareSet((prev) => {
-      const next = new Set(prev);
-      if (next.has(index)) {
-        next.delete(index);
-      } else if (next.size < 2) {
-        next.add(index);
-      }
-      return next;
-    });
-  }, []);
-
-  async function handleCompare() {
-    if (compareSet.size !== 2 || !lastSearch) return;
-    const [i1, i2] = Array.from(compareSet);
-    const biz1 = results[i1];
-    const biz2 = results[i2];
-
-    setShowCompare(true);
-    setCompareLoading(true);
-    setCompareData(null);
-    setCompareError(null);
-
-    try {
-      const data = await compareBusinesses(lastSearch.keyword, biz1, biz2);
-      setCompareData(data);
-    } catch (err) {
-      setCompareError(
-        err instanceof Error ? err.message : "Erreur lors de la comparaison",
-      );
-    } finally {
-      setCompareLoading(false);
-    }
-  }
-
-  function handleCloseCompare() {
-    setShowCompare(false);
-    setCompareData(null);
-    setCompareError(null);
+    compare.resetCompare();
+    search.handleSearch(service, keyword, location, radiusKm);
   }
 
   async function handleVerify(placeId: string, vote: "yes" | "no") {
     setVerifyLoading(true);
     try {
       await verifyBusiness(placeId, vote);
-      setResults((prev) =>
+      search.setResults((prev) =>
         prev.map((r) =>
           r.name === placeId
             ? {
@@ -216,44 +70,14 @@ export default function Home() {
             : r,
         ),
       );
-
-      markVoted(placeId);
-      const { newData, increment, hitMilestone } = earnPoints(rewards);
-      setRewards(newData);
-      if (increment > 0) {
-        setFlyingText(`+${increment}`);
-      }
-      if (hitMilestone) {
-        setTimeout(() => setShowConversion(true), 1400);
-      }
+      rewards.markVoted(placeId);
+      rewards.awardVotePoints();
     } catch {
       // Silent fail
     } finally {
       setVerifyLoading(false);
     }
   }
-
-  const handleFlyingDone = useCallback(() => {
-    setFlyingText(null);
-  }, []);
-
-  function handlePseudoChange(pseudo: string) {
-    setRewards((prev) => {
-      const updated = { ...prev, pseudo };
-      saveRewards(updated);
-      return updated;
-    });
-  }
-
-  function handleProfileClose() {
-    setShowProfile(false);
-    setAvatarData(getAvatarData());
-  }
-
-  const rank = getUserRank(rewards.points);
-  const hasResults = results.length > 0 && !isLoading;
-  const hasCoords = results.some((r) => r.lat != null && r.lng != null);
-  const showMap = hasResults && hasCoords;
 
   const SORT_OPTIONS: { key: SortMode; label: string }[] = [
     { key: "match", label: "Meilleur match" },
@@ -283,61 +107,61 @@ export default function Home() {
         </a>
         <div className="relative flex items-center gap-6">
           <button
-            onClick={() => setShowProfile((p) => !p)}
+            onClick={() => rewards.setShowProfile((p) => !p)}
             className="hidden sm:flex items-center gap-2.5 border border-sf-gold/25
                         rounded-full py-1 pl-1.5 pr-3.5 cursor-pointer transition-shadow
                         hover:shadow-sf-sm"
             style={{ background: "#FBF5E6" }}
           >
-            {avatarData.avatarPhoto ? (
+            {rewards.avatarData.avatarPhoto ? (
               <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
-                <img src={avatarData.avatarPhoto} alt="" className="w-full h-full object-cover" />
+                <img src={rewards.avatarData.avatarPhoto} alt="" className="w-full h-full object-cover" />
               </div>
             ) : (
               <div
                 className="w-[30px] h-[30px] rounded-full flex items-center justify-center
                             text-white text-xs font-bold"
-                style={{ background: avatarData.avatarColor }}
+                style={{ background: rewards.avatarData.avatarColor }}
               >
-                {rewards.pseudo.charAt(0).toUpperCase()}
+                {rewards.rewards.pseudo.charAt(0).toUpperCase()}
               </div>
             )}
             <div className="flex flex-col leading-tight text-left">
               <span className="text-[11px] font-semibold text-sf-gold">
-                {rank.title}
+                {rewards.rank.title}
               </span>
               <span className="text-[11px] text-sf-text-secondary">
-                Palier {rank.palier} &middot; {rewards.points} pts
+                Palier {rewards.rank.palier} &middot; {rewards.rewards.points} pts
               </span>
             </div>
           </button>
 
           {/* Mobile avatar button */}
           <button
-            onClick={() => setShowProfile((p) => !p)}
+            onClick={() => rewards.setShowProfile((p) => !p)}
             className="sm:hidden"
           >
-            {avatarData.avatarPhoto ? (
+            {rewards.avatarData.avatarPhoto ? (
               <div className="w-8 h-8 rounded-full overflow-hidden border border-sf-gold/25">
-                <img src={avatarData.avatarPhoto} alt="" className="w-full h-full object-cover" />
+                <img src={rewards.avatarData.avatarPhoto} alt="" className="w-full h-full object-cover" />
               </div>
             ) : (
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center
                             text-white text-xs font-bold"
-                style={{ background: avatarData.avatarColor }}
+                style={{ background: rewards.avatarData.avatarColor }}
               >
-                {rewards.pseudo.charAt(0).toUpperCase()}
+                {rewards.rewards.pseudo.charAt(0).toUpperCase()}
               </div>
             )}
           </button>
 
           {/* Profile Panel */}
-          {showProfile && (
+          {rewards.showProfile && (
             <ProfilePanel
-              rewards={rewards}
-              onClose={handleProfileClose}
-              onPseudoChange={handlePseudoChange}
+              rewards={rewards.rewards}
+              onClose={rewards.handleProfileClose}
+              onPseudoChange={rewards.handlePseudoChange}
             />
           )}
         </div>
@@ -357,25 +181,25 @@ export default function Home() {
           </p>
         </div>
 
-        <SearchBar onSearch={handleSearch} isLoading={isLoading} />
+        <SearchBar onSearch={onSearch} isLoading={search.isLoading} />
 
         {/* XP Bar */}
         <UserStats
-          rewards={rewards}
-          flyingText={flyingText}
-          onFlyingDone={handleFlyingDone}
+          rewards={rewards.rewards}
+          flyingText={rewards.flyingText}
+          onFlyingDone={rewards.handleFlyingDone}
         />
       </section>
 
       {/* ── RESULTS ── */}
       <section className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-8 pb-16">
-        {error && (
+        {search.error && (
           <div className="rounded-sf-md bg-red-50 border border-red-200 p-4 text-sm text-red-700 mb-6">
-            {error}
+            {search.error}
           </div>
         )}
 
-        {isLoading && (
+        {search.isLoading && (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-sm text-sf-text-secondary">
               <svg
@@ -410,12 +234,12 @@ export default function Home() {
           </div>
         )}
 
-        {lastSearch && results.length === 0 && !isLoading && !error && (
+        {search.lastSearch && search.results.length === 0 && !search.isLoading && !search.error && (
           <div className="text-center py-16">
             <p className="text-sf-text-light text-4xl mb-3">:/</p>
             <p className="text-sm text-sf-text-secondary">
               Aucun résultat trouvé pour{" "}
-              <strong>{lastSearch.keyword}</strong>.
+              <strong>{search.lastSearch.keyword}</strong>.
             </p>
             <p className="text-xs text-sf-text-light mt-1">
               Essayez un autre mot-clé ou une autre catégorie.
@@ -423,26 +247,26 @@ export default function Home() {
           </div>
         )}
 
-        {hasResults && (
+        {search.hasResults && (
           <>
             {/* Results header */}
             <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
               <div className="text-sm text-sf-text-secondary">
                 <strong className="text-sf-text font-semibold">
-                  {results.length} résultats
+                  {search.results.length} résultats
                 </strong>{" "}
-                pour <strong className="text-sf-text font-semibold">{lastSearch?.keyword}</strong>{" "}
-                dans {lastSearch?.service}
+                pour <strong className="text-sf-text font-semibold">{search.lastSearch?.keyword}</strong>{" "}
+                dans {search.lastSearch?.service}
               </div>
               <div className="flex items-center gap-2">
                 {SORT_OPTIONS.map((opt) => (
                   <button
                     key={opt.key}
-                    onClick={() => setSortMode(opt.key)}
+                    onClick={() => search.setSortMode(opt.key)}
                     className={`px-3.5 py-1.5 rounded-full border text-[13px] font-medium
                                transition-all cursor-pointer
                                ${
-                                 sortMode === opt.key
+                                 search.sortMode === opt.key
                                    ? "bg-sf-dark text-white border-sf-dark"
                                    : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                }`}
@@ -453,17 +277,11 @@ export default function Home() {
 
                 {/* AI Reasoning toggle */}
                 <button
-                  onClick={() => {
-                    setShowReasoning((v) => {
-                      const next = !v;
-                      localStorage.setItem(AI_REASONING_KEY, String(next));
-                      return next;
-                    });
-                  }}
+                  onClick={rewards.toggleReasoning}
                   className={`px-3.5 py-1.5 rounded-full border text-[13px] font-medium
                              transition-all cursor-pointer inline-flex items-center gap-1.5
                              ${
-                               showReasoning
+                               rewards.showReasoning
                                  ? "bg-sf-dark text-white border-sf-dark"
                                  : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                              }`}
@@ -477,7 +295,7 @@ export default function Home() {
                 </button>
 
                 {/* Mobile list/map toggle */}
-                {showMap && (
+                {search.showMap && (
                   <div className="flex lg:hidden rounded-sf-sm border border-sf-border overflow-hidden">
                     <button
                       onClick={() => setMobileView("list")}
@@ -511,12 +329,12 @@ export default function Home() {
               {/* Cards */}
               <div
                 className={`flex flex-col gap-4 ${
-                  showMap && mobileView === "map"
+                  search.showMap && mobileView === "map"
                     ? "hidden lg:flex"
                     : "flex"
                 }`}
               >
-                {sortedResults.map((result, i) => (
+                {search.sortedResults.map((result, i) => (
                   <ResultCard
                     key={`${result.name}-${i}`}
                     result={result}
@@ -525,27 +343,27 @@ export default function Home() {
                     onClick={() =>
                       setSelectedIndex(selectedIndex === i ? null : i)
                     }
-                    isCompareSelected={compareSet.has(i)}
-                    onCompareToggle={() => handleCompareToggle(i)}
-                    compareDisabled={compareSet.size >= 2}
+                    isCompareSelected={compare.compareSet.has(i)}
+                    onCompareToggle={() => compare.handleCompareToggle(i)}
+                    compareDisabled={compare.compareSet.size >= 2}
                     onVerify={handleVerify}
                     verifyLoading={verifyLoading}
-                    showReasoning={showReasoning}
+                    showReasoning={rewards.showReasoning}
                   />
                 ))}
 
-                {rewards.city && (
+                {rewards.rewards.city && (
                   <LeaderboardWidget
-                    city={rewards.city}
-                    userPseudo={rewards.pseudo}
-                    userWeeklyPoints={rewards.weeklyPoints}
-                    userTotalPoints={rewards.points}
+                    city={rewards.rewards.city}
+                    userPseudo={rewards.rewards.pseudo}
+                    userWeeklyPoints={rewards.rewards.weeklyPoints}
+                    userTotalPoints={rewards.rewards.points}
                   />
                 )}
               </div>
 
               {/* Map panel */}
-              {showMap && (
+              {search.showMap && (
                 <div
                   className={`lg:sticky lg:top-[88px] rounded-sf-lg overflow-hidden
                               border border-sf-border shadow-sf-md
@@ -559,11 +377,11 @@ export default function Home() {
                   style={{ animationDelay: "0.15s" }}
                 >
                   <ResultsMap
-                    results={sortedResults}
+                    results={search.sortedResults}
                     selectedIndex={selectedIndex}
                     onSelect={setSelectedIndex}
-                    searchCenter={searchCenter}
-                    searchRadiusKm={searchRadiusKm}
+                    searchCenter={search.searchCenter}
+                    searchRadiusKm={search.searchRadiusKm}
                   />
                 </div>
               )}
@@ -573,11 +391,14 @@ export default function Home() {
       </section>
 
       {/* Floating compare button */}
-      {compareSet.size > 0 && (
+      {compare.compareSet.size > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
           <button
-            onClick={handleCompare}
-            disabled={compareSet.size < 2}
+            onClick={() =>
+              search.lastSearch &&
+              compare.handleCompare(search.lastSearch.keyword, search.results)
+            }
+            disabled={compare.compareSet.size < 2}
             className="flex items-center gap-2 px-6 py-3 rounded-full shadow-sf-lg
                        bg-sf-accent text-white font-semibold text-sm
                        hover:bg-sf-accent-light disabled:opacity-50
@@ -590,26 +411,26 @@ export default function Home() {
                 clipRule="evenodd"
               />
             </svg>
-            {compareSet.size < 2
-              ? `Comparer (${compareSet.size}/2)`
+            {compare.compareSet.size < 2
+              ? `Comparer (${compare.compareSet.size}/2)`
               : "Comparer ces 2 commerces"}
           </button>
         </div>
       )}
 
       {/* Comparison modal */}
-      {showCompare && (
+      {compare.showCompare && (
         <ComparisonModal
-          data={compareData}
-          isLoading={compareLoading}
-          error={compareError}
-          onClose={handleCloseCompare}
+          data={compare.compareData}
+          isLoading={compare.compareLoading}
+          error={compare.compareError}
+          onClose={compare.handleCloseCompare}
         />
       )}
 
       {/* Conversion modal (100-point milestone) */}
-      {showConversion && (
-        <ConversionModal onClose={() => setShowConversion(false)} />
+      {rewards.showConversion && (
+        <ConversionModal onClose={() => rewards.setShowConversion(false)} />
       )}
     </>
   );

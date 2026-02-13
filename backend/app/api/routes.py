@@ -1,7 +1,9 @@
 import os
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import Response
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from app.models.schemas import (
     SearchRequest, SearchResponse, BusinessResult,
@@ -13,6 +15,7 @@ from app.core.cache_manager import get_cached_search, save_search_to_cache
 from app.data.mock_data import get_businesses_by_category, get_all_categories
 
 router = APIRouter()
+limiter = Limiter(key_func=get_remote_address)
 
 
 def _is_google_enabled() -> bool:
@@ -20,7 +23,8 @@ def _is_google_enabled() -> bool:
 
 
 @router.post("/search", response_model=SearchResponse)
-async def search(req: SearchRequest):
+@limiter.limit("10/minute")
+async def search(request: Request, req: SearchRequest):
     # --- Check cache first ---
     cached = get_cached_search(
         city=req.location, service=req.service,
@@ -144,7 +148,8 @@ async def search(req: SearchRequest):
 
 
 @router.post("/compare", response_model=CompareResponse)
-async def compare(req: CompareRequest):
+@limiter.limit("5/minute")
+async def compare(request: Request, req: CompareRequest):
     """Compare two businesses using Gemini LLM analysis."""
     if not _is_google_enabled():
         raise HTTPException(
@@ -227,7 +232,8 @@ async def reverse_geocode_endpoint(lat: float, lng: float):
 
 
 @router.post("/verify", response_model=VerifyResponse)
-async def verify(req: VerifyRequest):
+@limiter.limit("20/minute")
+async def verify(request: Request, req: VerifyRequest):
     """Community verification: record a yes/no vote for a business."""
     if req.vote not in ("yes", "no"):
         raise HTTPException(status_code=400, detail="Vote must be 'yes' or 'no'")
