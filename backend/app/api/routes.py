@@ -9,6 +9,7 @@ from app.models.schemas import (
     VerifyRequest, VerifyResponse,
 )
 from app.core.scoring import rank_businesses
+from app.core.cache_manager import get_cached_search, save_search_to_cache
 from app.data.mock_data import get_businesses_by_category, get_all_categories
 
 router = APIRouter()
@@ -20,6 +21,15 @@ def _is_google_enabled() -> bool:
 
 @router.post("/search", response_model=SearchResponse)
 async def search(req: SearchRequest):
+    # --- Check cache first ---
+    cached = get_cached_search(
+        city=req.location, service=req.service,
+        keyword=req.keyword, radius_km=req.radius_km,
+    )
+    if cached is not None:
+        return SearchResponse(**cached)
+
+    # --- No cache hit: call APIs ---
     center = None
 
     if _is_google_enabled():
@@ -55,7 +65,23 @@ async def search(req: SearchRequest):
                 detail=f"No mock data for '{req.service}'. Available: {available}",
             )
 
-    ranked = rank_businesses(businesses, req.keyword, req.synonyms or None)
+    # --- LLM intent-based scoring (falls back to lexicon if unavailable) ---
+    llm_scores = None
+    try:
+        from app.services.llm import score_reviews_batch
+
+        llm_scores = await score_reviews_batch(
+            service=req.service,
+            keyword=req.keyword,
+            synonyms=req.synonyms or None,
+            businesses=businesses,
+        )
+    except Exception:
+        pass  # Lexicon fallback — no LLM cost
+
+    ranked = rank_businesses(
+        businesses, req.keyword, req.synonyms or None, llm_scores
+    )
     results = [BusinessResult(**r) for r in ranked]
 
     # Merge community verification stats if Supabase is configured
@@ -73,7 +99,7 @@ async def search(req: SearchRequest):
         except Exception:
             pass  # Verification stats are non-critical
 
-    return SearchResponse(
+    response = SearchResponse(
         service=req.service,
         keyword=req.keyword,
         results=results,
@@ -81,6 +107,15 @@ async def search(req: SearchRequest):
         center_lng=center[1] if center else None,
         radius_km=req.radius_km if center else None,
     )
+
+    # --- Save to cache ---
+    save_search_to_cache(
+        city=req.location, service=req.service,
+        keyword=req.keyword, radius_km=req.radius_km,
+        data=response.model_dump(),
+    )
+
+    return response
 
 
 @router.post("/compare", response_model=CompareResponse)

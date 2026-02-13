@@ -76,44 +76,90 @@ def calculate_attribute_score(
     }
 
 
+def _biz_base(biz: dict) -> dict:
+    """Extract the common business fields shared by both scoring paths."""
+    return {
+        "name": biz["name"],
+        "address": biz.get("address", ""),
+        "global_rating": biz.get("global_rating", 0),
+        "review_count": biz.get("review_count", 0),
+        "photo_name": biz.get("photo_name", ""),
+        "maps_url": biz.get("maps_url", ""),
+        "distance_km": biz.get("distance_km"),
+        "lat": biz.get("lat"),
+        "lng": biz.get("lng"),
+        "reviews": biz.get("reviews", []),
+    }
+
+
 def rank_businesses(
     businesses: list[dict],
     keyword: str,
     synonyms: list[str] | None = None,
+    llm_scores: list[dict] | None = None,
 ) -> list[dict]:
     """
     Score and rank a list of businesses by keyword-specific sentiment.
 
-    Each business dict must have:
-        - "name": str
-        - "global_rating": float
-        - "reviews": list[str]
-    Optional:
-        - "photo_name": str
-        - "maps_url": str
+    When *llm_scores* is provided (from Gemini), it takes precedence over
+    the local lexicon scorer.  Businesses that receive a relevance score
+    of 0 from the LLM are excluded (quality gate).
 
-    Returns a sorted list (top 10) by weighted_score descending.
+    Returns a sorted list (top 10) by match_score descending.
     """
+    # Index LLM results by business position for O(1) lookup
+    llm_map: dict[int, dict] = {}
+    if llm_scores:
+        for entry in llm_scores:
+            idx = entry.get("index")
+            if idx is not None:
+                llm_map[idx] = entry
+
     results = []
-    for biz in businesses:
-        score_data = calculate_attribute_score(biz["reviews"], keyword, synonyms)
-        results.append({
-            "name": biz["name"],
-            "address": biz.get("address", ""),
-            "global_rating": biz.get("global_rating", 0),
-            "review_count": biz.get("review_count", 0),
-            "match_score": score_data["weighted_score"],
-            "raw_score": score_data["raw_score"],
-            "frequency": score_data["frequency"],
-            "best_snippet": score_data["best_snippet"],
-            "snippets": score_data["snippets"],
-            "photo_name": biz.get("photo_name", ""),
-            "maps_url": biz.get("maps_url", ""),
-            "distance_km": biz.get("distance_km"),
-            "lat": biz.get("lat"),
-            "lng": biz.get("lng"),
-            "reviews": biz.get("reviews", []),
-        })
+    for i, biz in enumerate(businesses):
+        llm = llm_map.get(i)
+
+        if llm is not None:
+            # ---- LLM-scored path ----
+            score = llm.get("relevance_score", 0.0)
+            if score <= 0:
+                continue  # Quality gate: skip irrelevant businesses
+
+            evidence = llm.get("evidence", [])
+            mentions = llm.get("mentions", len(evidence))
+            snippets = [
+                highlight_keyword(s, keyword, synonyms) for s in evidence
+            ]
+
+            entry = _biz_base(biz)
+            entry.update({
+                "match_score": round(score, 2),
+                "raw_score": round(score, 2),
+                "frequency": mentions,
+                "best_snippet": snippets[0] if snippets else "",
+                "snippets": snippets,
+                "reasoning": llm.get("reasoning", ""),
+            })
+            results.append(entry)
+
+        elif not llm_scores:
+            # ---- Lexicon fallback (no LLM available at all) ----
+            score_data = calculate_attribute_score(
+                biz["reviews"], keyword, synonyms
+            )
+            if score_data["weighted_score"] <= 0:
+                continue  # Quality gate
+
+            entry = _biz_base(biz)
+            entry.update({
+                "match_score": score_data["weighted_score"],
+                "raw_score": score_data["raw_score"],
+                "frequency": score_data["frequency"],
+                "best_snippet": score_data["best_snippet"],
+                "snippets": score_data["snippets"],
+            })
+            results.append(entry)
+        # else: LLM was used but didn't return this business → skip
 
     results.sort(key=lambda x: x["match_score"], reverse=True)
     return results[:10]

@@ -27,6 +27,7 @@ import {
 } from "@/lib/gamification";
 
 type SortMode = "match" | "distance" | "rating";
+const AI_REASONING_KEY = "sf_show_reasoning";
 
 function SkeletonCard() {
   return (
@@ -86,10 +87,12 @@ export default function Home() {
   const [showConversion, setShowConversion] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [avatarData, setAvatarData] = useState({ avatarColor: "#C45D3E", avatarPhoto: null as string | null });
+  const [showReasoning, setShowReasoning] = useState(false);
 
   useEffect(() => {
     setRewards(loadRewards());
     setAvatarData(getAvatarData());
+    setShowReasoning(localStorage.getItem(AI_REASONING_KEY) === "true");
   }, []);
 
   useEffect(() => {
@@ -448,6 +451,31 @@ export default function Home() {
                   </button>
                 ))}
 
+                {/* AI Reasoning toggle */}
+                <button
+                  onClick={() => {
+                    setShowReasoning((v) => {
+                      const next = !v;
+                      localStorage.setItem(AI_REASONING_KEY, String(next));
+                      return next;
+                    });
+                  }}
+                  className={`px-3.5 py-1.5 rounded-full border text-[13px] font-medium
+                             transition-all cursor-pointer inline-flex items-center gap-1.5
+                             ${
+                               showReasoning
+                                 ? "bg-sf-dark text-white border-sf-dark"
+                                 : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                             }`}
+                  title="Afficher le raisonnement IA"
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 16v-4M12 8h.01" />
+                  </svg>
+                  IA
+                </button>
+
                 {/* Mobile list/map toggle */}
                 {showMap && (
                   <div className="flex lg:hidden rounded-sf-sm border border-sf-border overflow-hidden">
@@ -502,6 +530,7 @@ export default function Home() {
                     compareDisabled={compareSet.size >= 2}
                     onVerify={handleVerify}
                     verifyLoading={verifyLoading}
+                    showReasoning={showReasoning}
                   />
                 ))}
 

@@ -25,6 +25,8 @@ class BusinessResult(BaseModel):
     lat: float | None = None
     lng: float | None = None
     reviews: list[str] = []
+    # AI transparency
+    reasoning: str = ""
     # Community verification
     verification_yes: int = 0
     verification_no: int = 0

@@ -14,6 +14,8 @@ export interface BusinessResult {
   lat: number | null;
   lng: number | null;
   reviews: string[];
+  // AI transparency
+  reasoning: string;
   // Community verification
   verification_yes: number;
   verification_no: number;
