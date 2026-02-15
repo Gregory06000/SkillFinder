@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import type { BusinessResult } from "@/lib/api";
 import { getPhotoUrl } from "@/lib/api";
 import { hasVoted as checkVoted } from "@/lib/gamification";
@@ -59,7 +59,7 @@ function getTimeSince(dateStr: string): string {
   return `il y a ${months} mois`;
 }
 
-export default function ResultCard({
+function ResultCard({
   result,
   rank,
   isSelected,
@@ -88,11 +88,14 @@ export default function ResultCard({
     result.verification_no >= 3 &&
     result.verification_no > result.verification_yes;
 
-  function handleVote(vote: "yes" | "no") {
-    if (hasVoted || !onVerify) return;
-    onVerify(result.name, vote);
-    setHasVoted(true);
-  }
+  const handleVote = useCallback(
+    (vote: "yes" | "no") => {
+      if (hasVoted || !onVerify) return;
+      onVerify(result.name, vote);
+      // Don't set hasVoted here — parent confirms via markVoted() on success
+    },
+    [hasVoted, onVerify, result.name],
+  );
 
   const snippets =
     result.snippets?.length > 0
@@ -397,3 +400,5 @@ export default function ResultCard({
     </div>
   );
 }
+
+export default memo(ResultCard);

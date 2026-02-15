@@ -1,9 +1,12 @@
 import os
+import logging
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Header, HTTPException, Request
 from fastapi.responses import Response
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+
+logger = logging.getLogger("skillfinder.routes")
 
 from app.models.schemas import (
     SearchRequest, SearchResponse, BusinessResult,
@@ -81,8 +84,8 @@ async def search(request: Request, req: SearchRequest):
             if s.lower() not in existing:
                 synonyms.append(s)
                 existing.add(s.lower())
-    except Exception:
-        pass  # Continue without extra synonyms
+    except Exception as e:
+        logger.warning("Synonym expansion failed for %r/%r: %s", req.service, req.keyword, e)
 
     effective_synonyms = synonyms or None
 
@@ -97,8 +100,8 @@ async def search(request: Request, req: SearchRequest):
             synonyms=effective_synonyms,
             businesses=businesses,
         )
-    except Exception:
-        pass  # Lexicon fallback — no LLM cost
+    except Exception as e:
+        logger.warning("LLM scoring failed for %r/%r: %s", req.service, req.keyword, e)
 
     ranked = rank_businesses(
         businesses, req.keyword, effective_synonyms, llm_scores
@@ -124,8 +127,8 @@ async def search(request: Request, req: SearchRequest):
                     r.verification_yes = s["yes"]
                     r.verification_no = s["no"]
                     r.verification_last = s.get("last_vote")
-        except Exception:
-            pass  # Verification stats are non-critical
+        except Exception as e:
+            logger.warning("Verification stats fetch failed for %d places: %s", len(place_ids), e)
 
     response = SearchResponse(
         service=req.service,
@@ -233,12 +236,17 @@ async def reverse_geocode_endpoint(lat: float, lng: float):
 
 @router.post("/verify", response_model=VerifyResponse)
 @limiter.limit("20/minute")
-async def verify(request: Request, req: VerifyRequest):
+async def verify(
+    request: Request,
+    req: VerifyRequest,
+    authorization: str | None = Header(default=None),
+):
     """Community verification: record a yes/no vote for a business."""
-    if req.vote not in ("yes", "no"):
-        raise HTTPException(status_code=400, detail="Vote must be 'yes' or 'no'")
+    from app.services.supabase import is_enabled as supabase_enabled, add_vote, get_user_from_token
 
-    from app.services.supabase import is_enabled as supabase_enabled, add_vote
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Connectez-vous pour voter.")
 
     if not supabase_enabled():
         raise HTTPException(
@@ -265,19 +273,27 @@ async def leaderboard(city: str = ""):
     try:
         entries = await get_leaderboard(city)
         return {"entries": entries}
-    except Exception:
+    except Exception as e:
+        logger.warning("Leaderboard fetch failed for city=%r: %s", city, e)
         return {"entries": []}
 
 
 @router.post("/leaderboard")
+@limiter.limit("5/minute")
 async def update_leaderboard(
+    request: Request,
     pseudo: str = "",
     city: str = "",
     weekly_points: int = 0,
     total_points: int = 0,
+    authorization: str | None = Header(default=None),
 ):
     """Upsert a user's leaderboard entry for the current week."""
-    from app.services.supabase import is_enabled as supabase_enabled, upsert_leaderboard
+    from app.services.supabase import is_enabled as supabase_enabled, upsert_leaderboard, get_user_from_token
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
 
     if not supabase_enabled():
         return {"success": False}
@@ -286,9 +302,10 @@ async def update_leaderboard(
         return {"success": False}
 
     try:
-        await upsert_leaderboard(pseudo, city, weekly_points, total_points)
+        await upsert_leaderboard(pseudo, city, weekly_points, total_points, user_id=user_id)
         return {"success": True}
-    except Exception:
+    except Exception as e:
+        logger.warning("Leaderboard upsert failed for pseudo=%r city=%r: %s", pseudo, city, e)
         return {"success": False}
 
 

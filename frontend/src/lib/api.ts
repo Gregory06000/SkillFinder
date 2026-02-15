@@ -126,11 +126,15 @@ export async function compareBusinesses(
 
 export async function verifyBusiness(
   placeId: string,
-  vote: "yes" | "no"
+  vote: "yes" | "no",
+  token?: string | null,
 ): Promise<{ success: boolean; message: string }> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
   const res = await fetch(`${API_BASE}/api/verify`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers,
     body: JSON.stringify({ place_id: placeId, vote }),
   });
 
@@ -139,5 +143,31 @@ export async function verifyBusiness(
     throw new Error(error.detail || `HTTP ${res.status}`);
   }
 
+  return res.json();
+}
+
+export async function updateLeaderboard(
+  pseudo: string,
+  city: string,
+  weeklyPoints: number,
+  totalPoints: number,
+  token?: string | null,
+): Promise<{ success: boolean }> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const params = new URLSearchParams({
+    pseudo,
+    city,
+    weekly_points: String(weeklyPoints),
+    total_points: String(totalPoints),
+  });
+
+  const res = await fetch(`${API_BASE}/api/leaderboard?${params}`, {
+    method: "POST",
+    headers,
+  });
+
+  if (!res.ok) return { success: false };
   return res.json();
 }

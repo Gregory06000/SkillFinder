@@ -9,6 +9,7 @@ Uses GEMINI_API_KEY (from Google AI Studio).
 """
 
 import os
+import re
 import json
 import logging
 
@@ -20,6 +21,33 @@ GEMINI_URL = (
     "https://generativelanguage.googleapis.com/v1beta/"
     "models/gemini-2.0-flash:generateContent"
 )
+
+
+_INJECTION_PATTERNS = [
+    re.compile(r"(?i)ignore\s+(all\s+)?previous\s+instructions"),
+    re.compile(r"(?i)ignore\s+the\s+above"),
+    re.compile(r"(?i)system\s*:"),
+    re.compile(r"(?i)assistant\s*:"),
+    re.compile(r"(?i)user\s*:"),
+    re.compile(r"(?i)you\s+are\s+now"),
+    re.compile(r"(?i)new\s+instructions?\s*:"),
+    re.compile(r"(?i)forget\s+(everything|all)"),
+]
+
+
+def _sanitize(text: str) -> str:
+    """Strip characters and patterns that could enable prompt injection."""
+    # Remove control characters except space/newline/tab
+    text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", text)
+    # Remove curly braces (prevent JSON/template confusion)
+    text = text.replace("{", "").replace("}", "")
+    # Remove backticks (prevent code block escapes)
+    text = text.replace("`", "")
+    # Strip known prompt injection patterns
+    for pattern in _INJECTION_PATTERNS:
+        text = pattern.sub("", text)
+    # Collapse whitespace and truncate
+    return re.sub(r"\s+", " ", text).strip()[:200]
 
 
 def _get_api_key() -> str:
@@ -41,6 +69,8 @@ async def generate_synonyms(service: str, keyword: str) -> list[str]:
     Returns a list of lowercase French terms.  Fast call (~100 tokens out).
     """
     api_key = _get_api_key()
+    service = _sanitize(service)
+    keyword = _sanitize(keyword)
 
     prompt = f"""Tu es un expert linguistique français spécialisé dans les avis clients.
 
@@ -106,6 +136,9 @@ def _build_scoring_prompt(
     synonyms: list[str] | None,
     businesses: list[dict],
 ) -> str:
+    service = _sanitize(service)
+    keyword = _sanitize(keyword)
+
     synonym_hint = ""
     if synonyms:
         synonym_hint = (
@@ -242,6 +275,10 @@ def _build_prompt(
     biz2_reviews: list[str],
     keyword: str,
 ) -> str:
+    keyword = _sanitize(keyword)
+    biz1_name = _sanitize(biz1_name)
+    biz2_name = _sanitize(biz2_name)
+
     reviews_1 = "\n".join(f'- "{r}"' for r in biz1_reviews[:10]) or "- (aucun avis)"
     reviews_2 = "\n".join(f'- "{r}"' for r in biz2_reviews[:10]) or "- (aucun avis)"
 

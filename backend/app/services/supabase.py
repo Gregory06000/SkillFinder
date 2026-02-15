@@ -42,12 +42,17 @@ SQL to run in Supabase SQL Editor:
 """
 
 import os
+import logging
 from datetime import date, timedelta
 
 import httpx
+import jwt
+
+logger = logging.getLogger("skillfinder.supabase")
 
 _SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 _SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+_JWT_SECRET = os.environ.get("SUPABASE_JWT_SECRET", "")
 
 # Singleton client — avoids creating a new TCP connection per request
 _client: httpx.AsyncClient | None = None
@@ -174,7 +179,11 @@ async def get_leaderboard(city: str) -> list[dict]:
 
 
 async def upsert_leaderboard(
-    pseudo: str, city: str, weekly_points: int, total_points: int
+    pseudo: str,
+    city: str,
+    weekly_points: int,
+    total_points: int,
+    user_id: str | None = None,
 ) -> None:
     """Insert or update a leaderboard entry for this week."""
     if not is_enabled():
@@ -182,18 +191,56 @@ async def upsert_leaderboard(
 
     client = _get_client()
     week = _current_week_start()
+    payload: dict = {
+        "pseudo": pseudo,
+        "city": city,
+        "weekly_points": weekly_points,
+        "total_points": total_points,
+        "week_start": week,
+    }
+    if user_id:
+        payload["user_id"] = user_id
+
     resp = await client.post(
         "/rest/v1/leaderboard",
         headers={
             "Content-Type": "application/json",
             "Prefer": "resolution=merge-duplicates,return=minimal",
         },
-        json={
-            "pseudo": pseudo,
-            "city": city,
-            "weekly_points": weekly_points,
-            "total_points": total_points,
-            "week_start": week,
-        },
+        json=payload,
     )
     resp.raise_for_status()
+
+
+# ── Authentication ──────────────────────────────
+
+
+async def get_user_from_token(authorization: str | None) -> str | None:
+    """
+    Extract and verify user_id from a Supabase JWT Bearer token.
+    Returns the user UUID string, or None if the token is invalid/missing.
+    """
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+
+    if not _JWT_SECRET:
+        logger.warning("SUPABASE_JWT_SECRET not set — cannot verify tokens")
+        return None
+
+    token = authorization[7:]  # Strip "Bearer "
+
+    try:
+        payload = jwt.decode(
+            token,
+            _JWT_SECRET,
+            algorithms=["HS256"],
+            audience="authenticated",
+        )
+        user_id = payload.get("sub")
+        return user_id if user_id else None
+    except jwt.ExpiredSignatureError:
+        logger.warning("Expired JWT token")
+        return None
+    except jwt.InvalidTokenError as e:
+        logger.warning("Invalid JWT token: %s", e)
+        return None

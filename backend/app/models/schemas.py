@@ -1,12 +1,21 @@
-from pydantic import BaseModel
+from typing import Literal
+
+from pydantic import BaseModel, Field, field_validator
 
 
 class SearchRequest(BaseModel):
-    service: str          # e.g. "Coiffeur", "Pizzeria"
-    keyword: str          # e.g. "Permanente", "Pâte fine"
-    synonyms: list[str] = []
-    location: str = ""    # e.g. "Nice", "12 rue de la Paix, Paris"
-    radius_km: int = 10   # search radius in km
+    service: str = Field(..., min_length=1, max_length=100)
+    keyword: str = Field(..., min_length=1, max_length=100)
+    synonyms: list[str] = Field(default=[])
+    location: str = Field(default="", max_length=200)
+    radius_km: int = Field(default=10, ge=1, le=50)
+
+    @field_validator("synonyms")
+    @classmethod
+    def limit_synonyms(cls, v: list[str]) -> list[str]:
+        if len(v) > 20:
+            raise ValueError("Maximum 20 synonymes autorisés")
+        return v
 
 
 class BusinessResult(BaseModel):
@@ -78,8 +87,8 @@ class CompareResponse(BaseModel):
 # --- Community verification ---
 
 class VerifyRequest(BaseModel):
-    place_id: str      # business name used as stable identifier
-    vote: str          # "yes" or "no"
+    place_id: str = Field(..., min_length=1, max_length=500)
+    vote: Literal["yes", "no"]
 
 class VerifyResponse(BaseModel):
     success: bool

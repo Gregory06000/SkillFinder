@@ -7,6 +7,9 @@ const VOTED_KEY = "sf_voted_places";
 
 // ── Point Logic ──────────────────────────────
 
+// Max points a user can earn. Aligned with the 10-tier system where
+// Tier 10 (Divinité Suprême) spans levels 901-1000. Keeps weekly
+// leaderboards fair by preventing infinite point accumulation.
 const HARD_CAP = 1000;
 
 export function getIncrement(currentPoints: number): number {

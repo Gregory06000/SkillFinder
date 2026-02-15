@@ -10,11 +10,13 @@ import {
   type RewardsData,
 } from "@/lib/gamification";
 import { getAvatarData } from "@/components/ProfilePanel";
-import { reverseGeocode } from "@/lib/api";
+import { reverseGeocode, updateLeaderboard } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
 
 const AI_REASONING_KEY = "sf_show_reasoning";
 
 export function useRewards(searchCenter: { lat: number; lng: number } | null) {
+  const { user, getAccessToken } = useAuth();
   const [rewards, setRewards] = useState<RewardsData>({
     points: 0,
     pseudo: "Guest",
@@ -48,6 +50,21 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
       });
     }
   }, [searchCenter, rewards.city]);
+
+  // Sync local rewards to server when user logs in
+  useEffect(() => {
+    if (user && rewards.points > 0 && rewards.city) {
+      const token = getAccessToken();
+      updateLeaderboard(
+        rewards.pseudo,
+        rewards.city,
+        rewards.weeklyPoints,
+        rewards.points,
+        token,
+      ).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const rank = getUserRank(rewards.points);
 

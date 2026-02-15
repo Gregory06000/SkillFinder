@@ -13,6 +13,8 @@ from app.core.nlp import (
     highlight_keyword,
 )
 
+# Max highlighted review excerpts per business. Capped at 3 to keep result
+# cards concise while still showing enough evidence for the ranking.
 MAX_SNIPPETS = 3
 
 
@@ -48,8 +50,11 @@ def calculate_attribute_score(
 
     raw_score = sum(scores) / len(scores)
 
-    # Confidence weight: log-based curve that rewards more mentions
-    # but saturates. 1 mention = ~0.6x, 3 = ~0.8x, 7+ = ~1.0x
+    # Confidence weight using log-base-8 curve. Rewards multiple mentions
+    # but saturates quickly to prevent gaming via keyword stuffing.
+    #   1 mention  -> ~0.33 (low confidence, could be a fluke)
+    #   3 mentions -> ~0.65 (moderate)
+    #   7 mentions -> ~1.0  (full confidence)
     confidence = min(1.0, math.log(frequency + 1) / math.log(8))
     weighted_score = round(raw_score * confidence, 2)
 

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
-import ResultsMap from "@/components/ResultsMap";
 import ComparisonModal from "@/components/ComparisonModal";
+
+const ResultsMap = lazy(() => import("@/components/ResultsMap"));
 import UserStats from "@/components/UserStats";
 import ConversionModal from "@/components/ConversionModal";
 import LeaderboardWidget from "@/components/LeaderboardWidget";
@@ -13,6 +14,7 @@ import { verifyBusiness } from "@/lib/api";
 import { useSearch, type SortMode } from "@/lib/useSearch";
 import { useRewards } from "@/lib/useRewards";
 import { useCompare } from "@/lib/useCompare";
+import { useAuth } from "@/lib/AuthContext";
 
 function SkeletonCard() {
   return (
@@ -37,10 +39,12 @@ export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
   const [verifyLoading, setVerifyLoading] = useState(false);
+  const [voteError, setVoteError] = useState<string | null>(null);
 
   const search = useSearch();
   const rewards = useRewards(search.searchCenter);
   const compare = useCompare();
+  const { user, signOut, getAccessToken } = useAuth();
 
   function onSearch(
     service: string,
@@ -54,9 +58,16 @@ export default function Home() {
   }
 
   async function handleVerify(placeId: string, vote: "yes" | "no") {
+    if (!user) {
+      rewards.setShowConversion(true);
+      return;
+    }
+
     setVerifyLoading(true);
     try {
-      await verifyBusiness(placeId, vote);
+      const token = getAccessToken();
+      await verifyBusiness(placeId, vote, token);
+      // Only update UI after server confirmation
       search.setResults((prev) =>
         prev.map((r) =>
           r.name === placeId
@@ -73,7 +84,8 @@ export default function Home() {
       rewards.markVoted(placeId);
       rewards.awardVotePoints();
     } catch {
-      // Silent fail
+      setVoteError("Le vote n'a pas pu être enregistré. Réessayez.");
+      setTimeout(() => setVoteError(null), 4000);
     } finally {
       setVerifyLoading(false);
     }
@@ -106,6 +118,21 @@ export default function Home() {
           </span>
         </a>
         <div className="relative flex items-center gap-6">
+          {user ? (
+            <button
+              onClick={signOut}
+              className="hidden sm:block text-xs text-sf-text-light hover:text-sf-text transition-colors"
+            >
+              Déconnexion
+            </button>
+          ) : (
+            <button
+              onClick={() => rewards.setShowConversion(true)}
+              className="hidden sm:block text-xs font-medium text-sf-accent hover:text-sf-accent-light transition-colors"
+            >
+              Connexion
+            </button>
+          )}
           <button
             onClick={() => rewards.setShowProfile((p) => !p)}
             className="hidden sm:flex items-center gap-2.5 border border-sf-gold/25
@@ -376,13 +403,21 @@ export default function Home() {
                               }`}
                   style={{ animationDelay: "0.15s" }}
                 >
-                  <ResultsMap
-                    results={search.sortedResults}
-                    selectedIndex={selectedIndex}
-                    onSelect={setSelectedIndex}
-                    searchCenter={search.searchCenter}
-                    searchRadiusKm={search.searchRadiusKm}
-                  />
+                  <Suspense
+                    fallback={
+                      <div className="w-full h-full flex items-center justify-center bg-sf-bg text-sm text-sf-text-light">
+                        Chargement de la carte...
+                      </div>
+                    }
+                  >
+                    <ResultsMap
+                      results={search.sortedResults}
+                      selectedIndex={selectedIndex}
+                      onSelect={setSelectedIndex}
+                      searchCenter={search.searchCenter}
+                      searchRadiusKm={search.searchRadiusKm}
+                    />
+                  </Suspense>
                 </div>
               )}
             </div>
@@ -431,6 +466,13 @@ export default function Home() {
       {/* Conversion modal (100-point milestone) */}
       {rewards.showConversion && (
         <ConversionModal onClose={() => rewards.setShowConversion(false)} />
+      )}
+
+      {/* Vote error toast */}
+      {voteError && (
+        <div className="fixed bottom-6 right-6 z-50 bg-red-600 text-white text-sm px-4 py-3 rounded-sf-md shadow-sf-lg animate-fade-in-up">
+          {voteError}
+        </div>
       )}
     </>
   );

@@ -1,12 +1,21 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   searchBusinesses,
   type BusinessResult,
 } from "@/lib/api";
 
 export type SortMode = "match" | "distance" | "rating";
+
+const SEARCH_CACHE_KEY = "sf_last_search";
+
+interface CachedSearch {
+  results: BusinessResult[];
+  lastSearch: { service: string; keyword: string } | null;
+  searchCenter: { lat: number; lng: number } | null;
+  searchRadiusKm: number | null;
+}
 
 export function useSearch() {
   const [results, setResults] = useState<BusinessResult[]>([]);
@@ -22,6 +31,41 @@ export function useSearch() {
   } | null>(null);
   const [searchRadiusKm, setSearchRadiusKm] = useState<number | null>(null);
   const [sortMode, setSortMode] = useState<SortMode>("match");
+
+  // Restore last search from localStorage on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SEARCH_CACHE_KEY);
+      if (raw) {
+        const cached: CachedSearch = JSON.parse(raw);
+        if (cached.results?.length > 0) {
+          setResults(cached.results);
+          setLastSearch(cached.lastSearch);
+          setSearchCenter(cached.searchCenter);
+          setSearchRadiusKm(cached.searchRadiusKm);
+        }
+      }
+    } catch {
+      // Ignore corrupt cache
+    }
+  }, []);
+
+  // Persist search results to localStorage
+  useEffect(() => {
+    if (results.length > 0) {
+      try {
+        const cache: CachedSearch = {
+          results,
+          lastSearch,
+          searchCenter,
+          searchRadiusKm,
+        };
+        localStorage.setItem(SEARCH_CACHE_KEY, JSON.stringify(cache));
+      } catch {
+        // localStorage full or unavailable
+      }
+    }
+  }, [results, lastSearch, searchCenter, searchRadiusKm]);
 
   const sortedResults = useMemo(() => {
     const copy = [...results];
