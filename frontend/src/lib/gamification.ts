@@ -100,7 +100,8 @@ export interface RewardsData {
   pseudo: string;
   city: string;
   weekStart: string; // ISO date of current week's Monday
-  weeklyPoints: number;
+  weeklyPoints: number; // shortcut: weekly points for current city
+  weeklyPointsByCity: Record<string, number>; // city → weekly points
 }
 
 function getCurrentWeekStart(): string {
@@ -117,13 +118,23 @@ export function loadRewards(): RewardsData {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const data: RewardsData = JSON.parse(raw);
+      // Migrate: add weeklyPointsByCity if missing (old format)
+      if (!data.weeklyPointsByCity) {
+        data.weeklyPointsByCity = {};
+        if (data.city && data.weeklyPoints > 0) {
+          data.weeklyPointsByCity[data.city] = data.weeklyPoints;
+        }
+      }
       // Reset weekly points if new week
       const currentWeek = getCurrentWeekStart();
       if (data.weekStart !== currentWeek) {
         data.weeklyPoints = 0;
+        data.weeklyPointsByCity = {};
         data.weekStart = currentWeek;
         saveRewards(data);
       }
+      // Keep weeklyPoints in sync with current city
+      data.weeklyPoints = data.weeklyPointsByCity[data.city] ?? 0;
       return data;
     }
   } catch {}
@@ -133,6 +144,7 @@ export function loadRewards(): RewardsData {
     city: "",
     weekStart: getCurrentWeekStart(),
     weeklyPoints: 0,
+    weeklyPointsByCity: {},
   };
 }
 
@@ -150,10 +162,17 @@ export function earnPoints(data: RewardsData): {
   const newPoints = addPoints(data.points);
   const hitMilestone = wasBelowMilestone && newPoints >= 100;
 
+  const city = data.city;
+  const newByCity = { ...data.weeklyPointsByCity };
+  if (city) {
+    newByCity[city] = (newByCity[city] ?? 0) + increment;
+  }
+
   const newData: RewardsData = {
     ...data,
     points: newPoints,
-    weeklyPoints: data.weeklyPoints + increment,
+    weeklyPoints: city ? (newByCity[city] ?? 0) : data.weeklyPoints + increment,
+    weeklyPointsByCity: newByCity,
   };
   saveRewards(newData);
 

@@ -23,6 +23,7 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     city: "",
     weekStart: "",
     weeklyPoints: 0,
+    weeklyPointsByCity: {},
   });
   const [flyingText, setFlyingText] = useState<string | null>(null);
   const [showConversion, setShowConversion] = useState(false);
@@ -40,21 +41,26 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
   }, []);
 
   useEffect(() => {
-    if (searchCenter && !rewards.city) {
+    if (searchCenter) {
       reverseGeocode(searchCenter.lat, searchCenter.lng).then((city) => {
         setRewards((prev) => {
-          const updated = { ...prev, city };
-          localStorage.setItem("sf_rewards", JSON.stringify(updated));
+          if (prev.city === city) return prev;
+          const updated = {
+            ...prev,
+            city,
+            weeklyPoints: prev.weeklyPointsByCity[city] ?? 0,
+          };
+          saveRewards(updated);
           return updated;
         });
       });
     }
-  }, [searchCenter, rewards.city]);
+  }, [searchCenter]);
 
   // Sync rewards with server when user logs in:
   // 1. Fetch server-side profile
   // 2. Merge: take the higher points (local vs server)
-  // 3. Push merged result back to server
+  // 3. Push merged result back to server for each city
   useEffect(() => {
     const token = getAccessToken();
     if (!user || !token) return;
@@ -66,20 +72,26 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
         if (profile.found && profile.total_points !== undefined) {
           setRewards((prev) => {
             const serverPoints = profile.total_points!;
-            const serverWeekly = profile.weekly_points ?? 0;
-
-            // Take the higher value to never lose points
             const mergedPoints = Math.max(prev.points, serverPoints);
-            const mergedWeekly = Math.max(prev.weeklyPoints, serverWeekly);
             const mergedPseudo = prev.pseudo === "Guest" && profile.pseudo
               ? profile.pseudo
               : prev.pseudo;
             const mergedCity = prev.city || profile.city || "";
 
+            // Merge server weekly points for the server's city
+            const mergedByCity = { ...prev.weeklyPointsByCity };
+            if (profile.city && profile.weekly_points) {
+              mergedByCity[profile.city] = Math.max(
+                mergedByCity[profile.city] ?? 0,
+                profile.weekly_points,
+              );
+            }
+
             const merged = {
               ...prev,
               points: mergedPoints,
-              weeklyPoints: mergedWeekly,
+              weeklyPoints: mergedByCity[mergedCity] ?? 0,
+              weeklyPointsByCity: mergedByCity,
               pseudo: mergedPseudo,
               city: mergedCity,
             };
@@ -88,16 +100,21 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
           });
         }
 
-        // Push local data to server (will use latest state after merge)
+        // Push local data to server for each city with weekly points
         setRewards((current) => {
-          if (current.points > 0 && current.city) {
-            updateLeaderboard(
-              current.pseudo,
-              current.city,
-              current.weeklyPoints,
-              current.points,
-              token,
-            ).catch(() => {});
+          if (current.points > 0) {
+            const cities = Object.entries(current.weeklyPointsByCity);
+            for (const [city, cityWeekly] of cities) {
+              if (city && cityWeekly > 0) {
+                updateLeaderboard(
+                  current.pseudo,
+                  city,
+                  cityWeekly,
+                  current.points,
+                  token,
+                ).catch(() => {});
+              }
+            }
           }
           return current;
         });
@@ -143,6 +160,18 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     }
     if (hitMilestone) {
       setTimeout(() => setShowConversion(true), 1400);
+    }
+    // Sync to server after each vote if logged in
+    const token = getAccessToken();
+    if (user && token && newData.city) {
+      const cityWeekly = newData.weeklyPointsByCity[newData.city] ?? 0;
+      updateLeaderboard(
+        newData.pseudo,
+        newData.city,
+        cityWeekly,
+        newData.points,
+        token,
+      ).catch(() => {});
     }
   }
 
