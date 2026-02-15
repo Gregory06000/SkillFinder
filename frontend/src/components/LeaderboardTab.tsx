@@ -122,12 +122,14 @@ export default function LeaderboardTab({
     }
   }, []);
 
-  // Auto-fetch user's city on mount
+  // Auto-fetch user's city when it becomes available
   useEffect(() => {
-    if (userCity) {
+    if (userCity && !selectedCity) {
+      setSelectedCity(userCity);
+      setCityQuery(userCity);
       fetchLeaderboard(userCity);
     }
-  }, [userCity, fetchLeaderboard]);
+  }, [userCity, selectedCity, fetchLeaderboard]);
 
   function selectCity(city: string) {
     setSelectedCity(city);
