@@ -263,19 +263,36 @@ async def verify(
 
 
 @router.get("/leaderboard")
-async def leaderboard(city: str = ""):
-    """Get weekly top 10 leaderboard for a city."""
+async def leaderboard(city: str = "", limit: int = 50):
+    """Get weekly top N leaderboard for a city."""
     from app.services.supabase import is_enabled as supabase_enabled, get_leaderboard
 
     if not supabase_enabled() or not city:
         return {"entries": []}
 
+    safe_limit = min(max(1, limit), 50)
+
     try:
-        entries = await get_leaderboard(city)
+        entries = await get_leaderboard(city, limit=safe_limit)
         return {"entries": entries}
     except Exception as e:
         logger.warning("Leaderboard fetch failed for city=%r: %s", city, e)
         return {"entries": []}
+
+
+@router.get("/leaderboard/cities")
+async def leaderboard_cities(q: str = ""):
+    """Autocomplete city names using Google Places API."""
+    if not q or len(q) < 2 or not _is_google_enabled():
+        return {"cities": []}
+
+    try:
+        from app.services.google_maps import autocomplete_cities
+        cities = await autocomplete_cities(q)
+        return {"cities": cities}
+    except Exception as e:
+        logger.warning("City autocomplete failed for q=%r: %s", q, e)
+        return {"cities": []}
 
 
 @router.post("/leaderboard")

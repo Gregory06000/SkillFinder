@@ -114,6 +114,16 @@ export function useSearch() {
     }
   }
 
+  function resetSearch() {
+    setResults([]);
+    setLastSearch(null);
+    setSearchCenter(null);
+    setSearchRadiusKm(null);
+    setError(null);
+    setSortMode("match");
+    localStorage.removeItem(SEARCH_CACHE_KEY);
+  }
+
   return {
     results,
     setResults,
@@ -128,5 +138,6 @@ export function useSearch() {
     hasResults,
     showMap,
     handleSearch,
+    resetSearch,
   };
 }

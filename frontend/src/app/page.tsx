@@ -10,6 +10,7 @@ import UserStats from "@/components/UserStats";
 import ConversionModal from "@/components/ConversionModal";
 import LeaderboardWidget from "@/components/LeaderboardWidget";
 import ProfilePanel from "@/components/ProfilePanel";
+import LeaderboardTab from "@/components/LeaderboardTab";
 import { verifyBusiness } from "@/lib/api";
 import { useSearch, type SortMode } from "@/lib/useSearch";
 import { useRewards } from "@/lib/useRewards";
@@ -40,6 +41,7 @@ export default function Home() {
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [voteError, setVoteError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"search" | "leaderboard">("search");
 
   const search = useSearch();
   const rewards = useRewards(search.searchCenter);
@@ -109,7 +111,17 @@ export default function Home() {
           WebkitBackdropFilter: "blur(20px) saturate(1.4)",
         }}
       >
-        <a href="#" className="flex items-center gap-2.5 no-underline">
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTab("search");
+            search.resetSearch();
+            setSelectedIndex(null);
+            compare.resetCompare();
+          }}
+          className="flex items-center gap-2.5 no-underline"
+        >
           <div className="w-8 h-8 bg-sf-accent rounded-[10px] flex items-center justify-center text-white font-bold text-[15px]">
             SF
           </div>
@@ -118,6 +130,20 @@ export default function Home() {
           </span>
         </a>
         <div className="relative flex items-center gap-6">
+          <button
+            onClick={() => setActiveTab(activeTab === "leaderboard" ? "search" : "leaderboard")}
+            className={`hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border
+                        text-[13px] font-medium transition-all cursor-pointer
+                        ${activeTab === "leaderboard"
+                          ? "bg-sf-dark text-white border-sf-dark"
+                          : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                        }`}
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
+            </svg>
+            Classement
+          </button>
           {user ? (
             <button
               onClick={signOut}
@@ -194,6 +220,8 @@ export default function Home() {
         </div>
       </nav>
 
+      {activeTab === "search" ? (
+      <>
       {/* ── HERO ── */}
       <section className="px-5 sm:px-10 pt-12 max-w-[1400px] mx-auto animate-fade-in-up">
         <div className="mb-8">
@@ -424,6 +452,18 @@ export default function Home() {
           </>
         )}
       </section>
+      </>
+      ) : (
+        <section className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-12 pb-16 animate-fade-in-up">
+          <LeaderboardTab
+            userPseudo={rewards.rewards.pseudo}
+            userCity={rewards.rewards.city}
+            userWeeklyPoints={rewards.rewards.weeklyPoints}
+            userTotalPoints={rewards.rewards.points}
+            userId={user?.id}
+          />
+        </section>
+      )}
 
       {/* Floating compare button */}
       {compare.compareSet.size > 0 && (

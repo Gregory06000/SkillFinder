@@ -157,8 +157,8 @@ def _current_week_start() -> str:
     return monday.isoformat()
 
 
-async def get_leaderboard(city: str) -> list[dict]:
-    """Fetch top 10 contributors for a city this week."""
+async def get_leaderboard(city: str, limit: int = 50) -> list[dict]:
+    """Fetch top contributors for a city this week."""
     if not is_enabled() or not city:
         return []
 
@@ -167,15 +167,44 @@ async def get_leaderboard(city: str) -> list[dict]:
     resp = await client.get(
         "/rest/v1/leaderboard",
         params={
-            "select": "pseudo,weekly_points,total_points,city",
+            "select": "pseudo,weekly_points,total_points,city,user_id",
             "city": f"eq.{city}",
             "week_start": f"eq.{week}",
             "order": "weekly_points.desc",
-            "limit": "10",
+            "limit": str(limit),
         },
     )
     resp.raise_for_status()
     return resp.json()
+
+
+async def search_cities(query: str) -> list[str]:
+    """Search for distinct cities in the leaderboard matching a prefix."""
+    if not is_enabled() or not query:
+        return []
+
+    client = _get_client()
+    week = _current_week_start()
+    resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "city",
+            "city": f"ilike.{query}*",
+            "week_start": f"eq.{week}",
+            "order": "city.asc",
+            "limit": "20",
+        },
+    )
+    resp.raise_for_status()
+    rows = resp.json()
+    seen: set[str] = set()
+    cities: list[str] = []
+    for row in rows:
+        c = row["city"]
+        if c not in seen:
+            seen.add(c)
+            cities.append(c)
+    return cities
 
 
 async def upsert_leaderboard(
