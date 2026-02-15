@@ -53,8 +53,8 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
 
   // Sync local rewards to server when user logs in
   useEffect(() => {
-    if (user && rewards.points > 0 && rewards.city) {
-      const token = getAccessToken();
+    const token = getAccessToken();
+    if (user && token && rewards.points > 0 && rewards.city) {
       updateLeaderboard(
         rewards.pseudo,
         rewards.city,

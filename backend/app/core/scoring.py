@@ -136,6 +136,10 @@ def rank_businesses(
                 highlight_keyword(s, keyword, synonyms) for s in evidence
             ]
 
+            reasoning = llm.get("reasoning", "")
+            if not reasoning and evidence:
+                reasoning = f"Score {score:.1f}/5 basé sur {mentions} mention(s) dans les avis."
+
             entry = _biz_base(biz)
             entry.update({
                 "match_score": round(score, 2),
@@ -143,7 +147,7 @@ def rank_businesses(
                 "frequency": mentions,
                 "best_snippet": snippets[0] if snippets else "",
                 "snippets": snippets,
-                "reasoning": llm.get("reasoning", ""),
+                "reasoning": reasoning,
             })
             results.append(entry)
 
