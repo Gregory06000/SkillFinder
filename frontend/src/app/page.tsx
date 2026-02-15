@@ -42,6 +42,7 @@ export default function Home() {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [voteError, setVoteError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"search" | "leaderboard">("search");
+  const [conversionVariant, setConversionVariant] = useState<"milestone" | "login">("milestone");
 
   const search = useSearch();
   const rewards = useRewards(search.searchCenter);
@@ -84,7 +85,7 @@ export default function Home() {
         ),
       );
       rewards.markVoted(placeId);
-      rewards.awardVotePoints();
+      rewards.awardVotePoints(() => setConversionVariant("milestone"));
     } catch {
       setVoteError("Le vote n'a pas pu être enregistré. Réessayez.");
       setTimeout(() => setVoteError(null), 4000);
@@ -153,7 +154,10 @@ export default function Home() {
             </button>
           ) : (
             <button
-              onClick={() => rewards.setShowConversion(true)}
+              onClick={() => {
+                setConversionVariant("login");
+                rewards.setShowConversion(true);
+              }}
               className="hidden sm:block text-xs font-medium text-sf-accent hover:text-sf-accent-light transition-colors"
             >
               Connexion
@@ -505,7 +509,11 @@ export default function Home() {
 
       {/* Conversion modal (100-point milestone) */}
       {rewards.showConversion && (
-        <ConversionModal onClose={() => rewards.setShowConversion(false)} />
+        <ConversionModal
+          variant={conversionVariant}
+          rankTitle="Éclaireur Urbain"
+          onClose={() => rewards.setShowConversion(false)}
+        />
       )}
 
       {/* Vote error toast */}

@@ -158,9 +158,9 @@ export function earnPoints(data: RewardsData): {
   hitMilestone: boolean;
 } {
   const increment = getIncrement(data.points);
-  const wasBelowMilestone = data.points < 100;
+  const wasBelowMilestone = data.points < 101;
   const newPoints = addPoints(data.points);
-  const hitMilestone = wasBelowMilestone && newPoints >= 100;
+  const hitMilestone = wasBelowMilestone && newPoints >= 101;
 
   const city = data.city;
   const newByCity = { ...data.weeklyPointsByCity };

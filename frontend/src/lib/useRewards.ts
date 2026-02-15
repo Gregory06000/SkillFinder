@@ -152,14 +152,17 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     });
   }
 
-  function awardVotePoints() {
+  function awardVotePoints(onMilestone?: () => void) {
     const { newData, increment, hitMilestone } = earnPoints(rewards);
     setRewards(newData);
     if (increment > 0) {
       setFlyingText(`+${increment}`);
     }
     if (hitMilestone) {
-      setTimeout(() => setShowConversion(true), 1400);
+      setTimeout(() => {
+        onMilestone?.();
+        setShowConversion(true);
+      }, 1400);
     }
     // Sync to server after each vote if logged in
     const token = getAccessToken();

@@ -5,9 +5,11 @@ import { useAuth } from "@/lib/AuthContext";
 
 interface ConversionModalProps {
   onClose: () => void;
+  variant?: "milestone" | "login";
+  rankTitle?: string;
 }
 
-export default function ConversionModal({ onClose }: ConversionModalProps) {
+export default function ConversionModal({ onClose, variant = "milestone", rankTitle = "Éclaireur Urbain" }: ConversionModalProps) {
   const { signInWithGoogle, signUpWithEmail, signInWithEmail } = useAuth();
   const modalRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"choice" | "signup" | "login">("choice");
@@ -66,18 +68,32 @@ export default function ConversionModal({ onClose }: ConversionModalProps) {
       >
         {/* Header gradient */}
         <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 p-6 text-center text-white">
-          <div className="text-5xl mb-2">&#127942;</div>
-          <h2 className="text-2xl font-extrabold">Félicitations !</h2>
-          <p className="text-white/90 text-sm mt-1">
-            Vous êtes un <strong>Expert Local</strong>
-          </p>
+          {variant === "milestone" ? (
+            <>
+              <div className="text-5xl mb-2">&#127942;</div>
+              <h2 className="text-2xl font-extrabold">Félicitations !</h2>
+              <p className="text-white/90 text-sm mt-1">
+                Vous êtes un <strong>{rankTitle}</strong>
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="text-5xl mb-2">&#128075;</div>
+              <h2 className="text-2xl font-extrabold">Bienvenue !</h2>
+              <p className="text-white/90 text-sm mt-1">
+                Connectez-vous pour suivre votre progression
+              </p>
+            </>
+          )}
         </div>
 
         {/* Body */}
         <div className="p-6 text-center">
           <p className="text-gray-600 text-sm leading-relaxed">
             {mode === "choice"
-              ? "Créez votre compte pour sauvegarder votre progression et apparaître dans le classement."
+              ? variant === "milestone"
+                ? "Créez votre compte pour sauvegarder votre progression et apparaître dans le classement."
+                : "Sauvegardez votre progression et apparaissez dans le classement de votre ville."
               : mode === "signup"
                 ? "Créez votre compte avec votre email."
                 : "Connectez-vous à votre compte."}
