@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 PLACES_SEARCH_URL = "https://places.googleapis.com/v1/places:searchText"
 GEOCODING_URL = "https://maps.googleapis.com/maps/api/geocode/json"
-AUTOCOMPLETE_URL = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
+AUTOCOMPLETE_URL = "https://places.googleapis.com/v1/places:autocomplete"
 
 FIELD_MASK = ",".join([
     "places.displayName",
@@ -235,26 +235,35 @@ def _transform_place(
 
 async def autocomplete_cities(query: str) -> list[str]:
     """
-    Use Google Places Autocomplete to suggest city names.
+    Use Google Places Autocomplete (New) to suggest city names.
     Returns a list of city description strings (e.g. "Nice, France").
     """
     api_key = _get_api_key()
 
     async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.get(
+        resp = await client.post(
             AUTOCOMPLETE_URL,
-            params={
+            headers={
+                "Content-Type": "application/json",
+                "X-Goog-Api-Key": api_key,
+            },
+            json={
                 "input": query,
-                "types": "(cities)",
-                "language": "fr",
-                "key": api_key,
+                "includedPrimaryTypes": ["(cities)"],
+                "languageCode": "fr",
             },
         )
 
     if resp.status_code != 200:
-        logger.warning("Autocomplete API error %s", resp.status_code)
+        logger.warning("Autocomplete API error %s: %s", resp.status_code, resp.text[:200])
         return []
 
     data = resp.json()
-    predictions = data.get("predictions", [])
-    return [p["description"] for p in predictions if "description" in p]
+    suggestions = data.get("suggestions", [])
+    results: list[str] = []
+    for s in suggestions:
+        prediction = s.get("placePrediction", {})
+        text = prediction.get("text", {}).get("text", "")
+        if text:
+            results.append(text)
+    return results
