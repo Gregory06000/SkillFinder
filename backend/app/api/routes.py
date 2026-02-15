@@ -295,6 +295,25 @@ async def leaderboard_cities(q: str = ""):
         return {"cities": []}
 
 
+@router.get("/user/profile")
+async def user_profile(authorization: str | None = Header(default=None)):
+    """Fetch the authenticated user's saved points and profile."""
+    from app.services.supabase import get_user_from_token, get_user_profile
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    try:
+        profile = await get_user_profile(user_id)
+        if not profile:
+            return {"found": False}
+        return {"found": True, **profile}
+    except Exception as e:
+        logger.warning("User profile fetch failed for user_id=%r: %s", user_id, e)
+        return {"found": False}
+
+
 @router.post("/leaderboard")
 @limiter.limit("5/minute")
 async def update_leaderboard(

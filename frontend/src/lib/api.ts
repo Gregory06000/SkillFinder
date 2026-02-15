@@ -146,6 +146,22 @@ export async function verifyBusiness(
   return res.json();
 }
 
+export interface UserProfile {
+  found: boolean;
+  pseudo?: string;
+  total_points?: number;
+  weekly_points?: number;
+  city?: string;
+}
+
+export async function fetchUserProfile(token: string): Promise<UserProfile> {
+  const res = await fetch(`${API_BASE}/api/user/profile`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) return { found: false };
+  return res.json();
+}
+
 export async function updateLeaderboard(
   pseudo: string,
   city: string,

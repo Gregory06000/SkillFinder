@@ -241,6 +241,42 @@ async def upsert_leaderboard(
     resp.raise_for_status()
 
 
+async def get_user_profile(user_id: str) -> dict | None:
+    """
+    Fetch the most recent leaderboard entry for a user_id.
+    Returns {pseudo, total_points, weekly_points, city} or None.
+    """
+    if not is_enabled() or not user_id:
+        return None
+
+    client = _get_client()
+    resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "pseudo,total_points,weekly_points,city,week_start",
+            "user_id": f"eq.{user_id}",
+            "order": "updated_at.desc",
+            "limit": "1",
+        },
+    )
+    resp.raise_for_status()
+    rows = resp.json()
+    if not rows:
+        return None
+
+    row = rows[0]
+    # If the entry is from a previous week, weekly_points should be 0
+    current_week = _current_week_start()
+    weekly = row["weekly_points"] if row.get("week_start") == current_week else 0
+
+    return {
+        "pseudo": row["pseudo"],
+        "total_points": row["total_points"],
+        "weekly_points": weekly,
+        "city": row["city"],
+    }
+
+
 # ── Authentication ──────────────────────────────
 
 

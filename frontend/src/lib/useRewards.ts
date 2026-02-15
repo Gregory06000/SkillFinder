@@ -10,7 +10,7 @@ import {
   type RewardsData,
 } from "@/lib/gamification";
 import { getAvatarData } from "@/components/ProfilePanel";
-import { reverseGeocode, updateLeaderboard } from "@/lib/api";
+import { reverseGeocode, updateLeaderboard, fetchUserProfile } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 
 const AI_REASONING_KEY = "sf_show_reasoning";
@@ -51,18 +51,60 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     }
   }, [searchCenter, rewards.city]);
 
-  // Sync local rewards to server when user logs in
+  // Sync rewards with server when user logs in:
+  // 1. Fetch server-side profile
+  // 2. Merge: take the higher points (local vs server)
+  // 3. Push merged result back to server
   useEffect(() => {
     const token = getAccessToken();
-    if (user && token && rewards.points > 0 && rewards.city) {
-      updateLeaderboard(
-        rewards.pseudo,
-        rewards.city,
-        rewards.weeklyPoints,
-        rewards.points,
-        token,
-      ).catch(() => {});
-    }
+    if (!user || !token) return;
+
+    (async () => {
+      try {
+        const profile = await fetchUserProfile(token);
+
+        if (profile.found && profile.total_points !== undefined) {
+          setRewards((prev) => {
+            const serverPoints = profile.total_points!;
+            const serverWeekly = profile.weekly_points ?? 0;
+
+            // Take the higher value to never lose points
+            const mergedPoints = Math.max(prev.points, serverPoints);
+            const mergedWeekly = Math.max(prev.weeklyPoints, serverWeekly);
+            const mergedPseudo = prev.pseudo === "Guest" && profile.pseudo
+              ? profile.pseudo
+              : prev.pseudo;
+            const mergedCity = prev.city || profile.city || "";
+
+            const merged = {
+              ...prev,
+              points: mergedPoints,
+              weeklyPoints: mergedWeekly,
+              pseudo: mergedPseudo,
+              city: mergedCity,
+            };
+            saveRewards(merged);
+            return merged;
+          });
+        }
+
+        // Push local data to server (will use latest state after merge)
+        setRewards((current) => {
+          if (current.points > 0 && current.city) {
+            updateLeaderboard(
+              current.pseudo,
+              current.city,
+              current.weeklyPoints,
+              current.points,
+              token,
+            ).catch(() => {});
+          }
+          return current;
+        });
+      } catch {
+        // Silently fail — local data is still available
+      }
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
