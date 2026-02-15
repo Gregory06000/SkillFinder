@@ -56,6 +56,7 @@ export default function LeaderboardTab({
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
+  const [userCleared, setUserCleared] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -122,20 +123,21 @@ export default function LeaderboardTab({
     }
   }, []);
 
-  // Auto-fetch user's city when it becomes available
+  // Auto-fetch user's city when it becomes available (but not if user cleared)
   useEffect(() => {
-    if (userCity && !selectedCity) {
+    if (userCity && !selectedCity && !userCleared) {
       setSelectedCity(userCity);
       setCityQuery(userCity);
       fetchLeaderboard(userCity);
     }
-  }, [userCity, selectedCity, fetchLeaderboard]);
+  }, [userCity, selectedCity, userCleared, fetchLeaderboard]);
 
   function selectCity(city: string) {
     setSelectedCity(city);
     setCityQuery(city);
     setShowSuggestions(false);
     setExpandedIdx(null);
+    setUserCleared(false);
     fetchLeaderboard(city);
   }
 
@@ -221,6 +223,7 @@ export default function LeaderboardTab({
                   setSelectedCity("");
                   setEntries([]);
                   setSuggestions([]);
+                  setUserCleared(true);
                 }}
                 className="p-2 mr-1 text-sf-text-light hover:text-sf-text transition-colors"
               >
