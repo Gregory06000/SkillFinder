@@ -69,7 +69,7 @@ export default function Home() {
 
     setVerifyLoading(true);
     try {
-      const token = getAccessToken();
+      const token = await getAccessToken();
       await verifyBusiness(placeId, vote, token);
       // Only update UI after server confirmation
       search.setResults((prev) =>

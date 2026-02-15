@@ -62,11 +62,13 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
   // 2. Merge: take the higher points (local vs server)
   // 3. Push merged result back to server for each city
   useEffect(() => {
-    const token = getAccessToken();
-    if (!user || !token) return;
+    if (!user) return;
 
     (async () => {
       try {
+        const token = await getAccessToken();
+        if (!token) return;
+
         const profile = await fetchUserProfile(token);
 
         if (profile.found && profile.total_points !== undefined) {
@@ -165,16 +167,18 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
       }, 1400);
     }
     // Sync to server after each vote if logged in
-    const token = getAccessToken();
-    if (user && token && newData.city) {
-      const cityWeekly = newData.weeklyPointsByCity[newData.city] ?? 0;
-      updateLeaderboard(
-        newData.pseudo,
-        newData.city,
-        cityWeekly,
-        newData.points,
-        token,
-      ).catch(() => {});
+    if (user && newData.city) {
+      getAccessToken().then((token) => {
+        if (!token) return;
+        const cityWeekly = newData.weeklyPointsByCity[newData.city] ?? 0;
+        updateLeaderboard(
+          newData.pseudo,
+          newData.city,
+          cityWeekly,
+          newData.points,
+          token,
+        ).catch(() => {});
+      });
     }
   }
 
