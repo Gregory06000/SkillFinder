@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/AuthContext";
 
 interface ConversionModalProps {
   onClose: () => void;
-  variant?: "milestone" | "login";
+  variant?: "milestone" | "login" | "vote";
   rankTitle?: string;
 }
 
@@ -76,6 +76,14 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                 Vous êtes un <strong>{rankTitle}</strong>
               </p>
             </>
+          ) : variant === "vote" ? (
+            <>
+              <div className="text-5xl mb-2">&#9989;</div>
+              <h2 className="text-2xl font-extrabold">Connexion requise</h2>
+              <p className="text-white/90 text-sm mt-1">
+                Connectez-vous pour voter et gagner des points
+              </p>
+            </>
           ) : (
             <>
               <div className="text-5xl mb-2">&#128075;</div>
@@ -93,7 +101,9 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
             {mode === "choice"
               ? variant === "milestone"
                 ? "Créez votre compte pour sauvegarder votre progression et apparaître dans le classement."
-                : "Sauvegardez votre progression et apparaissez dans le classement de votre ville."
+                : variant === "vote"
+                  ? "Pour voter et contribuer à la communauté, vous devez être connecté."
+                  : "Sauvegardez votre progression et apparaissez dans le classement de votre ville."
               : mode === "signup"
                 ? "Créez votre compte avec votre email."
                 : "Connectez-vous à votre compte."}

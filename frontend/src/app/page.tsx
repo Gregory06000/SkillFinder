@@ -42,7 +42,7 @@ export default function Home() {
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [voteError, setVoteError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"search" | "leaderboard">("search");
-  const [conversionVariant, setConversionVariant] = useState<"milestone" | "login">("milestone");
+  const [conversionVariant, setConversionVariant] = useState<"milestone" | "login" | "vote">("milestone");
 
   const search = useSearch();
   const rewards = useRewards(search.searchCenter);
@@ -62,6 +62,7 @@ export default function Home() {
 
   async function handleVerify(placeId: string, vote: "yes" | "no") {
     if (!user) {
+      setConversionVariant("vote");
       rewards.setShowConversion(true);
       return;
     }
