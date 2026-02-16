@@ -70,6 +70,12 @@ export default function Home() {
     setVerifyLoading(true);
     try {
       const token = await getAccessToken();
+      if (!token) {
+        setConversionVariant("vote");
+        rewards.setShowConversion(true);
+        setVerifyLoading(false);
+        return;
+      }
       await verifyBusiness(placeId, vote, token);
       // Only update UI after server confirmation
       search.setResults((prev) =>
@@ -87,9 +93,11 @@ export default function Home() {
       );
       rewards.markVoted(placeId);
       rewards.awardVotePoints(() => setConversionVariant("milestone"));
-    } catch {
-      setVoteError("Le vote n'a pas pu être enregistré. Réessayez.");
-      setTimeout(() => setVoteError(null), 4000);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Erreur inconnue";
+      console.error("Vote error:", msg);
+      setVoteError(msg);
+      setTimeout(() => setVoteError(null), 6000);
     } finally {
       setVerifyLoading(false);
     }

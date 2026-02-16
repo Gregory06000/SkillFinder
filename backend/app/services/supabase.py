@@ -80,12 +80,16 @@ def is_enabled() -> bool:
     return bool(_SUPABASE_URL and _SUPABASE_KEY)
 
 
-async def add_vote(place_id: str, vote: str) -> None:
+async def add_vote(place_id: str, vote: str, user_token: str | None = None) -> None:
     """Insert a verification vote ('yes' or 'no')."""
     client = _get_client()
+    headers = _write_headers()
+    # Use the user's JWT for the request so it passes RLS policies
+    if user_token:
+        headers["Authorization"] = f"Bearer {user_token}"
     resp = await client.post(
         "/rest/v1/verifications",
-        headers=_write_headers(),
+        headers=headers,
         json={"place_id": place_id, "vote": vote},
     )
     resp.raise_for_status()

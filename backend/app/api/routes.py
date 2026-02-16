@@ -254,9 +254,13 @@ async def verify(
             detail="Le système de vérification n'est pas configuré.",
         )
 
+    # Extract raw token for RLS-compatible Supabase request
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+
     try:
-        await add_vote(req.place_id, req.vote)
+        await add_vote(req.place_id, req.vote, user_token=raw_token)
     except Exception as e:
+        logger.error("add_vote failed for place_id=%r user_id=%r: %s", req.place_id, user_id, e)
         raise HTTPException(status_code=502, detail=f"Erreur base de données: {e}")
 
     return VerifyResponse(success=True, message="Vote enregistré !")
