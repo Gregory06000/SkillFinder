@@ -321,8 +321,8 @@ async def get_user_from_token(authorization: str | None) -> str | None:
             logger.warning("Expired JWT token")
             return None
         except jwt.InvalidTokenError as e:
-            logger.warning("Invalid JWT token: %s", e)
-            return None
+            # Don't return None here — fall through to Auth API fallback
+            logger.warning("Local JWT decode failed: %s — trying Auth API fallback", e)
 
     # 2) Fallback: verify via Supabase Auth API (works without JWT_SECRET)
     if not is_enabled():
