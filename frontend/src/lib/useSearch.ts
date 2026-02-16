@@ -9,12 +9,43 @@ import {
 export type SortMode = "match" | "distance" | "rating";
 
 const SEARCH_CACHE_KEY = "sf_last_search";
+const HISTORY_KEY = "sf_search_history";
+const PAGE_SIZE = 5;
+const MAX_HISTORY = 10;
+
+export interface SearchHistoryEntry {
+  service: string;
+  keyword: string;
+  location: string;
+  radiusKm: number;
+  timestamp: number;
+}
+
+export interface SearchFilters {
+  minRating: number; // 0 = no filter
+  maxDistance: number; // 0 = no filter (km)
+}
 
 interface CachedSearch {
   results: BusinessResult[];
-  lastSearch: { service: string; keyword: string } | null;
+  lastSearch: { service: string; keyword: string; location?: string; radiusKm?: number } | null;
   searchCenter: { lat: number; lng: number } | null;
   searchRadiusKm: number | null;
+}
+
+function loadHistory(): SearchHistoryEntry[] {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveHistory(entries: SearchHistoryEntry[]) {
+  try {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(entries.slice(0, MAX_HISTORY)));
+  } catch {}
 }
 
 export function useSearch() {
@@ -24,6 +55,8 @@ export function useSearch() {
   const [lastSearch, setLastSearch] = useState<{
     service: string;
     keyword: string;
+    location?: string;
+    radiusKm?: number;
   } | null>(null);
   const [searchCenter, setSearchCenter] = useState<{
     lat: number;
@@ -31,6 +64,9 @@ export function useSearch() {
   } | null>(null);
   const [searchRadiusKm, setSearchRadiusKm] = useState<number | null>(null);
   const [sortMode, setSortMode] = useState<SortMode>("match");
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [filters, setFilters] = useState<SearchFilters>({ minRating: 0, maxDistance: 0 });
+  const [history, setHistory] = useState<SearchHistoryEntry[]>(() => loadHistory());
 
   // Restore last search from localStorage on mount
   useEffect(() => {
@@ -68,7 +104,15 @@ export function useSearch() {
   }, [results, lastSearch, searchCenter, searchRadiusKm]);
 
   const sortedResults = useMemo(() => {
-    const copy = [...results];
+    let copy = [...results];
+    // Apply filters
+    if (filters.minRating > 0) {
+      copy = copy.filter((r) => r.global_rating >= filters.minRating);
+    }
+    if (filters.maxDistance > 0) {
+      copy = copy.filter((r) => r.distance_km != null && r.distance_km <= filters.maxDistance);
+    }
+    // Sort
     switch (sortMode) {
       case "distance":
         return copy.sort(
@@ -79,7 +123,13 @@ export function useSearch() {
       default:
         return copy.sort((a, b) => b.match_score - a.match_score);
     }
-  }, [results, sortMode]);
+  }, [results, sortMode, filters]);
+
+  const paginatedResults = useMemo(
+    () => sortedResults.slice(0, visibleCount),
+    [sortedResults, visibleCount],
+  );
+  const canShowMore = visibleCount < sortedResults.length;
 
   const hasResults = results.length > 0 && !isLoading;
   const hasCoords = results.some((r) => r.lat != null && r.lng != null);
@@ -95,11 +145,27 @@ export function useSearch() {
     setError(null);
     setResults([]);
     setSortMode("match");
+    setVisibleCount(PAGE_SIZE);
+    setFilters({ minRating: 0, maxDistance: 0 });
 
     try {
       const data = await searchBusinesses(service, keyword, location, radiusKm);
       setResults(data.results);
-      setLastSearch({ service, keyword });
+      setLastSearch({ service, keyword, location, radiusKm });
+
+      // Save to history (dedup by service+keyword+location)
+      const entry: SearchHistoryEntry = {
+        service,
+        keyword,
+        location,
+        radiusKm,
+        timestamp: Date.now(),
+      };
+      const newHistory = [entry, ...history.filter(
+        (h) => !(h.service === service && h.keyword === keyword && h.location === location),
+      )].slice(0, MAX_HISTORY);
+      setHistory(newHistory);
+      saveHistory(newHistory);
       if (data.center_lat != null && data.center_lng != null) {
         setSearchCenter({ lat: data.center_lat, lng: data.center_lng });
         setSearchRadiusKm(data.radius_km);
@@ -124,6 +190,15 @@ export function useSearch() {
     localStorage.removeItem(SEARCH_CACHE_KEY);
   }
 
+  function showMore() {
+    setVisibleCount((c) => c + PAGE_SIZE);
+  }
+
+  function clearHistory() {
+    setHistory([]);
+    localStorage.removeItem(HISTORY_KEY);
+  }
+
   return {
     results,
     setResults,
@@ -135,6 +210,13 @@ export function useSearch() {
     sortMode,
     setSortMode,
     sortedResults,
+    paginatedResults,
+    canShowMore,
+    showMore,
+    filters,
+    setFilters,
+    history,
+    clearHistory,
     hasResults,
     showMap,
     handleSearch,

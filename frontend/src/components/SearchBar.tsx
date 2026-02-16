@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { reverseGeocode } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 
 const RADIUS_OPTIONS = [
   { value: 5, label: "5 km" },
@@ -18,12 +19,16 @@ interface SearchBarProps {
     radiusKm: number,
   ) => void;
   isLoading: boolean;
+  initialService?: string;
+  initialKeyword?: string;
+  initialCity?: string;
 }
 
-export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
-  const [service, setService] = useState("");
-  const [keyword, setKeyword] = useState("");
-  const [location, setLocation] = useState("");
+export default function SearchBar({ onSearch, isLoading, initialService, initialKeyword, initialCity }: SearchBarProps) {
+  const { t } = useT();
+  const [service, setService] = useState(initialService || "");
+  const [keyword, setKeyword] = useState(initialKeyword || "");
+  const [location, setLocation] = useState(initialCity || "");
   const [radiusKm, setRadiusKm] = useState(10);
   const [geoLoading, setGeoLoading] = useState(false);
 
@@ -36,7 +41,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
 
   async function handleGeo() {
     if (!navigator.geolocation) {
-      alert("La géolocalisation n'est pas supportée par votre navigateur.");
+      alert(t("search.geoUnsupported"));
       return;
     }
     setGeoLoading(true);
@@ -50,7 +55,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       const city = await reverseGeocode(pos.coords.latitude, pos.coords.longitude);
       setLocation(city);
     } catch {
-      alert("Impossible d'obtenir votre position.");
+      alert(t("search.geoError"));
     } finally {
       setGeoLoading(false);
     }
@@ -67,13 +72,13 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       {/* Service */}
       <div className="flex-1 px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors min-w-0 w-full sm:w-auto">
         <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
-          Service
+          {t("search.service")}
         </label>
         <input
           type="text"
           value={service}
           onChange={(e) => setService(e.target.value)}
-          placeholder="Ex: Coiffeur, Dentiste..."
+          placeholder={t("search.servicePlaceholder")}
           className="w-full bg-transparent border-none outline-none text-sm font-medium
                      text-sf-text placeholder:text-sf-text-light/60"
         />
@@ -85,13 +90,13 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       {/* Keyword */}
       <div className="flex-1 px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors min-w-0 w-full sm:w-auto">
         <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
-          Critère spécifique
+          {t("search.keyword")}
         </label>
         <input
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
-          placeholder="Ex: Balayage, Implant..."
+          placeholder={t("search.keywordPlaceholder")}
           className="w-full bg-transparent border-none outline-none text-sm font-medium
                      text-sf-text placeholder:text-sf-text-light/60"
         />
@@ -103,14 +108,14 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       {/* Location */}
       <div className="flex-1 px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors min-w-0 w-full sm:w-auto">
         <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
-          Ville
+          {t("search.city")}
         </label>
         <div className="flex items-center gap-1">
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            placeholder="Votre ville..."
+            placeholder={t("search.cityPlaceholder")}
             className="w-full bg-transparent border-none outline-none text-sm font-medium
                        text-sf-text placeholder:text-sf-text-light/60"
           />
@@ -118,7 +123,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
             type="button"
             onClick={handleGeo}
             disabled={geoLoading}
-            title="Utiliser ma position"
+            title={t("search.geoTitle")}
             className="flex-shrink-0 p-1 rounded-full text-sf-text-light
                        hover:text-sf-accent transition-colors disabled:opacity-50"
           >
@@ -143,7 +148,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       {/* Radius */}
       <div className="px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors w-full sm:w-auto sm:max-w-[120px]">
         <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
-          Rayon
+          {t("search.radius")}
         </label>
         <select
           value={radiusKm}
@@ -163,7 +168,7 @@ export default function SearchBar({ onSearch, isLoading }: SearchBarProps) {
       <button
         type="submit"
         disabled={isLoading || !service.trim() || !keyword.trim()}
-        aria-label="Rechercher"
+        aria-label={t("search.submit")}
         className="flex-shrink-0 w-full sm:w-[52px] h-12 sm:h-[52px] rounded-sf-md
                    bg-sf-accent text-white flex items-center justify-center
                    hover:bg-sf-accent-light hover:scale-[1.04] transition-all

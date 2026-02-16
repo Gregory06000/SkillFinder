@@ -8,14 +8,21 @@ Required env vars:
 
 SQL to run in Supabase SQL Editor:
 
-  -- Verification votes
+  -- Verification votes (one vote per user per place)
   CREATE TABLE verifications (
       id          BIGSERIAL PRIMARY KEY,
       place_id    TEXT NOT NULL,
+      user_id     UUID NOT NULL,
       vote        TEXT NOT NULL CHECK (vote IN ('yes', 'no')),
-      created_at  TIMESTAMPTZ DEFAULT NOW()
+      created_at  TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE (place_id, user_id)
   );
   CREATE INDEX idx_verifications_place ON verifications (place_id);
+
+  -- Migration for existing table:
+  -- ALTER TABLE verifications ADD COLUMN IF NOT EXISTS user_id UUID;
+  -- ALTER TABLE verifications ADD CONSTRAINT verifications_place_user_unique
+  --   UNIQUE (place_id, user_id);
 
   -- Aggregated view (server-side — avoids fetching all rows)
   CREATE OR REPLACE VIEW verification_stats AS
@@ -85,18 +92,29 @@ def is_enabled() -> bool:
     return bool(_SUPABASE_URL and _SUPABASE_KEY)
 
 
-async def add_vote(place_id: str, vote: str, user_token: str | None = None) -> None:
-    """Insert a verification vote ('yes' or 'no')."""
+async def add_vote(
+    place_id: str, vote: str, user_id: str | None = None, user_token: str | None = None,
+) -> None:
+    """Insert or update a verification vote ('yes' or 'no').
+
+    Uses upsert with ON CONFLICT (place_id, user_id) to enforce one vote per user
+    per place. If the user votes again, their vote is updated.
+    """
     client = _get_client()
-    headers = _write_headers()
-    # _write_headers uses service_role key if available (bypasses RLS).
-    # Otherwise, use the user's JWT so authenticated RLS policies work.
-    if "Authorization" not in headers and user_token:
+    headers: dict[str, str] = {"Content-Type": "application/json"}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
         headers["Authorization"] = f"Bearer {user_token}"
+    # Use upsert: if (place_id, user_id) already exists, update the vote
+    headers["Prefer"] = "resolution=merge-duplicates,return=minimal"
+    payload: dict = {"place_id": place_id, "vote": vote}
+    if user_id:
+        payload["user_id"] = user_id
     resp = await client.post(
         "/rest/v1/verifications",
         headers=headers,
-        json={"place_id": place_id, "vote": vote},
+        json=payload,
     )
     resp.raise_for_status()
 
@@ -333,6 +351,100 @@ async def get_user_profile(user_id: str) -> dict | None:
 
 
 # ── Authentication ──────────────────────────────
+
+
+# ── Admin Stats ──────────────────────────────
+
+
+async def get_admin_stats() -> dict:
+    """Fetch aggregated stats for the admin dashboard."""
+    if not is_enabled():
+        return {}
+
+    client = _get_client()
+    week = _current_week_start()
+
+    # Total votes
+    votes_resp = await client.get(
+        "/rest/v1/verifications",
+        params={"select": "id", "order": "id.desc", "limit": "1"},
+        headers={"Prefer": "count=exact", "Range-Unit": "items", "Range": "0-0"},
+    )
+    total_votes = 0
+    cr = votes_resp.headers.get("content-range", "")
+    if "/" in cr:
+        try:
+            total_votes = int(cr.split("/")[1])
+        except (ValueError, IndexError):
+            pass
+
+    # Active users this week
+    lb_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "id",
+            "week_start": f"eq.{week}",
+        },
+        headers={"Prefer": "count=exact", "Range-Unit": "items", "Range": "0-0"},
+    )
+    active_users = 0
+    cr2 = lb_resp.headers.get("content-range", "")
+    if "/" in cr2:
+        try:
+            active_users = int(cr2.split("/")[1])
+        except (ValueError, IndexError):
+            pass
+
+    # Top 10 cities this week by number of contributors
+    cities_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "city,weekly_points",
+            "week_start": f"eq.{week}",
+            "order": "weekly_points.desc",
+            "limit": "200",
+        },
+    )
+    city_counts: dict[str, dict] = {}
+    if cities_resp.status_code == 200:
+        for row in cities_resp.json():
+            c = row["city"]
+            if c not in city_counts:
+                city_counts[c] = {"contributors": 0, "points": 0}
+            city_counts[c]["contributors"] += 1
+            city_counts[c]["points"] += row["weekly_points"]
+    top_cities = sorted(city_counts.items(), key=lambda x: x[1]["contributors"], reverse=True)[:10]
+
+    # Top 10 contributors this week
+    top_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "pseudo,city,weekly_points,total_points",
+            "week_start": f"eq.{week}",
+            "order": "weekly_points.desc",
+            "limit": "10",
+        },
+    )
+    top_contributors = top_resp.json() if top_resp.status_code == 200 else []
+
+    # Recent votes (last 20)
+    recent_resp = await client.get(
+        "/rest/v1/verifications",
+        params={
+            "select": "place_id,vote,created_at",
+            "order": "created_at.desc",
+            "limit": "20",
+        },
+    )
+    recent_votes = recent_resp.json() if recent_resp.status_code == 200 else []
+
+    return {
+        "total_votes": total_votes,
+        "active_users_week": active_users,
+        "top_cities": [{"city": c, **d} for c, d in top_cities],
+        "top_contributors": top_contributors,
+        "recent_votes": recent_votes,
+    }
 
 
 async def get_user_from_token(authorization: str | None) -> str | None:

@@ -1,0 +1,383 @@
+"use client";
+
+import { createContext, useContext } from "react";
+
+// ── Supported locales ─────────────────────────
+export type Locale = "fr" | "en";
+
+const LOCALE_KEY = "sf_locale";
+
+export function loadLocale(): Locale {
+  if (typeof window === "undefined") return "fr";
+  const saved = localStorage.getItem(LOCALE_KEY);
+  if (saved === "en" || saved === "fr") return saved;
+  // Auto-detect from browser
+  const lang = navigator.language?.slice(0, 2);
+  return lang === "en" ? "en" : "fr";
+}
+
+export function saveLocale(locale: Locale): void {
+  localStorage.setItem(LOCALE_KEY, locale);
+}
+
+// ── Translation dictionaries ──────────────────
+
+type Dict = Record<string, string>;
+
+const fr: Dict = {
+  // ── Navbar ──
+  "nav.leaderboard": "Classement",
+  "nav.logout": "Déconnexion",
+  "nav.login": "Connexion",
+  "nav.tier": "Palier {palier}",
+  "nav.pts": "{pts} pts",
+
+  // ── Hero ──
+  "hero.title1": "Trouvez le meilleur pour",
+  "hero.title2": "ce qui compte",
+  "hero.title3": "vraiment",
+  "hero.subtitle": "Comparez les professionnels près de chez vous selon vos critères précis.",
+
+  // ── SearchBar ──
+  "search.service": "Service",
+  "search.servicePlaceholder": "Ex: Coiffeur, Dentiste...",
+  "search.keyword": "Critère spécifique",
+  "search.keywordPlaceholder": "Ex: Balayage, Implant...",
+  "search.city": "Ville",
+  "search.cityPlaceholder": "Votre ville...",
+  "search.geoTitle": "Utiliser ma position",
+  "search.radius": "Rayon",
+  "search.submit": "Rechercher",
+  "search.geoUnsupported": "La géolocalisation n'est pas supportée par votre navigateur.",
+  "search.geoError": "Impossible d'obtenir votre position.",
+
+  // ── History ──
+  "history.title": "Recherches récentes",
+  "history.clear": "Effacer",
+
+  // ── Favorites ──
+  "fav.title": "Mes favoris ({count})",
+  "fav.clearAll": "Tout supprimer",
+
+  // ── Results ──
+  "results.count": "{count} résultat{plural}",
+  "results.for": "pour",
+  "results.in": "dans",
+  "results.filtered": "({count} filtrés)",
+  "results.sortMatch": "Meilleur match",
+  "results.sortDistance": "Distance",
+  "results.sortRating": "Note",
+  "results.aiToggle": "IA",
+  "results.aiTitle": "Afficher le raisonnement IA",
+  "results.list": "Liste",
+  "results.map": "Carte",
+  "results.showMore": "Voir plus ({count} restants)",
+  "results.loading": "Analyse des avis en cours...",
+  "results.mapLoading": "Chargement de la carte...",
+  "results.noResults": "Aucun résultat trouvé pour",
+  "results.tryOther": "Essayez un autre mot-clé ou une autre catégorie.",
+
+  // ── Filters ──
+  "filters.label": "Filtres",
+  "filters.clear": "Effacer les filtres",
+
+  // ── Compare ──
+  "compare.btn": "Comparer ({count}/2)",
+  "compare.btnReady": "Comparer ces 2 commerces",
+  "compare.title": "Analyse comparative",
+  "compare.loading": "Analyse IA en cours...",
+  "compare.winner": "Gagnant",
+  "compare.strengths": "Points forts",
+  "compare.weaknesses": "Points d'attention",
+  "compare.notIdentified": "Non identifié",
+  "compare.none": "Aucun",
+  "compare.price": "Prix",
+  "compare.vibe": "Ambiance",
+  "compare.speed": "Rapidité",
+  "compare.verdict": "Verdict IA",
+  "compare.selected": "Sélectionné pour comparaison",
+  "compare.select": "Comparer",
+
+  // ── ResultCard ──
+  "card.bestMatch": "Meilleur match",
+  "card.verified": "Vérifié",
+  "card.contested": "Contesté",
+  "card.match": "Match",
+  "card.reviews": "{count} avis",
+  "card.mention": "{count} mention{plural}",
+  "card.stillTrue": "Toujours vrai ?",
+  "card.thankVote": "Merci pour votre vote !",
+  "card.yes": "Oui",
+  "card.no": "Non",
+  "card.viewProfile": "Voir le profil",
+  "card.addFav": "Ajouter aux favoris",
+  "card.removeFav": "Retirer des favoris",
+  "card.share": "Partager",
+  "card.timeMinutes": "il y a quelques minutes",
+  "card.timeHours": "il y a {count}h",
+  "card.timeDays": "il y a {count}j",
+  "card.timeMonths": "il y a {count} mois",
+
+  // ── UserStats ──
+  "stats.tier": "Palier {palier}",
+  "stats.maxLevel": "Niveau maximum atteint",
+  "stats.nextTier": "Prochain palier : niveau {threshold}",
+  "stats.level": "Niveau {level}",
+  "stats.weeklyPts": "+ {pts} pts cette semaine",
+
+  // ── ProfilePanel ──
+  "profile.photoTooBig": "Image trop lourde (max 2 Mo)",
+  "profile.removePhoto": "Supprimer la photo",
+  "profile.colorLabel": "Couleur du profil",
+  "profile.tierProgress": "Progression des paliers",
+  "profile.levelRange": "Niv. {min}–{max}",
+  "profile.weekStats": "Cette semaine : +{pts} pts",
+
+  // ── TierUp Modal ──
+  "tierUp.title": "Nouveau palier !",
+  "tierUp.tierLevel": "Palier {palier} · Niveau {level}",
+  "tierUp.maxReached": "Niveau maximum atteint ! Vous êtes une légende.",
+  "tierUp.nextAt": "Prochain palier à {threshold} points",
+  "tierUp.continue": "Continuer",
+
+  // ── Conversion / Login Modal ──
+  "conv.congrats": "Félicitations !",
+  "conv.youAre": "Vous êtes un {rank}",
+  "conv.loginRequired": "Connexion requise",
+  "conv.loginToVote": "Connectez-vous pour voter et gagner des points",
+  "conv.welcome": "Bienvenue !",
+  "conv.loginToTrack": "Connectez-vous pour suivre votre progression",
+  "conv.milestoneDesc": "Créez votre compte pour sauvegarder votre progression et apparaître dans le classement.",
+  "conv.voteDesc": "Pour voter et contribuer à la communauté, vous devez être connecté.",
+  "conv.loginDesc": "Sauvegardez votre progression et apparaissez dans le classement de votre ville.",
+  "conv.signupDesc": "Créez votre compte avec votre email.",
+  "conv.loginFormDesc": "Connectez-vous à votre compte.",
+  "conv.google": "Continuer avec Google",
+  "conv.emailSignup": "S'inscrire avec email",
+  "conv.hasAccount": "Déjà un compte ? Se connecter",
+  "conv.email": "Email",
+  "conv.passwordSignup": "Mot de passe (6+ caractères)",
+  "conv.password": "Mot de passe",
+  "conv.submitting": "Chargement...",
+  "conv.createAccount": "Créer mon compte",
+  "conv.signIn": "Se connecter",
+  "conv.back": "Retour",
+  "conv.later": "Peut-être plus tard",
+
+  // ── Leaderboard ──
+  "lb.weekTitle": "Classement de la semaine",
+  "lb.weekSubtitle": "Découvrez les meilleurs contributeurs de votre ville",
+  "lb.searchPlaceholder": "Rechercher une ville...",
+  "lb.search": "Rechercher",
+  "lb.loading": "Chargement du classement...",
+  "lb.noCitySelected": "Recherchez une ville pour voir son classement",
+  "lb.noContributors": "Aucun contributeur cette semaine à",
+  "lb.beFirst": "Soyez le premier à voter !",
+  "lb.contributors": "{count} contributeur{plural}",
+  "lb.thisWeek": "Cette semaine",
+  "lb.player": "Joueur",
+  "lb.week": "Semaine",
+  "lb.total": "Total",
+  "lb.you": "Vous",
+  "lb.level": "Niveau",
+  "lb.tierLabel": "Palier",
+  "lb.titleLabel": "Titre",
+  "lb.totalPoints": "Points totaux",
+  "lb.localTitle": "Classement {city}",
+  "lb.noContribShort": "Aucun contributeur cette semaine.",
+};
+
+const en: Dict = {
+  // ── Navbar ──
+  "nav.leaderboard": "Leaderboard",
+  "nav.logout": "Logout",
+  "nav.login": "Login",
+  "nav.tier": "Tier {palier}",
+  "nav.pts": "{pts} pts",
+
+  // ── Hero ──
+  "hero.title1": "Find the best for",
+  "hero.title2": "what truly",
+  "hero.title3": "matters",
+  "hero.subtitle": "Compare professionals near you based on your specific criteria.",
+
+  // ── SearchBar ──
+  "search.service": "Service",
+  "search.servicePlaceholder": "e.g. Hairdresser, Dentist...",
+  "search.keyword": "Specific criteria",
+  "search.keywordPlaceholder": "e.g. Highlights, Implant...",
+  "search.city": "City",
+  "search.cityPlaceholder": "Your city...",
+  "search.geoTitle": "Use my location",
+  "search.radius": "Radius",
+  "search.submit": "Search",
+  "search.geoUnsupported": "Geolocation is not supported by your browser.",
+  "search.geoError": "Unable to get your position.",
+
+  // ── History ──
+  "history.title": "Recent searches",
+  "history.clear": "Clear",
+
+  // ── Favorites ──
+  "fav.title": "My favorites ({count})",
+  "fav.clearAll": "Remove all",
+
+  // ── Results ──
+  "results.count": "{count} result{plural}",
+  "results.for": "for",
+  "results.in": "in",
+  "results.filtered": "({count} filtered)",
+  "results.sortMatch": "Best match",
+  "results.sortDistance": "Distance",
+  "results.sortRating": "Rating",
+  "results.aiToggle": "AI",
+  "results.aiTitle": "Show AI reasoning",
+  "results.list": "List",
+  "results.map": "Map",
+  "results.showMore": "Show more ({count} remaining)",
+  "results.loading": "Analyzing reviews...",
+  "results.mapLoading": "Loading map...",
+  "results.noResults": "No results found for",
+  "results.tryOther": "Try a different keyword or category.",
+
+  // ── Filters ──
+  "filters.label": "Filters",
+  "filters.clear": "Clear filters",
+
+  // ── Compare ──
+  "compare.btn": "Compare ({count}/2)",
+  "compare.btnReady": "Compare these 2 businesses",
+  "compare.title": "Comparative analysis",
+  "compare.loading": "AI analysis in progress...",
+  "compare.winner": "Winner",
+  "compare.strengths": "Strengths",
+  "compare.weaknesses": "Weaknesses",
+  "compare.notIdentified": "Not identified",
+  "compare.none": "None",
+  "compare.price": "Price",
+  "compare.vibe": "Vibe",
+  "compare.speed": "Speed",
+  "compare.verdict": "AI Verdict",
+  "compare.selected": "Selected for comparison",
+  "compare.select": "Compare",
+
+  // ── ResultCard ──
+  "card.bestMatch": "Best match",
+  "card.verified": "Verified",
+  "card.contested": "Contested",
+  "card.match": "Match",
+  "card.reviews": "{count} reviews",
+  "card.mention": "{count} mention{plural}",
+  "card.stillTrue": "Still accurate?",
+  "card.thankVote": "Thanks for your vote!",
+  "card.yes": "Yes",
+  "card.no": "No",
+  "card.viewProfile": "View profile",
+  "card.addFav": "Add to favorites",
+  "card.removeFav": "Remove from favorites",
+  "card.share": "Share",
+  "card.timeMinutes": "a few minutes ago",
+  "card.timeHours": "{count}h ago",
+  "card.timeDays": "{count}d ago",
+  "card.timeMonths": "{count} months ago",
+
+  // ── UserStats ──
+  "stats.tier": "Tier {palier}",
+  "stats.maxLevel": "Max level reached",
+  "stats.nextTier": "Next tier: level {threshold}",
+  "stats.level": "Level {level}",
+  "stats.weeklyPts": "+ {pts} pts this week",
+
+  // ── ProfilePanel ──
+  "profile.photoTooBig": "Image too large (max 2 MB)",
+  "profile.removePhoto": "Remove photo",
+  "profile.colorLabel": "Profile color",
+  "profile.tierProgress": "Tier progression",
+  "profile.levelRange": "Lvl. {min}–{max}",
+  "profile.weekStats": "This week: +{pts} pts",
+
+  // ── TierUp Modal ──
+  "tierUp.title": "New tier!",
+  "tierUp.tierLevel": "Tier {palier} · Level {level}",
+  "tierUp.maxReached": "Max level reached! You are a legend.",
+  "tierUp.nextAt": "Next tier at {threshold} points",
+  "tierUp.continue": "Continue",
+
+  // ── Conversion / Login Modal ──
+  "conv.congrats": "Congratulations!",
+  "conv.youAre": "You are a {rank}",
+  "conv.loginRequired": "Login required",
+  "conv.loginToVote": "Sign in to vote and earn points",
+  "conv.welcome": "Welcome!",
+  "conv.loginToTrack": "Sign in to track your progress",
+  "conv.milestoneDesc": "Create your account to save your progress and appear on the leaderboard.",
+  "conv.voteDesc": "To vote and contribute to the community, you must be signed in.",
+  "conv.loginDesc": "Save your progress and appear on your city's leaderboard.",
+  "conv.signupDesc": "Create your account with your email.",
+  "conv.loginFormDesc": "Sign in to your account.",
+  "conv.google": "Continue with Google",
+  "conv.emailSignup": "Sign up with email",
+  "conv.hasAccount": "Already have an account? Sign in",
+  "conv.email": "Email",
+  "conv.passwordSignup": "Password (6+ characters)",
+  "conv.password": "Password",
+  "conv.submitting": "Loading...",
+  "conv.createAccount": "Create my account",
+  "conv.signIn": "Sign in",
+  "conv.back": "Back",
+  "conv.later": "Maybe later",
+
+  // ── Leaderboard ──
+  "lb.weekTitle": "Weekly leaderboard",
+  "lb.weekSubtitle": "Discover the top contributors in your city",
+  "lb.searchPlaceholder": "Search a city...",
+  "lb.search": "Search",
+  "lb.loading": "Loading leaderboard...",
+  "lb.noCitySelected": "Search a city to see its leaderboard",
+  "lb.noContributors": "No contributors this week in",
+  "lb.beFirst": "Be the first to vote!",
+  "lb.contributors": "{count} contributor{plural}",
+  "lb.thisWeek": "This week",
+  "lb.player": "Player",
+  "lb.week": "Week",
+  "lb.total": "Total",
+  "lb.you": "You",
+  "lb.level": "Level",
+  "lb.tierLabel": "Tier",
+  "lb.titleLabel": "Title",
+  "lb.totalPoints": "Total points",
+  "lb.localTitle": "Leaderboard {city}",
+  "lb.noContribShort": "No contributors this week.",
+};
+
+const dictionaries: Record<Locale, Dict> = { fr, en };
+
+// ── Translation function ─────────────────────
+
+export function t(locale: Locale, key: string, vars?: Record<string, string | number>): string {
+  let str = dictionaries[locale]?.[key] ?? dictionaries.fr[key] ?? key;
+  if (vars) {
+    for (const [k, v] of Object.entries(vars)) {
+      str = str.replaceAll(`{${k}}`, String(v));
+    }
+  }
+  return str;
+}
+
+// ── React Context ─────────────────────────────
+
+export interface I18nContextValue {
+  locale: Locale;
+  setLocale: (l: Locale) => void;
+  t: (key: string, vars?: Record<string, string | number>) => string;
+}
+
+export const I18nContext = createContext<I18nContextValue>({
+  locale: "fr",
+  setLocale: () => {},
+  t: (key) => key,
+});
+
+export function useT() {
+  return useContext(I18nContext);
+}

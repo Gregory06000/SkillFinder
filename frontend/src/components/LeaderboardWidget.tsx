@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getUserRank } from "@/lib/gamification";
+import { useT } from "@/lib/i18n";
 
 interface LeaderboardEntry {
   pseudo: string;
@@ -25,6 +26,7 @@ export default function LeaderboardWidget({
   userWeeklyPoints,
   userTotalPoints,
 }: LeaderboardWidgetProps) {
+  const { t } = useT();
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
@@ -91,10 +93,10 @@ export default function LeaderboardWidget({
             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
           </svg>
           <span className="font-semibold text-sm text-gray-900">
-            Classement {city || "Local"}
+            {t("lb.localTitle", { city: city || "Local" })}
           </span>
           <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-medium">
-            Cette semaine
+            {t("lb.thisWeek")}
           </span>
         </div>
         <svg
@@ -111,13 +113,13 @@ export default function LeaderboardWidget({
         <div className="border-t border-gray-100">
           {loading ? (
             <div className="p-6 text-center text-sm text-gray-400">
-              Chargement du classement...
+              {t("lb.loading")}
             </div>
           ) : top10.length === 0 ? (
             <div className="p-6 text-center text-sm text-gray-400">
-              Aucun contributeur cette semaine.
+              {t("lb.noContribShort")}
               <br />
-              <span className="text-xs">Soyez le premier à voter !</span>
+              <span className="text-xs">{t("lb.beFirst")}</span>
             </div>
           ) : (
             <div className="divide-y divide-gray-50">
@@ -147,7 +149,7 @@ export default function LeaderboardWidget({
                         {entry.pseudo}
                         {isUser && (
                           <span className="ml-1.5 text-[9px] bg-brand-500 text-white px-1 py-0.5 rounded-full uppercase">
-                            Vous
+                            {t("lb.you")}
                           </span>
                         )}
                       </span>
@@ -171,13 +173,13 @@ export default function LeaderboardWidget({
                     {/* Expanded details */}
                     {isExpanded && (
                       <div className="px-4 pb-3 pl-14 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-500">
-                        <span>Points totaux</span>
+                        <span>{t("lb.totalPoints")}</span>
                         <span className="font-medium text-gray-700">{entry.totalPoints}</span>
-                        <span>Niveau</span>
+                        <span>{t("lb.level")}</span>
                         <span className="font-medium text-gray-700">{rank.level}</span>
-                        <span>Palier</span>
+                        <span>{t("lb.tierLabel")}</span>
                         <span className="font-medium text-gray-700">{rank.palier}</span>
-                        <span>Titre</span>
+                        <span>{t("lb.titleLabel")}</span>
                         <span className="font-medium text-gray-700">{rank.title}</span>
                       </div>
                     )}

@@ -258,7 +258,7 @@ async def verify(
     raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
 
     try:
-        await add_vote(req.place_id, req.vote, user_token=raw_token)
+        await add_vote(req.place_id, req.vote, user_id=user_id, user_token=raw_token)
     except Exception as e:
         logger.error("add_vote failed for place_id=%r user_id=%r: %s", req.place_id, user_id, e)
         raise HTTPException(status_code=502, detail=f"Erreur base de données: {e}")
@@ -341,14 +341,49 @@ async def update_leaderboard(
     if not pseudo or not city:
         return {"success": False}
 
+    # Server-side validation: cap points to prevent client-side manipulation
+    MAX_TOTAL = 1000
+    MAX_WEEKLY = 500
+    safe_total = min(max(0, total_points), MAX_TOTAL)
+    safe_weekly = min(max(0, weekly_points), MAX_WEEKLY)
+
+    if safe_total != total_points or safe_weekly != weekly_points:
+        logger.warning(
+            "Points capped for pseudo=%r: total %d->%d, weekly %d->%d",
+            pseudo, total_points, safe_total, weekly_points, safe_weekly,
+        )
+
     raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
 
     try:
-        await upsert_leaderboard(pseudo, city, weekly_points, total_points, user_id=user_id, user_token=raw_token)
+        await upsert_leaderboard(pseudo, city, safe_weekly, safe_total, user_id=user_id, user_token=raw_token)
         return {"success": True}
     except Exception as e:
         logger.warning("Leaderboard upsert failed for pseudo=%r city=%r: %s", pseudo, city, e)
         return {"success": False}
+
+
+@router.get("/admin/stats")
+async def admin_stats(authorization: str | None = Header(default=None)):
+    """Fetch aggregated stats for the admin dashboard (requires auth)."""
+    from app.services.supabase import get_user_from_token, get_admin_stats
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    # Simple admin check: only allow specific user IDs (configure via env)
+    admin_ids = os.environ.get("ADMIN_USER_IDS", "").split(",")
+    admin_ids = [uid.strip() for uid in admin_ids if uid.strip()]
+    if admin_ids and user_id not in admin_ids:
+        raise HTTPException(status_code=403, detail="Accès refusé.")
+
+    try:
+        stats = await get_admin_stats()
+        return stats
+    except Exception as e:
+        logger.error("Admin stats failed: %s", e)
+        raise HTTPException(status_code=500, detail="Erreur lors de la récupération des statistiques.")
 
 
 @router.get("/categories")

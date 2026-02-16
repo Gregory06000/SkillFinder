@@ -18,6 +18,24 @@ PLACES_SEARCH_URL = "https://places.googleapis.com/v1/places:searchText"
 GEOCODING_URL = "https://maps.googleapis.com/maps/api/geocode/json"
 AUTOCOMPLETE_URL = "https://places.googleapis.com/v1/places:autocomplete"
 
+# Singleton clients — reuse TCP connections across requests
+_google_client: httpx.AsyncClient | None = None
+_photo_client: httpx.AsyncClient | None = None
+
+
+def _get_google_client() -> httpx.AsyncClient:
+    global _google_client
+    if _google_client is None or _google_client.is_closed:
+        _google_client = httpx.AsyncClient(timeout=15.0)
+    return _google_client
+
+
+def _get_photo_client() -> httpx.AsyncClient:
+    global _photo_client
+    if _photo_client is None or _photo_client.is_closed:
+        _photo_client = httpx.AsyncClient(timeout=10.0, follow_redirects=True)
+    return _photo_client
+
 FIELD_MASK = ",".join([
     "places.displayName",
     "places.formattedAddress",
@@ -66,8 +84,8 @@ async def geocode(address: str) -> tuple[float, float] | None:
         "language": "fr",
     }
 
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.get(GEOCODING_URL, params=params)
+    client = _get_google_client()
+    resp = await client.get(GEOCODING_URL, params=params)
 
     if resp.status_code != 200:
         logger.error("Geocoding API error %s: %s", resp.status_code, resp.text)
@@ -95,8 +113,8 @@ async def reverse_geocode(lat: float, lng: float) -> str:
         "language": "fr",
     }
 
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.get(GEOCODING_URL, params=params)
+    client = _get_google_client()
+    resp = await client.get(GEOCODING_URL, params=params)
 
     if resp.status_code != 200:
         return f"{lat:.4f}, {lng:.4f}"
@@ -140,8 +158,8 @@ def get_photo_url(photo_name: str, max_width: int = 600, max_height: int = 400) 
 async def fetch_photo_bytes(photo_name: str) -> tuple[bytes, str]:
     """Fetch photo binary from Google and return (bytes, content_type)."""
     url = get_photo_url(photo_name)
-    async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-        resp = await client.get(url)
+    client = _get_photo_client()
+    resp = await client.get(url)
     if resp.status_code != 200:
         raise RuntimeError(f"Photo fetch failed: {resp.status_code}")
     content_type = resp.headers.get("content-type", "image/jpeg")
@@ -183,8 +201,8 @@ async def search_places(
             }
         }
 
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        resp = await client.post(PLACES_SEARCH_URL, headers=headers, json=body)
+    client = _get_google_client()
+    resp = await client.post(PLACES_SEARCH_URL, headers=headers, json=body)
 
     if resp.status_code != 200:
         logger.error("Google Places API error %s: %s", resp.status_code, resp.text)
@@ -251,19 +269,19 @@ async def autocomplete_cities(query: str) -> list[str]:
     """
     api_key = _get_api_key()
 
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.post(
-            AUTOCOMPLETE_URL,
-            headers={
-                "Content-Type": "application/json",
-                "X-Goog-Api-Key": api_key,
-            },
-            json={
-                "input": query,
-                "includedPrimaryTypes": ["(cities)"],
-                "languageCode": "fr",
-            },
-        )
+    client = _get_google_client()
+    resp = await client.post(
+        AUTOCOMPLETE_URL,
+        headers={
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": api_key,
+        },
+        json={
+            "input": query,
+            "includedPrimaryTypes": ["(cities)"],
+            "languageCode": "fr",
+        },
+    )
 
     if resp.status_code != 200:
         logger.warning("Autocomplete API error %s: %s", resp.status_code, resp.text[:200])

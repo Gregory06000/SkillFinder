@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import type { UserRank, RewardsData } from "@/lib/gamification";
 import { getUserRank } from "@/lib/gamification";
+import { useT } from "@/lib/i18n";
 
 interface UserStatsProps {
   rewards: RewardsData;
@@ -15,6 +16,7 @@ export default function UserStats({
   flyingText,
   onFlyingDone,
 }: UserStatsProps) {
+  const { t } = useT();
   const rank: UserRank = getUserRank(rewards.points);
   const [showFlying, setShowFlying] = useState(false);
   const [displayText, setDisplayText] = useState("");
@@ -57,12 +59,12 @@ export default function UserStats({
           </div>
           <div>
             <div className="text-sm font-semibold text-sf-text">
-              {rank.title} &middot; Palier {rank.palier}
+              {rank.title} &middot; {t("stats.tier", { palier: rank.palier })}
             </div>
             <div className="text-xs text-sf-text-light">
               {rank.palier >= 10
-                ? "Niveau maximum atteint"
-                : `Prochain palier : niveau ${rank.nextThreshold}`}
+                ? t("stats.maxLevel")
+                : t("stats.nextTier", { threshold: rank.nextThreshold })}
             </div>
           </div>
         </div>
@@ -87,8 +89,8 @@ export default function UserStats({
 
       {/* Bottom row */}
       <div className="flex justify-between mt-1.5 text-[11px] text-sf-text-light">
-        <span>Niveau {rank.level}</span>
-        <span>+ {rewards.weeklyPoints} pts cette semaine</span>
+        <span>{t("stats.level", { level: rank.level })}</span>
+        <span>{t("stats.weeklyPts", { pts: rewards.weeklyPoints })}</span>
       </div>
     </div>
   );

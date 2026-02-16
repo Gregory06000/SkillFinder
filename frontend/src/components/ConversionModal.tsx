@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
+import { useT } from "@/lib/i18n";
 
 interface ConversionModalProps {
   onClose: () => void;
@@ -17,6 +18,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const { t } = useT();
 
   // Click outside to close
   useEffect(() => {
@@ -71,25 +73,25 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
           {variant === "milestone" ? (
             <>
               <div className="text-5xl mb-2">&#127942;</div>
-              <h2 className="text-2xl font-extrabold">Félicitations !</h2>
+              <h2 className="text-2xl font-extrabold">{t("conv.congrats")}</h2>
               <p className="text-white/90 text-sm mt-1">
-                Vous êtes un <strong>{rankTitle}</strong>
+                {t("conv.youAre", { rank: rankTitle })}
               </p>
             </>
           ) : variant === "vote" ? (
             <>
               <div className="text-5xl mb-2">&#9989;</div>
-              <h2 className="text-2xl font-extrabold">Connexion requise</h2>
+              <h2 className="text-2xl font-extrabold">{t("conv.loginRequired")}</h2>
               <p className="text-white/90 text-sm mt-1">
-                Connectez-vous pour voter et gagner des points
+                {t("conv.loginToVote")}
               </p>
             </>
           ) : (
             <>
               <div className="text-5xl mb-2">&#128075;</div>
-              <h2 className="text-2xl font-extrabold">Bienvenue !</h2>
+              <h2 className="text-2xl font-extrabold">{t("conv.welcome")}</h2>
               <p className="text-white/90 text-sm mt-1">
-                Connectez-vous pour suivre votre progression
+                {t("conv.loginToTrack")}
               </p>
             </>
           )}
@@ -100,13 +102,13 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
           <p className="text-gray-600 text-sm leading-relaxed">
             {mode === "choice"
               ? variant === "milestone"
-                ? "Créez votre compte pour sauvegarder votre progression et apparaître dans le classement."
+                ? t("conv.milestoneDesc")
                 : variant === "vote"
-                  ? "Pour voter et contribuer à la communauté, vous devez être connecté."
-                  : "Sauvegardez votre progression et apparaissez dans le classement de votre ville."
+                  ? t("conv.voteDesc")
+                  : t("conv.loginDesc")
               : mode === "signup"
-                ? "Créez votre compte avec votre email."
-                : "Connectez-vous à votre compte."}
+                ? t("conv.signupDesc")
+                : t("conv.loginFormDesc")}
           </p>
 
           <div className="mt-6 space-y-3">
@@ -125,7 +127,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
                   </svg>
-                  Continuer avec Google
+                  {t("conv.google")}
                 </button>
 
                 {/* Email signup */}
@@ -139,14 +141,14 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                     <polyline points="22,6 12,13 2,6" />
                   </svg>
-                  S&apos;inscrire avec email
+                  {t("conv.emailSignup")}
                 </button>
 
                 <button
                   onClick={() => setMode("login")}
                   className="text-xs text-sf-accent hover:text-sf-accent-light transition-colors"
                 >
-                  Déjà un compte ? Se connecter
+                  {t("conv.hasAccount")}
                 </button>
               </>
             )}
@@ -155,7 +157,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
               <form onSubmit={handleEmailSubmit} className="space-y-3 text-left">
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder={t("conv.email")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm
@@ -165,7 +167,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                 />
                 <input
                   type="password"
-                  placeholder={mode === "signup" ? "Mot de passe (6+ caractères)" : "Mot de passe"}
+                  placeholder={mode === "signup" ? t("conv.passwordSignup") : t("conv.password")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm
@@ -183,10 +185,10 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                              hover:bg-sf-accent-light disabled:opacity-50 transition-colors"
                 >
                   {submitting
-                    ? "Chargement..."
+                    ? t("conv.submitting")
                     : mode === "signup"
-                      ? "Créer mon compte"
-                      : "Se connecter"}
+                      ? t("conv.createAccount")
+                      : t("conv.signIn")}
                 </button>
                 <button
                   type="button"
@@ -196,7 +198,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                   }}
                   className="w-full text-xs text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  Retour
+                  {t("conv.back")}
                 </button>
               </form>
             )}
@@ -207,7 +209,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
               onClick={onClose}
               className="mt-4 text-xs text-gray-400 hover:text-gray-600 transition-colors"
             >
-              Peut-être plus tard
+              {t("conv.later")}
             </button>
           )}
         </div>

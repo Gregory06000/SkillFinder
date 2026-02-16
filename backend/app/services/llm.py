@@ -22,6 +22,16 @@ GEMINI_URL = (
     "models/gemini-2.0-flash:generateContent"
 )
 
+# Singleton client — reuse TCP connections across Gemini calls
+_gemini_client: httpx.AsyncClient | None = None
+
+
+def _get_gemini_client() -> httpx.AsyncClient:
+    global _gemini_client
+    if _gemini_client is None or _gemini_client.is_closed:
+        _gemini_client = httpx.AsyncClient(timeout=45.0)
+    return _gemini_client
+
 
 _INJECTION_PATTERNS = [
     re.compile(r"(?i)ignore\s+(all\s+)?previous\s+instructions"),
@@ -100,8 +110,8 @@ Exemples :
         },
     }
 
-    async with httpx.AsyncClient(timeout=15.0) as client:
-        resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
+    client = _get_gemini_client()
+    resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
 
     if resp.status_code != 200:
         logger.warning("Synonym generation failed (%s)", resp.status_code)
@@ -235,8 +245,8 @@ async def score_reviews_batch(
         },
     }
 
-    async with httpx.AsyncClient(timeout=45.0) as client:
-        resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
+    client = _get_gemini_client()
+    resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
 
     if resp.status_code != 200:
         logger.error("Gemini scoring error %s: %s", resp.status_code, resp.text)
@@ -343,8 +353,8 @@ async def compare_businesses(
         },
     }
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
+    client = _get_gemini_client()
+    resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
 
     if resp.status_code != 200:
         logger.error("Gemini API error %s: %s", resp.status_code, resp.text)

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import type { CompareResponse, BusinessAnalysis } from "@/lib/api";
+import { useT } from "@/lib/i18n";
 
 interface ComparisonModalProps {
   data: CompareResponse | null;
@@ -10,14 +11,14 @@ interface ComparisonModalProps {
   onClose: () => void;
 }
 
-function WinnerBadge() {
+function WinnerBadge({ label }: { label: string }) {
   return (
     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full
                      bg-yellow-100 text-yellow-700 text-[10px] font-bold uppercase tracking-wide">
       <svg className="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
         <path fillRule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.741L14.146 7.2 18.5 7.57a1 1 0 01.564 1.736l-3.28 2.8 1.015 4.35a1 1 0 01-1.478 1.072L12 15.863l-3.322 1.665a1 1 0 01-1.478-1.072l1.015-4.35-3.28-2.8a1 1 0 01.564-1.736l4.353-.37 1.18-4.459A1 1 0 0112 2z" clipRule="evenodd" />
       </svg>
-      Gagnant
+      {label}
     </span>
   );
 }
@@ -27,11 +28,13 @@ function AnalysisColumn({
   analysis,
   matchScore,
   isWinner,
+  labels,
 }: {
   name: string;
   analysis: BusinessAnalysis;
   matchScore: number;
   isWinner: boolean;
+  labels: { winner: string; strengths: string; weaknesses: string; notIdentified: string; none: string; price: string; vibe: string; speed: string };
 }) {
   return (
     <div className={`flex-1 p-4 rounded-xl border ${
@@ -41,7 +44,7 @@ function AnalysisColumn({
       <div className="mb-4">
         <div className="flex items-center gap-2 mb-1">
           <h3 className="font-semibold text-gray-900 text-sm truncate">{name}</h3>
-          {isWinner && <WinnerBadge />}
+          {isWinner && <WinnerBadge label={labels.winner} />}
         </div>
         <span className={`text-lg font-bold ${
           matchScore >= 4 ? "text-green-600" :
@@ -56,7 +59,7 @@ function AnalysisColumn({
       {/* Strengths */}
       <div className="mb-3">
         <p className="text-xs font-medium text-green-700 uppercase tracking-wide mb-1.5">
-          Points forts
+          {labels.strengths}
         </p>
         {analysis.strengths.length > 0 ? (
           <ul className="space-y-1">
@@ -70,14 +73,14 @@ function AnalysisColumn({
             ))}
           </ul>
         ) : (
-          <p className="text-xs text-gray-400 italic">Non identifié</p>
+          <p className="text-xs text-gray-400 italic">{labels.notIdentified}</p>
         )}
       </div>
 
       {/* Weaknesses */}
       <div className="mb-3">
         <p className="text-xs font-medium text-orange-700 uppercase tracking-wide mb-1.5">
-          Points d&apos;attention
+          {labels.weaknesses}
         </p>
         {analysis.weaknesses.length > 0 ? (
           <ul className="space-y-1">
@@ -91,26 +94,26 @@ function AnalysisColumn({
             ))}
           </ul>
         ) : (
-          <p className="text-xs text-gray-400 italic">Aucun</p>
+          <p className="text-xs text-gray-400 italic">{labels.none}</p>
         )}
       </div>
 
       {/* Metadata grid */}
       <div className="grid grid-cols-3 gap-2 pt-3 border-t border-gray-100">
         <div className="text-center">
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Prix</p>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wide">{labels.price}</p>
           <p className="text-sm font-medium text-gray-700 mt-0.5">
             {analysis.price_range || "—"}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Ambiance</p>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wide">{labels.vibe}</p>
           <p className="text-sm font-medium text-gray-700 mt-0.5 truncate">
             {analysis.vibe || "—"}
           </p>
         </div>
         <div className="text-center">
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Rapidité</p>
+          <p className="text-[10px] text-gray-400 uppercase tracking-wide">{labels.speed}</p>
           <p className="text-sm font-medium text-gray-700 mt-0.5">
             {analysis.service_speed || "—"}
           </p>
@@ -126,6 +129,8 @@ export default function ComparisonModal({
   error,
   onClose,
 }: ComparisonModalProps) {
+  const { t } = useT();
+
   // Close on Escape
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -142,6 +147,17 @@ export default function ComparisonModal({
         : 2
       : 0; // tie
 
+  const labels = {
+    winner: t("compare.winner"),
+    strengths: t("compare.strengths"),
+    weaknesses: t("compare.weaknesses"),
+    notIdentified: t("compare.notIdentified"),
+    none: t("compare.none"),
+    price: t("compare.price"),
+    vibe: t("compare.vibe"),
+    speed: t("compare.speed"),
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
@@ -154,7 +170,7 @@ export default function ComparisonModal({
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-gray-200">
           <h2 className="text-lg font-bold text-gray-900">
-            Analyse comparative
+            {t("compare.title")}
           </h2>
           <button
             onClick={onClose}
@@ -175,7 +191,7 @@ export default function ComparisonModal({
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              <p className="text-sm text-gray-500">Analyse IA en cours...</p>
+              <p className="text-sm text-gray-500">{t("compare.loading")}</p>
             </div>
           )}
 
@@ -194,12 +210,14 @@ export default function ComparisonModal({
                   analysis={data.business_1_analysis}
                   matchScore={data.business_1_match_score}
                   isWinner={winner === 1}
+                  labels={labels}
                 />
                 <AnalysisColumn
                   name={data.business_2_name}
                   analysis={data.business_2_analysis}
                   matchScore={data.business_2_match_score}
                   isWinner={winner === 2}
+                  labels={labels}
                 />
               </div>
 
@@ -207,7 +225,7 @@ export default function ComparisonModal({
               {data.verdict && (
                 <div className="mt-5 p-4 rounded-xl bg-brand-50 border border-brand-200">
                   <p className="text-xs font-medium text-brand-700 uppercase tracking-wide mb-1">
-                    Verdict IA
+                    {t("compare.verdict")}
                   </p>
                   <p className="text-sm text-brand-900">{data.verdict}</p>
                 </div>

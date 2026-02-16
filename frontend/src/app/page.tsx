@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, lazy, Suspense } from "react";
+import { useState, lazy, Suspense, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
 import ComparisonModal from "@/components/ComparisonModal";
@@ -8,14 +9,17 @@ import ComparisonModal from "@/components/ComparisonModal";
 const ResultsMap = lazy(() => import("@/components/ResultsMap"));
 import UserStats from "@/components/UserStats";
 import ConversionModal from "@/components/ConversionModal";
+import TierUpModal from "@/components/TierUpModal";
 import LeaderboardWidget from "@/components/LeaderboardWidget";
 import ProfilePanel from "@/components/ProfilePanel";
 import LeaderboardTab from "@/components/LeaderboardTab";
-import { verifyBusiness } from "@/lib/api";
 import { useSearch, type SortMode } from "@/lib/useSearch";
 import { useRewards } from "@/lib/useRewards";
 import { useCompare } from "@/lib/useCompare";
+import { useVerification } from "@/lib/useVerification";
+import { useFavorites } from "@/lib/useFavorites";
 import { useAuth } from "@/lib/AuthContext";
+import { useT } from "@/lib/i18n";
 
 function SkeletonCard() {
   return (
@@ -39,15 +43,28 @@ function SkeletonCard() {
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
-  const [verifyLoading, setVerifyLoading] = useState(false);
-  const [voteError, setVoteError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"search" | "leaderboard">("search");
-  const [conversionVariant, setConversionVariant] = useState<"milestone" | "login" | "vote">("milestone");
+
+  const searchParams = useSearchParams();
+  const urlParams = useMemo(() => ({
+    service: searchParams.get("service") || "",
+    keyword: searchParams.get("keyword") || "",
+    city: searchParams.get("city") || "",
+  }), [searchParams]);
 
   const search = useSearch();
   const rewards = useRewards(search.searchCenter);
   const compare = useCompare();
-  const { user, signOut, getAccessToken } = useAuth();
+  const { user, signOut } = useAuth();
+  const { t, locale, setLocale } = useT();
+  const favs = useFavorites();
+
+  const verification = useVerification({
+    setResults: search.setResults,
+    markVoted: rewards.markVoted,
+    awardVotePoints: rewards.awardVotePoints,
+    setShowConversion: rewards.setShowConversion,
+  });
 
   function onSearch(
     service: string,
@@ -60,53 +77,10 @@ export default function Home() {
     search.handleSearch(service, keyword, location, radiusKm);
   }
 
-  async function handleVerify(placeId: string, vote: "yes" | "no") {
-    if (!user) {
-      setConversionVariant("vote");
-      rewards.setShowConversion(true);
-      return;
-    }
-
-    setVerifyLoading(true);
-    try {
-      const token = await getAccessToken();
-      if (!token) {
-        setConversionVariant("vote");
-        rewards.setShowConversion(true);
-        setVerifyLoading(false);
-        return;
-      }
-      await verifyBusiness(placeId, vote, token);
-      // Only update UI after server confirmation
-      search.setResults((prev) =>
-        prev.map((r) =>
-          r.name === placeId
-            ? {
-                ...r,
-                verification_yes:
-                  r.verification_yes + (vote === "yes" ? 1 : 0),
-                verification_no: r.verification_no + (vote === "no" ? 1 : 0),
-                verification_last: new Date().toISOString(),
-              }
-            : r,
-        ),
-      );
-      rewards.markVoted(placeId);
-      rewards.awardVotePoints(() => setConversionVariant("milestone"));
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Erreur inconnue";
-      console.error("Vote error:", msg);
-      setVoteError(msg);
-      setTimeout(() => setVoteError(null), 6000);
-    } finally {
-      setVerifyLoading(false);
-    }
-  }
-
-  const SORT_OPTIONS: { key: SortMode; label: string }[] = [
-    { key: "match", label: "Meilleur match" },
-    { key: "distance", label: "Distance" },
-    { key: "rating", label: "Note" },
+  const SORT_OPTIONS: { key: SortMode; labelKey: string }[] = [
+    { key: "match", labelKey: "results.sortMatch" },
+    { key: "distance", labelKey: "results.sortDistance" },
+    { key: "rating", labelKey: "results.sortRating" },
   ];
 
   return (
@@ -152,24 +126,30 @@ export default function Home() {
             <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
               <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
             </svg>
-            Classement
+            {t("nav.leaderboard")}
+          </button>
+          {/* Language toggle */}
+          <button
+            onClick={() => setLocale(locale === "fr" ? "en" : "fr")}
+            className="hidden sm:flex items-center px-2.5 py-1.5 rounded-full border
+                        text-[12px] font-semibold transition-all cursor-pointer
+                        bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+          >
+            {locale === "fr" ? "EN" : "FR"}
           </button>
           {user ? (
             <button
               onClick={signOut}
               className="hidden sm:block text-xs text-sf-text-light hover:text-sf-text transition-colors"
             >
-              Déconnexion
+              {t("nav.logout")}
             </button>
           ) : (
             <button
-              onClick={() => {
-                setConversionVariant("login");
-                rewards.setShowConversion(true);
-              }}
+              onClick={verification.showLoginForVote}
               className="hidden sm:block text-xs font-medium text-sf-accent hover:text-sf-accent-light transition-colors"
             >
-              Connexion
+              {t("nav.login")}
             </button>
           )}
           <button
@@ -197,7 +177,7 @@ export default function Home() {
                 {rewards.rank.title}
               </span>
               <span className="text-[11px] text-sf-text-secondary">
-                Palier {rewards.rank.palier} &middot; {rewards.rewards.points} pts
+                {t("nav.tier", { palier: rewards.rank.palier })} &middot; {t("nav.pts", { pts: rewards.rewards.points })}
               </span>
             </div>
           </button>
@@ -239,17 +219,52 @@ export default function Home() {
       <section className="px-5 sm:px-10 pt-12 max-w-[1400px] mx-auto animate-fade-in-up">
         <div className="mb-8">
           <h1 className="font-serif text-3xl sm:text-[38px] font-bold tracking-tight leading-tight text-sf-text">
-            Trouvez le meilleur pour
+            {t("hero.title1")}
             <br />
-            ce qui compte <em className="text-sf-accent">vraiment</em>
+            {t("hero.title2")} <em className="text-sf-accent">{t("hero.title3")}</em>
           </h1>
           <p className="mt-2 text-base text-sf-text-secondary max-w-[500px]">
-            Comparez les professionnels près de chez vous selon vos critères
-            précis.
+            {t("hero.subtitle")}
           </p>
         </div>
 
-        <SearchBar onSearch={onSearch} isLoading={search.isLoading} />
+        <SearchBar
+          onSearch={onSearch}
+          isLoading={search.isLoading}
+          initialService={urlParams.service}
+          initialKeyword={urlParams.keyword}
+          initialCity={urlParams.city}
+        />
+
+        {/* Search history */}
+        {!search.hasResults && !search.isLoading && search.history.length > 0 && (
+          <div className="mt-4 mb-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-medium text-sf-text-light uppercase tracking-wider">
+                {t("history.title")}
+              </span>
+              <button
+                onClick={search.clearHistory}
+                className="text-[11px] text-sf-text-light hover:text-sf-text transition-colors"
+              >
+                {t("history.clear")}
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {search.history.slice(0, 5).map((h, i) => (
+                <button
+                  key={`hist-${i}`}
+                  onClick={() => onSearch(h.service, h.keyword, h.location, h.radiusKm)}
+                  className="px-3 py-1.5 bg-white border border-sf-border rounded-full text-xs
+                             text-sf-text-secondary hover:border-sf-accent/40 hover:text-sf-accent
+                             transition-all cursor-pointer"
+                >
+                  {h.keyword} &middot; {h.service}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* XP Bar */}
         <UserStats
@@ -258,6 +273,65 @@ export default function Home() {
           onFlyingDone={rewards.handleFlyingDone}
         />
       </section>
+
+      {/* ── FAVORITES (when no search results) ── */}
+      {!search.hasResults && !search.isLoading && favs.favorites.length > 0 && (
+        <section className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-4 pb-2">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-xs font-medium text-sf-text-light uppercase tracking-wider">
+              {t("fav.title", { count: favs.favorites.length })}
+            </span>
+            <button
+              onClick={favs.clearFavorites}
+              className="text-[11px] text-sf-text-light hover:text-sf-text transition-colors"
+            >
+              {t("fav.clearAll")}
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {favs.favorites.slice(0, 6).map((fav) => (
+              <div
+                key={fav.name}
+                className="bg-white border border-sf-border rounded-sf-md p-3 flex items-center gap-3
+                           hover:shadow-sf-sm transition-all group"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-sf-text truncate">{fav.name}</p>
+                  <p className="text-[11px] text-sf-text-secondary truncate">{fav.address}</p>
+                  <div className="flex items-center gap-2 mt-1 text-[11px] text-sf-text-light">
+                    <span>{fav.globalRating.toFixed(1)} &#9733;</span>
+                    <span>&middot; Score {fav.matchScore.toFixed(1)}</span>
+                  </div>
+                </div>
+                <div className="flex gap-1.5 flex-shrink-0">
+                  {fav.mapsUrl && (
+                    <a
+                      href={fav.mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-7 h-7 rounded-full border border-sf-border flex items-center justify-center
+                                 text-sf-text-light hover:text-sf-accent hover:border-sf-accent/40 transition-all"
+                    >
+                      <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+                      </svg>
+                    </a>
+                  )}
+                  <button
+                    onClick={() => favs.removeFavorite(fav.name)}
+                    className="w-7 h-7 rounded-full border border-sf-border flex items-center justify-center
+                               text-sf-text-light hover:text-red-500 hover:border-red-200 transition-all"
+                  >
+                    <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── RESULTS ── */}
       <section className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-8 pb-16">
@@ -289,7 +363,7 @@ export default function Home() {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                 />
               </svg>
-              Analyse des avis en cours...
+              {t("results.loading")}
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -306,11 +380,11 @@ export default function Home() {
           <div className="text-center py-16">
             <p className="text-sf-text-light text-4xl mb-3">:/</p>
             <p className="text-sm text-sf-text-secondary">
-              Aucun résultat trouvé pour{" "}
+              {t("results.noResults")}{" "}
               <strong>{search.lastSearch.keyword}</strong>.
             </p>
             <p className="text-xs text-sf-text-light mt-1">
-              Essayez un autre mot-clé ou une autre catégorie.
+              {t("results.tryOther")}
             </p>
           </div>
         )}
@@ -321,10 +395,15 @@ export default function Home() {
             <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
               <div className="text-sm text-sf-text-secondary">
                 <strong className="text-sf-text font-semibold">
-                  {search.results.length} résultats
+                  {t("results.count", { count: search.sortedResults.length, plural: search.sortedResults.length > 1 ? "s" : "" })}
                 </strong>{" "}
-                pour <strong className="text-sf-text font-semibold">{search.lastSearch?.keyword}</strong>{" "}
-                dans {search.lastSearch?.service}
+                {t("results.for")} <strong className="text-sf-text font-semibold">{search.lastSearch?.keyword}</strong>{" "}
+                {t("results.in")} {search.lastSearch?.service}
+                {search.sortedResults.length < search.results.length && (
+                  <span className="text-sf-text-light ml-1">
+                    {t("results.filtered", { count: search.results.length - search.sortedResults.length })}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 {SORT_OPTIONS.map((opt) => (
@@ -339,7 +418,7 @@ export default function Home() {
                                    : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                }`}
                   >
-                    {opt.label}
+                    {t(opt.labelKey)}
                   </button>
                 ))}
 
@@ -353,13 +432,13 @@ export default function Home() {
                                  ? "bg-sf-dark text-white border-sf-dark"
                                  : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                              }`}
-                  title="Afficher le raisonnement IA"
+                  title={t("results.aiTitle")}
                 >
                   <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <circle cx="12" cy="12" r="10" />
                     <path d="M12 16v-4M12 8h.01" />
                   </svg>
-                  IA
+                  {t("results.aiToggle")}
                 </button>
 
                 {/* Mobile list/map toggle */}
@@ -374,7 +453,7 @@ export default function Home() {
                                      : "bg-white text-sf-text-secondary"
                                  }`}
                     >
-                      Liste
+                      {t("results.list")}
                     </button>
                     <button
                       onClick={() => setMobileView("map")}
@@ -385,11 +464,66 @@ export default function Home() {
                                      : "bg-white text-sf-text-secondary"
                                  }`}
                     >
-                      Carte
+                      {t("results.map")}
                     </button>
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Filters */}
+            <div className="flex items-center gap-3 mb-5 flex-wrap">
+              <span className="text-[11px] font-semibold text-sf-text-light uppercase tracking-wider">
+                {t("filters.label")}
+              </span>
+              {[3, 3.5, 4, 4.5].map((rating) => (
+                <button
+                  key={`r-${rating}`}
+                  onClick={() =>
+                    search.setFilters((f) => ({
+                      ...f,
+                      minRating: f.minRating === rating ? 0 : rating,
+                    }))
+                  }
+                  className={`px-2.5 py-1 rounded-full border text-[12px] font-medium transition-all cursor-pointer
+                             ${search.filters.minRating === rating
+                               ? "bg-sf-gold text-white border-sf-gold"
+                               : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                             }`}
+                >
+                  {rating}+ &#9733;
+                </button>
+              ))}
+              {search.searchCenter && (
+                <>
+                  {[2, 5, 10].map((dist) => (
+                    <button
+                      key={`d-${dist}`}
+                      onClick={() =>
+                        search.setFilters((f) => ({
+                          ...f,
+                          maxDistance: f.maxDistance === dist ? 0 : dist,
+                        }))
+                      }
+                      className={`px-2.5 py-1 rounded-full border text-[12px] font-medium transition-all cursor-pointer
+                                 ${search.filters.maxDistance === dist
+                                   ? "bg-sf-accent text-white border-sf-accent"
+                                   : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                                 }`}
+                    >
+                      &lt; {dist} km
+                    </button>
+                  ))}
+                </>
+              )}
+              {(search.filters.minRating > 0 || search.filters.maxDistance > 0) && (
+                <button
+                  onClick={() => search.setFilters({ minRating: 0, maxDistance: 0 })}
+                  className="text-[11px] text-sf-accent hover:underline cursor-pointer"
+                >
+                  {t("filters.clear")}
+                </button>
+              )}
             </div>
 
             {/* 2-column layout: cards + map */}
@@ -402,7 +536,7 @@ export default function Home() {
                     : "flex"
                 }`}
               >
-                {search.sortedResults.map((result, i) => (
+                {search.paginatedResults.map((result, i) => (
                   <ResultCard
                     key={`${result.name}-${i}`}
                     result={result}
@@ -414,11 +548,34 @@ export default function Home() {
                     isCompareSelected={compare.compareSet.has(i)}
                     onCompareToggle={() => compare.handleCompareToggle(i)}
                     compareDisabled={compare.compareSet.size >= 2}
-                    onVerify={handleVerify}
-                    verifyLoading={verifyLoading}
+                    onVerify={verification.handleVerify}
+                    verifyLoading={verification.verifyLoading}
                     showReasoning={rewards.showReasoning}
+                    isFavorite={favs.isFavorite(result.name)}
+                    onToggleFavorite={() =>
+                      favs.toggleFavorite({
+                        name: result.name,
+                        address: result.address,
+                        matchScore: result.match_score,
+                        globalRating: result.global_rating,
+                        photoName: result.photo_name,
+                        mapsUrl: result.maps_url,
+                      })
+                    }
                   />
                 ))}
+
+                {/* Show more button */}
+                {search.canShowMore && (
+                  <button
+                    onClick={search.showMore}
+                    className="w-full py-3 bg-white border border-sf-border rounded-sf-lg text-sm
+                               font-medium text-sf-text-secondary hover:border-sf-accent/40
+                               hover:text-sf-accent transition-all cursor-pointer"
+                  >
+                    {t("results.showMore", { count: search.sortedResults.length - search.paginatedResults.length })}
+                  </button>
+                )}
 
                 {rewards.rewards.city && (
                   <LeaderboardWidget
@@ -447,7 +604,7 @@ export default function Home() {
                   <Suspense
                     fallback={
                       <div className="w-full h-full flex items-center justify-center bg-sf-bg text-sm text-sf-text-light">
-                        Chargement de la carte...
+                        {t("results.mapLoading")}
                       </div>
                     }
                   >
@@ -500,8 +657,8 @@ export default function Home() {
               />
             </svg>
             {compare.compareSet.size < 2
-              ? `Comparer (${compare.compareSet.size}/2)`
-              : "Comparer ces 2 commerces"}
+              ? t("compare.btn", { count: compare.compareSet.size })
+              : t("compare.btnReady")}
           </button>
         </div>
       )}
@@ -519,16 +676,24 @@ export default function Home() {
       {/* Conversion modal (100-point milestone) */}
       {rewards.showConversion && (
         <ConversionModal
-          variant={conversionVariant}
+          variant={verification.conversionVariant}
           rankTitle="Éclaireur Urbain"
           onClose={() => rewards.setShowConversion(false)}
         />
       )}
 
+      {/* Tier-up celebration modal */}
+      {rewards.tierUp && (
+        <TierUpModal
+          rank={rewards.rank}
+          onClose={() => rewards.setTierUp(false)}
+        />
+      )}
+
       {/* Vote error toast */}
-      {voteError && (
+      {verification.voteError && (
         <div className="fixed bottom-6 right-6 z-50 bg-red-600 text-white text-sm px-4 py-3 rounded-sf-md shadow-sf-lg animate-fade-in-up">
-          {voteError}
+          {verification.voteError}
         </div>
       )}
     </>

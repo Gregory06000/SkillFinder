@@ -4,6 +4,20 @@ import { useState, useRef, useEffect, useCallback, memo } from "react";
 import type { BusinessResult } from "@/lib/api";
 import { getPhotoUrl } from "@/lib/api";
 import { hasVoted as checkVoted } from "@/lib/gamification";
+import { useT } from "@/lib/i18n";
+
+function shareResult(result: BusinessResult) {
+  const text = `${result.name} - Score ${result.match_score.toFixed(1)}/5\n${result.address}`;
+  const url = result.maps_url || "";
+  if (navigator.share) {
+    navigator.share({ title: result.name, text, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(`${text}\n${url}`).then(() => {
+      // Brief feedback via a temporary element would be ideal
+      // but for simplicity we just copy
+    }).catch(() => {});
+  }
+}
 
 interface ResultCardProps {
   result: BusinessResult;
@@ -16,6 +30,8 @@ interface ResultCardProps {
   onVerify?: (placeId: string, vote: "yes" | "no") => void;
   verifyLoading?: boolean;
   showReasoning?: boolean;
+  isFavorite?: boolean;
+  onToggleFavorite?: () => void;
 }
 
 function renderSnippet(snippet: string) {
@@ -48,15 +64,15 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-function getTimeSince(dateStr: string): string {
+function getTimeSince(dateStr: string, t: (key: string, vars?: Record<string, string | number>) => string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
   const hours = Math.floor(diff / 3600000);
-  if (hours < 1) return "il y a quelques minutes";
-  if (hours < 24) return `il y a ${hours}h`;
+  if (hours < 1) return t("card.timeMinutes");
+  if (hours < 24) return t("card.timeHours", { count: hours });
   const days = Math.floor(hours / 24);
-  if (days < 30) return `il y a ${days}j`;
+  if (days < 30) return t("card.timeDays", { count: days });
   const months = Math.floor(days / 30);
-  return `il y a ${months} mois`;
+  return t("card.timeMonths", { count: months });
 }
 
 function ResultCard({
@@ -70,7 +86,10 @@ function ResultCard({
   onVerify,
   verifyLoading,
   showReasoning,
+  isFavorite,
+  onToggleFavorite,
 }: ResultCardProps) {
+  const { t } = useT();
   const cardRef = useRef<HTMLDivElement>(null);
   const [imgError, setImgError] = useState(false);
   const hasPhoto = result.photo_name && !imgError;
@@ -140,7 +159,7 @@ function ResultCard({
                         rounded-full tracking-wide"
             style={{ boxShadow: "0 2px 8px rgba(196,93,62,0.3)" }}
           >
-            Meilleur match
+            {t("card.bestMatch")}
           </div>
         )}
         {isVerified && (
@@ -152,7 +171,7 @@ function ResultCard({
                 clipRule="evenodd"
               />
             </svg>
-            Vérifié
+            {t("card.verified")}
           </div>
         )}
         {isWarning && (
@@ -164,7 +183,7 @@ function ResultCard({
                 clipRule="evenodd"
               />
             </svg>
-            Contesté
+            {t("card.contested")}
           </div>
         )}
       </div>
@@ -211,7 +230,7 @@ function ResultCard({
               {result.match_score.toFixed(1)}
             </span>
             <span className="text-[9px] font-semibold uppercase tracking-wider text-sf-text-light">
-              Match
+              {t("card.match")}
             </span>
           </div>
         </div>
@@ -232,8 +251,7 @@ function ResultCard({
             >
               <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
             </svg>
-            {result.review_count} avis &middot; {result.frequency} mention
-            {result.frequency > 1 ? "s" : ""}
+            {t("card.reviews", { count: result.review_count })} &middot; {t("card.mention", { count: result.frequency, plural: result.frequency > 1 ? "s" : "" })}
           </div>
         </div>
 
@@ -255,11 +273,11 @@ function ResultCard({
           onClick={(e) => e.stopPropagation()}
         >
           <span className="text-sf-text-secondary font-medium">
-            Toujours vrai ?
+            {t("card.stillTrue")}
           </span>
           {hasVoted ? (
             <span className="text-sf-success font-medium animate-fade-in-up">
-              Merci pour votre vote !
+              {t("card.thankVote")}
             </span>
           ) : (
             <div className="flex items-center gap-1.5">
@@ -273,7 +291,7 @@ function ResultCard({
                 <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
                 </svg>
-                Oui
+                {t("card.yes")}
               </button>
               <button
                 onClick={() => handleVote("no")}
@@ -285,7 +303,7 @@ function ResultCard({
                 <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M18 9.5a1.5 1.5 0 11-3 0v-6a1.5 1.5 0 013 0v6zM14 9.667v-5.43a2 2 0 00-1.106-1.79l-.05-.025A4 4 0 0011.057 2H5.64a2 2 0 00-1.962 1.608l-1.2 6A2 2 0 004.44 12H8v4a2 2 0 002 2 1 1 0 001-1v-.667a4 4 0 01.8-2.4l1.4-1.866a4 4 0 00.8-2.4z" />
                 </svg>
-                Non
+                {t("card.no")}
               </button>
             </div>
           )}
@@ -294,7 +312,7 @@ function ResultCard({
               ({result.verification_yes}/{totalVotes})
               {result.verification_last && (
                 <span className="ml-1">
-                  &middot; {getTimeSince(result.verification_last)}
+                  &middot; {getTimeSince(result.verification_last, t)}
                 </span>
               )}
             </span>
@@ -325,7 +343,7 @@ function ResultCard({
               className="text-[13px] font-semibold text-sf-accent inline-flex items-center
                          gap-1.5 transition-all hover:gap-2.5"
             >
-              Voir le profil
+              {t("card.viewProfile")}
               <svg
                 className="w-3.5 h-3.5"
                 viewBox="0 0 24 24"
@@ -363,6 +381,37 @@ function ResultCard({
                 </svg>
               </a>
             )}
+            {onToggleFavorite && (
+              <button
+                onClick={onToggleFavorite}
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all
+                           ${isFavorite
+                             ? "border-red-300 bg-red-50 text-red-500"
+                             : "border-sf-border bg-white text-sf-text-light hover:bg-sf-bg hover:text-red-400 hover:border-red-200"
+                           }`}
+                title={isFavorite ? t("card.removeFav") : t("card.addFav")}
+              >
+                <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill={isFavorite ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" />
+                </svg>
+              </button>
+            )}
+            <button
+              onClick={() => shareResult(result)}
+              className="w-9 h-9 rounded-full border border-sf-border bg-white
+                         flex items-center justify-center text-sf-text-light
+                         hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light
+                         transition-all"
+              title={t("card.share")}
+            >
+              <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+              </svg>
+            </button>
             {onCompareToggle && (
               <button
                 onClick={onCompareToggle}
@@ -376,8 +425,8 @@ function ResultCard({
                            disabled:opacity-30 disabled:cursor-not-allowed`}
                 title={
                   isCompareSelected
-                    ? "Sélectionné pour comparaison"
-                    : "Comparer"
+                    ? t("compare.selected")
+                    : t("compare.select")
                 }
               >
                 <svg

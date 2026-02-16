@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getUserRank } from "@/lib/gamification";
+import { useT } from "@/lib/i18n";
 
 interface LeaderboardEntry {
   pseudo: string;
@@ -58,6 +59,7 @@ export default function LeaderboardTab({
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [userCleared, setUserCleared] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { t } = useT();
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   // Close suggestions on click outside
@@ -186,10 +188,10 @@ export default function LeaderboardTab({
       {/* Header */}
       <div className="mb-6">
         <h2 className="font-serif text-2xl font-bold text-sf-text tracking-tight">
-          Classement de la semaine
+          {t("lb.weekTitle")}
         </h2>
         <p className="text-sm text-sf-text-secondary mt-1">
-          Découvrez les meilleurs contributeurs de votre ville
+          {t("lb.weekSubtitle")}
         </p>
       </div>
 
@@ -212,7 +214,7 @@ export default function LeaderboardTab({
               value={cityQuery}
               onChange={(e) => setCityQuery(e.target.value)}
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-              placeholder="Rechercher une ville..."
+              placeholder={t("lb.searchPlaceholder")}
               className="flex-1 px-3 py-3.5 text-sm text-sf-text placeholder-sf-text-light outline-none bg-transparent"
             />
             {cityQuery && (
@@ -236,7 +238,7 @@ export default function LeaderboardTab({
               type="submit"
               className="px-5 py-3.5 bg-sf-accent text-white text-sm font-semibold hover:bg-sf-accent-light transition-colors"
             >
-              Rechercher
+              {t("lb.search")}
             </button>
           </div>
         </form>
@@ -274,7 +276,7 @@ export default function LeaderboardTab({
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          <p className="text-sm text-sf-text-secondary">Chargement du classement...</p>
+          <p className="text-sm text-sf-text-secondary">{t("lb.loading")}</p>
         </div>
       )}
 
@@ -286,7 +288,7 @@ export default function LeaderboardTab({
             <circle cx="12" cy="10" r="3" />
           </svg>
           <p className="text-sf-text-secondary text-sm">
-            Recherchez une ville pour voir son classement
+            {t("lb.noCitySelected")}
           </p>
         </div>
       )}
@@ -296,10 +298,10 @@ export default function LeaderboardTab({
         <div className="text-center py-16">
           <p className="text-sf-text-light text-4xl mb-3">:/</p>
           <p className="text-sm text-sf-text-secondary">
-            Aucun contributeur cette semaine à <strong>{selectedCity}</strong>.
+            {t("lb.noContributors")} <strong>{selectedCity}</strong>.
           </p>
           <p className="text-xs text-sf-text-light mt-1">
-            Soyez le premier à voter !
+            {t("lb.beFirst")}
           </p>
         </div>
       )}
@@ -311,10 +313,10 @@ export default function LeaderboardTab({
           <div className="flex items-center justify-between mb-5">
             <span className="text-sm text-sf-text-secondary">
               <strong className="text-sf-text font-semibold">{selectedCity}</strong>
-              {" "}&middot; {top50.length} contributeur{top50.length > 1 ? "s" : ""}
+              {" "}&middot; {t("lb.contributors", { count: top50.length, plural: top50.length > 1 ? "s" : "" })}
             </span>
             <span className="text-[11px] bg-sf-gold-light text-sf-gold px-2.5 py-1 rounded-full font-semibold">
-              Cette semaine
+              {t("lb.thisWeek")}
             </span>
           </div>
 
@@ -347,7 +349,7 @@ export default function LeaderboardTab({
                       {entry.pseudo}
                       {isUser && (
                         <span className="ml-1 text-[9px] bg-sf-accent text-white px-1.5 py-0.5 rounded-full">
-                          Vous
+                          {t("lb.you")}
                         </span>
                       )}
                     </p>
@@ -369,9 +371,9 @@ export default function LeaderboardTab({
             {/* Header */}
             <div className="grid grid-cols-[40px_1fr_80px_80px] sm:grid-cols-[50px_1fr_100px_100px] px-4 py-2.5 bg-sf-bg text-[11px] font-semibold text-sf-text-light uppercase tracking-wider border-b border-sf-border">
               <span>#</span>
-              <span>Joueur</span>
-              <span className="text-right">Semaine</span>
-              <span className="text-right">Total</span>
+              <span>{t("lb.player")}</span>
+              <span className="text-right">{t("lb.week")}</span>
+              <span className="text-right">{t("lb.total")}</span>
             </div>
 
             {/* Rows */}
@@ -411,7 +413,7 @@ export default function LeaderboardTab({
                             {entry.pseudo}
                             {isUser && (
                               <span className="ml-1.5 text-[9px] bg-sf-accent text-white px-1.5 py-0.5 rounded-full">
-                                Vous
+                                {t("lb.you")}
                               </span>
                             )}
                           </span>
@@ -436,13 +438,13 @@ export default function LeaderboardTab({
                     {/* Expanded details */}
                     {isExpanded && (
                       <div className="px-4 pb-3 pl-16 sm:pl-20 grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-sf-text-secondary border-l-4 border-transparent">
-                        <span>Niveau</span>
+                        <span>{t("lb.level")}</span>
                         <span className="font-medium text-sf-text">{rank.level}</span>
-                        <span>Palier</span>
+                        <span>{t("lb.tierLabel")}</span>
                         <span className="font-medium text-sf-text">{rank.palier}</span>
-                        <span>Titre</span>
+                        <span>{t("lb.titleLabel")}</span>
                         <span className="font-medium text-sf-text">{rank.title}</span>
-                        <span>Points totaux</span>
+                        <span>{t("lb.totalPoints")}</span>
                         <span className="font-medium text-sf-text">{entry.totalPoints}</span>
                       </div>
                     )}
@@ -462,7 +464,7 @@ export default function LeaderboardTab({
                 <span className="text-sm text-sf-text font-medium">
                   {userPseudo}
                   <span className="ml-1.5 text-[9px] bg-sf-accent text-white px-1.5 py-0.5 rounded-full">
-                    Vous
+                    {t("lb.you")}
                   </span>
                 </span>
               </div>

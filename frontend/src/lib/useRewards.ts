@@ -33,6 +33,7 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     avatarPhoto: null as string | null,
   });
   const [showReasoning, setShowReasoning] = useState(false);
+  const [tierUp, setTierUp] = useState(false);
 
   useEffect(() => {
     setRewards(loadRewards());
@@ -155,12 +156,17 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
   }
 
   function awardVotePoints(onMilestone?: () => void) {
+    const oldPalier = getUserRank(rewards.points).palier;
     const { newData, increment, hitMilestone } = earnPoints(rewards);
+    const newPalier = getUserRank(newData.points).palier;
     setRewards(newData);
     if (increment > 0) {
       setFlyingText(`+${increment}`);
     }
-    if (hitMilestone) {
+    // Check for tier-up (different from milestone)
+    if (newPalier > oldPalier) {
+      setTimeout(() => setTierUp(true), 1500);
+    } else if (hitMilestone) {
       setTimeout(() => {
         onMilestone?.();
         setShowConversion(true);
@@ -202,6 +208,8 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     setShowProfile,
     avatarData,
     showReasoning,
+    tierUp,
+    setTierUp,
     handleFlyingDone,
     handlePseudoChange,
     handleProfileClose,

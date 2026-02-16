@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import type { RewardsData, UserRank } from "@/lib/gamification";
 import { TIERS, getUserRank, getLevel } from "@/lib/gamification";
+import { useT } from "@/lib/i18n";
 
 interface ProfilePanelProps {
   rewards: RewardsData;
@@ -49,6 +50,7 @@ export default function ProfilePanel({
   onClose,
   onPseudoChange,
 }: ProfilePanelProps) {
+  const { t } = useT();
   const rank: UserRank = getUserRank(rewards.points);
   const level = getLevel(rewards.points);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -88,7 +90,7 @@ export default function ProfilePanel({
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 2 * 1024 * 1024) {
-      alert("Image trop lourde (max 2 Mo)");
+      alert(t("profile.photoTooBig"));
       return;
     }
     const reader = new FileReader();
@@ -222,8 +224,8 @@ export default function ProfilePanel({
               {rank.title}
             </div>
             <div className="text-xs text-sf-text-secondary">
-              Palier {rank.palier} &middot; Niveau {rank.level} &middot;{" "}
-              {rewards.points} pts
+              {t("stats.tier", { palier: rank.palier })} &middot; {t("stats.level", { level: rank.level })} &middot;{" "}
+              {t("nav.pts", { pts: rewards.points })}
             </div>
           </div>
         </div>
@@ -235,7 +237,7 @@ export default function ProfilePanel({
               onClick={handleRemovePhoto}
               className="text-[11px] text-sf-text-light hover:text-red-500 transition-colors"
             >
-              Supprimer la photo
+              {t("profile.removePhoto")}
             </button>
           )}
         </div>
@@ -243,7 +245,7 @@ export default function ProfilePanel({
         {/* Color picker */}
         <div className="mt-3">
           <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-2">
-            Couleur du profil
+            {t("profile.colorLabel")}
           </div>
           <div className="flex gap-2">
             {AVATAR_COLORS.map((color) => (
@@ -262,7 +264,7 @@ export default function ProfilePanel({
       {/* Tiers progression */}
       <div className="p-5 pt-4 max-h-[400px] overflow-y-auto">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-3">
-          Progression des paliers
+          {t("profile.tierProgress")}
         </div>
 
         <div className="space-y-1">
@@ -321,7 +323,7 @@ export default function ProfilePanel({
                         {tier.title}
                       </span>
                       <span className="text-[10px] text-sf-text-light flex-shrink-0">
-                        Niv. {tier.minLevel}–{tier.maxLevel}
+                        {t("profile.levelRange", { min: tier.minLevel, max: tier.maxLevel })}
                       </span>
                     </div>
 
@@ -349,7 +351,7 @@ export default function ProfilePanel({
 
       {/* Footer stats */}
       <div className="px-5 py-3 border-t border-sf-border bg-sf-bg/50 flex items-center justify-between text-[11px] text-sf-text-light">
-        <span>Cette semaine : +{rewards.weeklyPoints} pts</span>
+        <span>{t("profile.weekStats", { pts: rewards.weeklyPoints })}</span>
         {rewards.city && <span>{rewards.city}</span>}
       </div>
     </div>

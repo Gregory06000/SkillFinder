@@ -106,10 +106,9 @@ export interface RewardsData {
 
 function getCurrentWeekStart(): string {
   const now = new Date();
-  const day = now.getDay();
-  const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-  const monday = new Date(now.setDate(diff));
-  monday.setHours(0, 0, 0, 0);
+  const utcDay = now.getUTCDay();
+  const diff = now.getUTCDate() - utcDay + (utcDay === 0 ? -6 : 1);
+  const monday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), diff));
   return monday.toISOString().split("T")[0];
 }
 
@@ -132,6 +131,13 @@ export function loadRewards(): RewardsData {
         data.weeklyPointsByCity = {};
         data.weekStart = currentWeek;
         saveRewards(data);
+      } else {
+        // Clean up zero-point cities to prevent object bloat
+        const cleaned: Record<string, number> = {};
+        for (const [c, pts] of Object.entries(data.weeklyPointsByCity)) {
+          if (pts > 0) cleaned[c] = pts;
+        }
+        data.weeklyPointsByCity = cleaned;
       }
       // Keep weeklyPoints in sync with current city
       data.weeklyPoints = data.weeklyPointsByCity[data.city] ?? 0;
@@ -192,12 +198,18 @@ export function hasVoted(placeId: string): boolean {
   }
 }
 
+const MAX_VOTED_PLACES = 500;
+
 export function markVoted(placeId: string): void {
   try {
     const raw = localStorage.getItem(VOTED_KEY);
     const set: string[] = raw ? JSON.parse(raw) : [];
     if (!set.includes(placeId)) {
       set.push(placeId);
+      // Keep only the most recent votes to prevent localStorage bloat
+      if (set.length > MAX_VOTED_PLACES) {
+        set.splice(0, set.length - MAX_VOTED_PLACES);
+      }
       localStorage.setItem(VOTED_KEY, JSON.stringify(set));
     }
   } catch {}
