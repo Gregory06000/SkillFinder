@@ -169,8 +169,13 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     // Sync ALL cities to server after each vote so total_points stays consistent
     if (user) {
       getAccessToken().then((token) => {
-        if (!token) return;
-        for (const [city, cityWeekly] of Object.entries(newData.weeklyPointsByCity)) {
+        if (!token) {
+          console.warn("Leaderboard sync skipped: no token");
+          return;
+        }
+        const cities = Object.entries(newData.weeklyPointsByCity);
+        console.log("Syncing leaderboard:", { total: newData.points, cities });
+        for (const [city, cityWeekly] of cities) {
           if (city && cityWeekly > 0) {
             updateLeaderboard(
               newData.pseudo,
@@ -178,7 +183,9 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
               cityWeekly,
               newData.points,
               token,
-            ).catch(() => {});
+            ).then((r) => {
+              if (!r.success) console.warn("Sync failed for", city);
+            }).catch((err) => console.error("Sync error for", city, err));
           }
         }
       });

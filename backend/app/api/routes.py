@@ -319,7 +319,7 @@ async def user_profile(authorization: str | None = Header(default=None)):
 
 
 @router.post("/leaderboard")
-@limiter.limit("5/minute")
+@limiter.limit("20/minute")
 async def update_leaderboard(
     request: Request,
     pseudo: str = "",

@@ -184,6 +184,10 @@ export async function updateLeaderboard(
     headers,
   });
 
-  if (!res.ok) return { success: false };
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }));
+    console.warn("Leaderboard sync failed:", err.detail || res.status, { pseudo, city, weeklyPoints, totalPoints });
+    return { success: false };
+  }
   return res.json();
 }
