@@ -223,6 +223,7 @@ async def upsert_leaderboard(
     weekly_points: int,
     total_points: int,
     user_id: str | None = None,
+    user_token: str | None = None,
 ) -> None:
     """Insert or update a leaderboard entry for this week."""
     if not is_enabled():
@@ -246,6 +247,8 @@ async def upsert_leaderboard(
     }
     if _SERVICE_ROLE_KEY:
         headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        headers["Authorization"] = f"Bearer {user_token}"
 
     resp = await client.post(
         "/rest/v1/leaderboard",

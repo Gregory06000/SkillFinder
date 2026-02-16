@@ -341,8 +341,10 @@ async def update_leaderboard(
     if not pseudo or not city:
         return {"success": False}
 
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+
     try:
-        await upsert_leaderboard(pseudo, city, weekly_points, total_points, user_id=user_id)
+        await upsert_leaderboard(pseudo, city, weekly_points, total_points, user_id=user_id, user_token=raw_token)
         return {"success": True}
     except Exception as e:
         logger.warning("Leaderboard upsert failed for pseudo=%r city=%r: %s", pseudo, city, e)
