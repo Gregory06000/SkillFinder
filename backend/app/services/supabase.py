@@ -225,13 +225,55 @@ async def upsert_leaderboard(
     user_id: str | None = None,
     user_token: str | None = None,
 ) -> None:
-    """Insert or update a leaderboard entry for this week."""
+    """Insert or update a leaderboard entry for this week.
+
+    Uses PATCH first to update any existing row matching (pseudo, city, week_start),
+    then falls back to POST if no row exists. This handles cases where old entries
+    were created without user_id.
+    """
     if not is_enabled():
         return
 
     client = _get_client()
     week = _current_week_start()
-    payload: dict = {
+
+    auth_headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        auth_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        auth_headers["Authorization"] = f"Bearer {user_token}"
+
+    # 1) Try PATCH: update existing row matching (pseudo, city, week_start)
+    update_payload: dict = {
+        "weekly_points": weekly_points,
+        "total_points": total_points,
+    }
+    if user_id:
+        update_payload["user_id"] = user_id
+
+    patch_resp = await client.patch(
+        "/rest/v1/leaderboard",
+        params={
+            "pseudo": f"eq.{pseudo}",
+            "city": f"eq.{city}",
+            "week_start": f"eq.{week}",
+        },
+        headers={
+            "Content-Type": "application/json",
+            "Prefer": "return=headers-only",
+            **auth_headers,
+        },
+        json=update_payload,
+    )
+
+    # Check if PATCH updated any rows (content-range header tells us)
+    content_range = patch_resp.headers.get("content-range", "")
+    if patch_resp.status_code == 200 and "0-" in content_range:
+        # Updated at least one row — done
+        return
+
+    # 2) No existing row: INSERT new entry
+    insert_payload: dict = {
         "pseudo": pseudo,
         "city": city,
         "weekly_points": weekly_points,
@@ -239,21 +281,16 @@ async def upsert_leaderboard(
         "week_start": week,
     }
     if user_id:
-        payload["user_id"] = user_id
-
-    headers = {
-        "Content-Type": "application/json",
-        "Prefer": "resolution=merge-duplicates,return=minimal",
-    }
-    if _SERVICE_ROLE_KEY:
-        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
-    elif user_token:
-        headers["Authorization"] = f"Bearer {user_token}"
+        insert_payload["user_id"] = user_id
 
     resp = await client.post(
         "/rest/v1/leaderboard",
-        headers=headers,
-        json=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Prefer": "resolution=merge-duplicates,return=minimal",
+            **auth_headers,
+        },
+        json=insert_payload,
     )
     resp.raise_for_status()
 
