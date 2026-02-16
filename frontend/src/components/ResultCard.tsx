@@ -78,7 +78,7 @@ function ResultCard({
   const [hasVoted, setHasVoted] = useState(false);
   useEffect(() => {
     setHasVoted(checkVoted(result.name));
-  }, [result.name]);
+  }, [result.name, result.verification_last]);
 
   const totalVotes = result.verification_yes + result.verification_no;
   const isVerified =
@@ -258,7 +258,7 @@ function ResultCard({
             Toujours vrai ?
           </span>
           {hasVoted ? (
-            <span className="text-sf-text-light italic">
+            <span className="text-sf-success font-medium animate-fade-in-up">
               Merci pour votre vote !
             </span>
           ) : (
