@@ -52,6 +52,7 @@ logger = logging.getLogger("skillfinder.supabase")
 
 _SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 _SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
 _JWT_SECRET = os.environ.get("SUPABASE_JWT_SECRET", "")
 
 # Singleton client — avoids creating a new TCP connection per request
@@ -73,7 +74,11 @@ def _get_client() -> httpx.AsyncClient:
 
 
 def _write_headers() -> dict[str, str]:
-    return {"Content-Type": "application/json", "Prefer": "return=minimal"}
+    """Base write headers. If service_role key is available, use it to bypass RLS."""
+    headers: dict[str, str] = {"Content-Type": "application/json", "Prefer": "return=minimal"}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    return headers
 
 
 def is_enabled() -> bool:
@@ -84,8 +89,9 @@ async def add_vote(place_id: str, vote: str, user_token: str | None = None) -> N
     """Insert a verification vote ('yes' or 'no')."""
     client = _get_client()
     headers = _write_headers()
-    # Use the user's JWT for the request so it passes RLS policies
-    if user_token:
+    # _write_headers uses service_role key if available (bypasses RLS).
+    # Otherwise, use the user's JWT so authenticated RLS policies work.
+    if "Authorization" not in headers and user_token:
         headers["Authorization"] = f"Bearer {user_token}"
     resp = await client.post(
         "/rest/v1/verifications",
@@ -234,12 +240,16 @@ async def upsert_leaderboard(
     if user_id:
         payload["user_id"] = user_id
 
+    headers = {
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates,return=minimal",
+    }
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
     resp = await client.post(
         "/rest/v1/leaderboard",
-        headers={
-            "Content-Type": "application/json",
-            "Prefer": "resolution=merge-duplicates,return=minimal",
-        },
+        headers=headers,
         json=payload,
     )
     resp.raise_for_status()
@@ -287,29 +297,55 @@ async def get_user_profile(user_id: str) -> dict | None:
 async def get_user_from_token(authorization: str | None) -> str | None:
     """
     Extract and verify user_id from a Supabase JWT Bearer token.
+    Tries local JWT decode first (fast), falls back to Supabase Auth API.
     Returns the user UUID string, or None if the token is invalid/missing.
     """
     if not authorization or not authorization.startswith("Bearer "):
         return None
 
-    if not _JWT_SECRET:
-        logger.warning("SUPABASE_JWT_SECRET not set — cannot verify tokens")
-        return None
-
     token = authorization[7:]  # Strip "Bearer "
 
+    # 1) Try local JWT decode (fast, no network call)
+    if _JWT_SECRET:
+        try:
+            payload = jwt.decode(
+                token,
+                _JWT_SECRET,
+                algorithms=["HS256"],
+                audience="authenticated",
+            )
+            user_id = payload.get("sub")
+            if user_id:
+                return user_id
+        except jwt.ExpiredSignatureError:
+            logger.warning("Expired JWT token")
+            return None
+        except jwt.InvalidTokenError as e:
+            logger.warning("Invalid JWT token: %s", e)
+            return None
+
+    # 2) Fallback: verify via Supabase Auth API (works without JWT_SECRET)
+    if not is_enabled():
+        return None
+
     try:
-        payload = jwt.decode(
-            token,
-            _JWT_SECRET,
-            algorithms=["HS256"],
-            audience="authenticated",
+        client = _get_client()
+        resp = await client.get(
+            "/auth/v1/user",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "apikey": _SUPABASE_KEY,
+            },
         )
-        user_id = payload.get("sub")
-        return user_id if user_id else None
-    except jwt.ExpiredSignatureError:
-        logger.warning("Expired JWT token")
-        return None
-    except jwt.InvalidTokenError as e:
-        logger.warning("Invalid JWT token: %s", e)
-        return None
+        if resp.status_code == 200:
+            user_data = resp.json()
+            user_id = user_data.get("id")
+            if user_id:
+                logger.info("Token verified via Supabase Auth API (user_id=%s)", user_id)
+                return user_id
+        else:
+            logger.warning("Supabase Auth API returned %s", resp.status_code)
+    except Exception as e:
+        logger.warning("Supabase Auth API call failed: %s", e)
+
+    return None
