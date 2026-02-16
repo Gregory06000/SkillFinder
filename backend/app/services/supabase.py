@@ -257,6 +257,7 @@ async def upsert_leaderboard(
             "pseudo": f"eq.{pseudo}",
             "city": f"eq.{city}",
             "week_start": f"eq.{week}",
+            "total_points": f"lte.{total_points}",
         },
         headers={
             "Content-Type": "application/json",
