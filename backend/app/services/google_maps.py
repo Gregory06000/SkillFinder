@@ -84,15 +84,15 @@ async def geocode(address: str) -> tuple[float, float] | None:
 
 async def reverse_geocode(lat: float, lng: float) -> str:
     """
-    Convert (latitude, longitude) to a human-readable location name.
-    Returns the city/locality name, or a formatted address as fallback.
+    Convert (latitude, longitude) to a clean city name like "Paris, France".
+    Extracts locality + country from address_components to avoid
+    sub-locality details (e.g. "Paris 4e Arrondissement").
     """
     api_key = _get_api_key()
     params = {
         "latlng": f"{lat},{lng}",
         "key": api_key,
         "language": "fr",
-        "result_type": "locality|sublocality|administrative_area_level_1",
     }
 
     async with httpx.AsyncClient(timeout=10.0) as client:
@@ -104,16 +104,27 @@ async def reverse_geocode(lat: float, lng: float) -> str:
     data = resp.json()
     results = data.get("results", [])
     if not results:
-        # Fallback: try without result_type filter
-        params.pop("result_type")
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(GEOCODING_URL, params=params)
-        data = resp.json()
-        results = data.get("results", [])
-
-    if not results:
         return f"{lat:.4f}, {lng:.4f}"
 
+    # Extract city (locality) and country from address components
+    city = ""
+    country = ""
+    for result in results:
+        for comp in result.get("address_components", []):
+            types = comp.get("types", [])
+            if "locality" in types and not city:
+                city = comp["long_name"]
+            if "country" in types and not country:
+                country = comp["long_name"]
+        if city and country:
+            break
+
+    if city and country:
+        return f"{city}, {country}"
+    if city:
+        return city
+
+    # Fallback to formatted_address of the first result
     return results[0].get("formatted_address", f"{lat:.4f}, {lng:.4f}")
 
 
