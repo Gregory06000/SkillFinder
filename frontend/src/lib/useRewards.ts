@@ -166,18 +166,21 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
         setShowConversion(true);
       }, 1400);
     }
-    // Sync to server after each vote if logged in
-    if (user && newData.city) {
+    // Sync ALL cities to server after each vote so total_points stays consistent
+    if (user) {
       getAccessToken().then((token) => {
         if (!token) return;
-        const cityWeekly = newData.weeklyPointsByCity[newData.city] ?? 0;
-        updateLeaderboard(
-          newData.pseudo,
-          newData.city,
-          cityWeekly,
-          newData.points,
-          token,
-        ).catch(() => {});
+        for (const [city, cityWeekly] of Object.entries(newData.weeklyPointsByCity)) {
+          if (city && cityWeekly > 0) {
+            updateLeaderboard(
+              newData.pseudo,
+              city,
+              cityWeekly,
+              newData.points,
+              token,
+            ).catch(() => {});
+          }
+        }
       });
     }
   }
