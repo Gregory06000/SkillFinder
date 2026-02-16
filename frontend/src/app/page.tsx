@@ -40,7 +40,15 @@ function SkeletonCard() {
   );
 }
 
-export default function Home() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Home />
+    </Suspense>
+  );
+}
+
+function Home() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
   const [activeTab, setActiveTab] = useState<"search" | "leaderboard">("search");
