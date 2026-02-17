@@ -61,12 +61,13 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
   }, [searchCenter]);
 
   // Sync rewards with server when user logs in:
-  // - First login: merge localStorage points INTO server (addition), then clear localStorage
+  // - First login: merge localStorage points with server (max), then clear localStorage
   // - Subsequent logins: just load server points (merge flag prevents re-merge)
-  // When user logs out: reset to fresh localStorage (0 pts guest)
+  // When user logs out: clear localStorage so guest sees 0 pts
   useEffect(() => {
     if (!user) {
-      // Logged out → reset to fresh guest state from localStorage
+      // Logged out → clear gamification localStorage and show fresh guest (0 pts)
+      clearRewards();
       setRewards(loadRewards());
       return;
     }
@@ -95,18 +96,21 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
         let finalPoints = serverPoints;
 
         if (!alreadyMerged && localPoints > 0) {
-          // First-time merge: add local guest points to server points
-          finalPoints = serverPoints + localPoints;
+          // First-time merge: take the higher of local vs server
+          // (handles existing accounts where localStorage was already synced)
+          finalPoints = Math.max(localPoints, serverPoints);
 
-          // Push merged total to server
-          if (city) {
-            const weeklyPts = (profile.found && profile.weekly_points)
-              ? profile.weekly_points + (localData.weeklyPointsByCity[city] ?? 0)
-              : localData.weeklyPointsByCity[city] ?? 0;
-            await updateLeaderboard(pseudo, city, weeklyPts, finalPoints, token).catch(() => {});
-          } else {
-            // No city yet — push with empty city to at least save total_points
-            await updateLeaderboard(pseudo, "", 0, finalPoints, token).catch(() => {});
+          // Push merged total to server only if local had more
+          if (finalPoints > serverPoints) {
+            if (city) {
+              const weeklyPts = Math.max(
+                localData.weeklyPointsByCity[city] ?? 0,
+                (profile.found && profile.weekly_points) ? profile.weekly_points : 0,
+              );
+              await updateLeaderboard(pseudo, city, weeklyPts, finalPoints, token).catch(() => {});
+            } else {
+              await updateLeaderboard(pseudo, "", 0, finalPoints, token).catch(() => {});
+            }
           }
 
           // Mark as merged and clear guest localStorage
