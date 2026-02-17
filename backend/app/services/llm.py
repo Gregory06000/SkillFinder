@@ -216,11 +216,11 @@ Exemples :
 IMPORTANT :
 - evidence = CITATIONS EXACTES des avis, pas des paraphrases.
 - reasoning = 1 phrase expliquant le lien sémantique entre le désir de l'utilisateur et les avis.
-  Exemple : « L'avis mentionne 'croûte bien dorée' qui correspond au désir 'baguette trop cuite'. »
-  Si score = 0 : reasoning = "Aucun avis ne correspond au critère recherché."
+  {"Example: 'Reviews mention gentle and calm approach, matching the search for a gentle dentist.'" if locale == "en" else "Exemple : « L'avis mentionne 'croûte bien dorée' qui correspond au désir 'baguette trop cuite'. »"}
+  {"If score = 0: reasoning = 'No reviews match the searched criteria.'" if locale == "en" else 'Si score = 0 : reasoning = "Aucun avis ne correspond au critère recherché."'}
 - Si aucune correspondance réelle → relevance_score = 0.0, evidence = [], reasoning explique pourquoi.
 - Inclus les {count} établissements dans ta réponse (index 0 à {count - 1}).
-- IMPORTANT : Rédige le champ "reasoning" en {"anglais" if locale == "en" else "français"}."""
+- **MANDATORY**: The "reasoning" field MUST be written in {"ENGLISH" if locale == "en" else "FRENCH"}. {"Do NOT write reasoning in French." if locale == "en" else ""}"""
 
 
 async def score_reviews_batch(
@@ -328,7 +328,7 @@ Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
 
 Règles :
 - Base ton analyse UNIQUEMENT sur les avis fournis.
-- Réponds en {"anglais" if locale == "en" else "français"}.
+- **MANDATORY**: ALL text fields (strengths, weaknesses, vibe, service_speed, verdict) MUST be written in {"ENGLISH" if locale == "en" else "FRENCH"}. {"Do NOT write any field in French." if locale == "en" else ""}
 - Si une information n'est pas mentionnée dans les avis, mets null.
 - 2 à 4 points forts/faibles maximum par établissement.
 - Sois concis et factuel."""
