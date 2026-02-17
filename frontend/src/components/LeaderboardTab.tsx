@@ -50,8 +50,8 @@ export default function LeaderboardTab({
   userTotalPoints,
   userId,
 }: LeaderboardTabProps) {
-  const [cityQuery, setCityQuery] = useState(userCity || "");
-  const [selectedCity, setSelectedCity] = useState(userCity || "");
+  const [cityQuery, setCityQuery] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [entries, setEntries] = useState<LeaderboardEntry[]>([]);
@@ -125,14 +125,7 @@ export default function LeaderboardTab({
     }
   }, []);
 
-  // Auto-fetch user's city when it becomes available (but not if user cleared)
-  useEffect(() => {
-    if (userCity && !selectedCity && !userCleared) {
-      setSelectedCity(userCity);
-      setCityQuery(userCity);
-      fetchLeaderboard(userCity);
-    }
-  }, [userCity, selectedCity, userCleared, fetchLeaderboard]);
+  // No auto-fetch: let the user search for a city manually
 
   function selectCity(city: string) {
     setSelectedCity(city);
