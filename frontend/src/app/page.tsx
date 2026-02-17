@@ -10,7 +10,6 @@ const ResultsMap = lazy(() => import("@/components/ResultsMap"));
 import UserStats from "@/components/UserStats";
 import ConversionModal from "@/components/ConversionModal";
 import TierUpModal from "@/components/TierUpModal";
-import LeaderboardWidget from "@/components/LeaderboardWidget";
 import ProfilePanel from "@/components/ProfilePanel";
 import LeaderboardTab from "@/components/LeaderboardTab";
 import { useSearch, type SortMode } from "@/lib/useSearch";
@@ -585,14 +584,6 @@ function Home() {
                   </button>
                 )}
 
-                {rewards.rewards.city && (
-                  <LeaderboardWidget
-                    city={rewards.rewards.city}
-                    userPseudo={rewards.rewards.pseudo}
-                    userWeeklyPoints={rewards.rewards.weeklyPoints}
-                    userTotalPoints={rewards.rewards.points}
-                  />
-                )}
               </div>
 
               {/* Map panel */}
