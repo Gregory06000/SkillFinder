@@ -158,6 +158,10 @@ export function saveRewards(data: RewardsData): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
+export function clearRewards(): void {
+  localStorage.removeItem(STORAGE_KEY);
+}
+
 export function earnPoints(data: RewardsData): {
   newData: RewardsData;
   increment: number;

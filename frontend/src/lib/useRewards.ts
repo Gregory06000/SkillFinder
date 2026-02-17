@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import {
   loadRewards,
   saveRewards,
+  clearRewards,
   earnPoints,
   markVoted,
   getUserRank,
@@ -14,6 +15,7 @@ import { reverseGeocode, updateLeaderboard, fetchUserProfile } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 
 const AI_REASONING_KEY = "sf_show_reasoning";
+const MERGE_FLAG_KEY = "sf_points_merged";
 
 export function useRewards(searchCenter: { lat: number; lng: number } | null) {
   const { user, getAccessToken } = useAuth();
@@ -59,68 +61,75 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
   }, [searchCenter]);
 
   // Sync rewards with server when user logs in:
-  // 1. Fetch server-side profile
-  // 2. Merge: take the higher points (local vs server)
-  // 3. Push merged result back to server for each city
+  // - First login: merge localStorage points INTO server (addition), then clear localStorage
+  // - Subsequent logins: just load server points (merge flag prevents re-merge)
+  // When user logs out: reset to fresh localStorage (0 pts guest)
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      // Logged out → reset to fresh guest state from localStorage
+      setRewards(loadRewards());
+      return;
+    }
 
     (async () => {
       try {
         const token = await getAccessToken();
         if (!token) return;
 
+        // Read local points BEFORE any clearing
+        const localData = loadRewards();
+        const localPoints = localData.points;
+
         const profile = await fetchUserProfile(token);
+        const serverPoints = (profile.found && profile.total_points !== undefined)
+          ? profile.total_points!
+          : 0;
+        const alreadyMerged = localStorage.getItem(MERGE_FLAG_KEY) === "1";
 
-        if (profile.found && profile.total_points !== undefined) {
-          setRewards((prev) => {
-            const serverPoints = profile.total_points!;
-            const mergedPoints = Math.max(prev.points, serverPoints);
-            const mergedPseudo = prev.pseudo === "Guest" && profile.pseudo
-              ? profile.pseudo
-              : prev.pseudo;
-            const mergedCity = prev.city || profile.city || "";
+        // Determine pseudo and city from server or local
+        const pseudo = (profile.found && profile.pseudo) ? profile.pseudo
+          : localData.pseudo !== "Guest" ? localData.pseudo : "Guest";
+        const city = (profile.found && profile.city) ? profile.city
+          : localData.city || "";
 
-            // Merge server weekly points for the server's city
-            const mergedByCity = { ...prev.weeklyPointsByCity };
-            if (profile.city && profile.weekly_points) {
-              mergedByCity[profile.city] = Math.max(
-                mergedByCity[profile.city] ?? 0,
-                profile.weekly_points,
-              );
-            }
+        let finalPoints = serverPoints;
 
-            const merged = {
-              ...prev,
-              points: mergedPoints,
-              weeklyPoints: mergedByCity[mergedCity] ?? 0,
-              weeklyPointsByCity: mergedByCity,
-              pseudo: mergedPseudo,
-              city: mergedCity,
-            };
-            saveRewards(merged);
-            return merged;
-          });
+        if (!alreadyMerged && localPoints > 0) {
+          // First-time merge: add local guest points to server points
+          finalPoints = serverPoints + localPoints;
+
+          // Push merged total to server
+          if (city) {
+            const weeklyPts = (profile.found && profile.weekly_points)
+              ? profile.weekly_points + (localData.weeklyPointsByCity[city] ?? 0)
+              : localData.weeklyPointsByCity[city] ?? 0;
+            await updateLeaderboard(pseudo, city, weeklyPts, finalPoints, token).catch(() => {});
+          } else {
+            // No city yet — push with empty city to at least save total_points
+            await updateLeaderboard(pseudo, "", 0, finalPoints, token).catch(() => {});
+          }
+
+          // Mark as merged and clear guest localStorage
+          localStorage.setItem(MERGE_FLAG_KEY, "1");
+          clearRewards();
         }
 
-        // Push local data to server for each city with weekly points
-        setRewards((current) => {
-          if (current.points > 0) {
-            const cities = Object.entries(current.weeklyPointsByCity);
-            for (const [city, cityWeekly] of cities) {
-              if (city && cityWeekly > 0) {
-                updateLeaderboard(
-                  current.pseudo,
-                  city,
-                  cityWeekly,
-                  current.points,
-                  token,
-                ).catch(() => {});
-              }
-            }
-          }
-          return current;
-        });
+        // Build the rewards state from server data
+        const serverWeekly: Record<string, number> = {};
+        if (city && profile.found && profile.weekly_points) {
+          serverWeekly[city] = profile.weekly_points;
+        }
+
+        const merged: RewardsData = {
+          points: finalPoints,
+          pseudo,
+          city,
+          weekStart: localData.weekStart,
+          weeklyPoints: serverWeekly[city] ?? 0,
+          weeklyPointsByCity: serverWeekly,
+        };
+        saveRewards(merged);
+        setRewards(merged);
       } catch {
         // Silently fail — local data is still available
       }
