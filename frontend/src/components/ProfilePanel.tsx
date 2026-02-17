@@ -221,7 +221,7 @@ export default function ProfilePanel({
               </button>
             )}
             <div className="text-sm text-sf-gold font-semibold mt-0.5">
-              {rank.title}
+              {t(rank.titleKey)}
             </div>
             <div className="text-xs text-sf-text-secondary">
               {t("stats.tier", { palier: rank.palier })} &middot; {t("stats.level", { level: rank.level })} &middot;{" "}
@@ -320,7 +320,7 @@ export default function ProfilePanel({
                         className={`text-[13px] font-semibold truncate
                                    ${isCurrent ? "text-sf-accent" : "text-sf-text"}`}
                       >
-                        {tier.title}
+                        {t(tier.titleKey)}
                       </span>
                       <span className="text-[10px] text-sf-text-light flex-shrink-0">
                         {t("profile.levelRange", { min: tier.minLevel, max: tier.maxLevel })}

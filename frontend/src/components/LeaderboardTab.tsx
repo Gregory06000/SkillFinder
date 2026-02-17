@@ -347,7 +347,7 @@ export default function LeaderboardTab({
                       )}
                     </p>
                     <p className={`text-[11px] font-medium ${style.text} mt-0.5`}>
-                      {rank.title}
+                      {t(rank.titleKey)}
                     </p>
                     <p className="text-lg font-bold text-sf-text mt-1">
                       {entry.weeklyPoints}
@@ -411,7 +411,7 @@ export default function LeaderboardTab({
                             )}
                           </span>
                           <span className="block text-[10px] text-sf-text-light truncate">
-                            {rank.title}
+                            {t(rank.titleKey)}
                           </span>
                         </div>
                       </div>
@@ -436,7 +436,7 @@ export default function LeaderboardTab({
                         <span>{t("lb.tierLabel")}</span>
                         <span className="font-medium text-sf-text">{rank.palier}</span>
                         <span>{t("lb.titleLabel")}</span>
-                        <span className="font-medium text-sf-text">{rank.title}</span>
+                        <span className="font-medium text-sf-text">{t(rank.titleKey)}</span>
                         <span>{t("lb.totalPoints")}</span>
                         <span className="font-medium text-sf-text">{entry.totalPoints}</span>
                       </div>

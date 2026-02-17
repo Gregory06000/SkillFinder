@@ -181,7 +181,7 @@ function Home() {
             )}
             <div className="flex flex-col leading-tight text-left">
               <span className="text-[11px] font-semibold text-sf-gold">
-                {rewards.rank.title}
+                {t(rewards.rank.titleKey)}
               </span>
               <span className="text-[11px] text-sf-text-secondary">
                 {t("nav.tier", { palier: rewards.rank.palier })} &middot; {t("nav.pts", { pts: rewards.rewards.points })}
@@ -676,7 +676,7 @@ function Home() {
       {rewards.showConversion && (
         <ConversionModal
           variant={verification.conversionVariant}
-          rankTitle="Éclaireur Urbain"
+          rankTitle={t(rewards.rank.titleKey)}
           onClose={() => rewards.setShowConversion(false)}
         />
       )}

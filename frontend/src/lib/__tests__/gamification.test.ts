@@ -80,19 +80,19 @@ describe("getUserRank", () => {
   it("returns tier 1 for new user", () => {
     const rank = getUserRank(0);
     expect(rank.palier).toBe(1);
-    expect(rank.title).toBe("Apprenti Dénicheur");
+    expect(rank.titleKey).toBe("tier.1");
   });
 
   it("returns correct tier for 200 points", () => {
     const rank = getUserRank(200);
     expect(rank.palier).toBe(2);
-    expect(rank.title).toBe("Éclaireur Urbain");
+    expect(rank.titleKey).toBe("tier.2");
   });
 
   it("returns tier 10 for max points", () => {
     const rank = getUserRank(1000);
     expect(rank.palier).toBe(10);
-    expect(rank.title).toBe("Divinité Suprême");
+    expect(rank.titleKey).toBe("tier.10");
   });
 
   it("progress is between 0 and 1", () => {

@@ -180,7 +180,7 @@ export default function LeaderboardWidget({
                         <span>{t("lb.tierLabel")}</span>
                         <span className="font-medium text-gray-700">{rank.palier}</span>
                         <span>{t("lb.titleLabel")}</span>
-                        <span className="font-medium text-gray-700">{rank.title}</span>
+                        <span className="font-medium text-gray-700">{t(rank.titleKey)}</span>
                       </div>
                     )}
                   </div>

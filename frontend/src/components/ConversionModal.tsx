@@ -10,7 +10,7 @@ interface ConversionModalProps {
   rankTitle?: string;
 }
 
-export default function ConversionModal({ onClose, variant = "milestone", rankTitle = "Éclaireur Urbain" }: ConversionModalProps) {
+export default function ConversionModal({ onClose, variant = "milestone", rankTitle = "" }: ConversionModalProps) {
   const { signInWithGoogle, signUpWithEmail, signInWithEmail } = useAuth();
   const modalRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"choice" | "signup" | "login">("choice");

@@ -59,7 +59,7 @@ export default function UserStats({
           </div>
           <div>
             <div className="text-sm font-semibold text-sf-text">
-              {rank.title} &middot; {t("stats.tier", { palier: rank.palier })}
+              {t(rank.titleKey)} &middot; {t("stats.tier", { palier: rank.palier })}
             </div>
             <div className="text-xs text-sf-text-light">
               {rank.palier >= 10

@@ -185,6 +185,18 @@ const fr: Dict = {
   "lb.totalPoints": "Points totaux",
   "lb.localTitle": "Classement {city}",
   "lb.noContribShort": "Aucun contributeur cette semaine.",
+
+  // ── Tier titles ──
+  "tier.1": "Apprenti Dénicheur",
+  "tier.2": "Éclaireur Urbain",
+  "tier.3": "Guide Certifié",
+  "tier.4": "Expert Local",
+  "tier.5": "Maître de la Ville",
+  "tier.6": "Légende Vivante",
+  "tier.7": "Gardien du Temple",
+  "tier.8": "Oracle des Quartiers",
+  "tier.9": "Architecte du Savoir",
+  "tier.10": "Divinité Suprême",
 };
 
 const en: Dict = {
@@ -348,6 +360,18 @@ const en: Dict = {
   "lb.totalPoints": "Total points",
   "lb.localTitle": "Leaderboard {city}",
   "lb.noContribShort": "No contributors this week.",
+
+  // ── Tier titles ──
+  "tier.1": "Apprentice Scout",
+  "tier.2": "Urban Explorer",
+  "tier.3": "Certified Guide",
+  "tier.4": "Local Expert",
+  "tier.5": "City Master",
+  "tier.6": "Living Legend",
+  "tier.7": "Temple Guardian",
+  "tier.8": "District Oracle",
+  "tier.9": "Knowledge Architect",
+  "tier.10": "Supreme Deity",
 };
 
 const dictionaries: Record<Locale, Dict> = { fr, en };

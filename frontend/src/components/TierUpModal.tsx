@@ -54,7 +54,7 @@ export default function TierUpModal({ rank, onClose }: TierUpModalProps) {
           {t("tierUp.title")}
         </h3>
         <p className="text-lg font-semibold text-sf-accent mb-1">
-          {rank.title}
+          {t(rank.titleKey)}
         </p>
         <p className="text-sm text-sf-text-secondary mb-4">
           {t("tierUp.tierLevel", { palier: rank.palier, level: rank.level })}

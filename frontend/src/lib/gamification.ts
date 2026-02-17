@@ -26,22 +26,22 @@ export function addPoints(currentPoints: number): number {
 
 export interface Tier {
   palier: number;
-  title: string;
+  titleKey: string;
   minLevel: number;
   maxLevel: number;
 }
 
 export const TIERS: Tier[] = [
-  { palier: 1, title: "Apprenti Dénicheur", minLevel: 1, maxLevel: 100 },
-  { palier: 2, title: "Éclaireur Urbain", minLevel: 101, maxLevel: 200 },
-  { palier: 3, title: "Guide Certifié", minLevel: 201, maxLevel: 300 },
-  { palier: 4, title: "Expert Local", minLevel: 301, maxLevel: 400 },
-  { palier: 5, title: "Maître de la Ville", minLevel: 401, maxLevel: 500 },
-  { palier: 6, title: "Légende Vivante", minLevel: 501, maxLevel: 600 },
-  { palier: 7, title: "Gardien du Temple", minLevel: 601, maxLevel: 700 },
-  { palier: 8, title: "Oracle des Quartiers", minLevel: 701, maxLevel: 800 },
-  { palier: 9, title: "Architecte du Savoir", minLevel: 801, maxLevel: 900 },
-  { palier: 10, title: "Divinité Suprême", minLevel: 901, maxLevel: 1000 },
+  { palier: 1, titleKey: "tier.1", minLevel: 1, maxLevel: 100 },
+  { palier: 2, titleKey: "tier.2", minLevel: 101, maxLevel: 200 },
+  { palier: 3, titleKey: "tier.3", minLevel: 201, maxLevel: 300 },
+  { palier: 4, titleKey: "tier.4", minLevel: 301, maxLevel: 400 },
+  { palier: 5, titleKey: "tier.5", minLevel: 401, maxLevel: 500 },
+  { palier: 6, titleKey: "tier.6", minLevel: 501, maxLevel: 600 },
+  { palier: 7, titleKey: "tier.7", minLevel: 601, maxLevel: 700 },
+  { palier: 8, titleKey: "tier.8", minLevel: 701, maxLevel: 800 },
+  { palier: 9, titleKey: "tier.9", minLevel: 801, maxLevel: 900 },
+  { palier: 10, titleKey: "tier.10", minLevel: 901, maxLevel: 1000 },
 ];
 
 /**
@@ -58,7 +58,7 @@ export function getLevel(points: number): number {
 }
 
 export interface UserRank {
-  title: string;
+  titleKey: string;
   palier: number;
   level: number;
   points: number;
@@ -84,7 +84,7 @@ export function getUserRank(points: number): UserRank {
   const nextThreshold = isLastTier ? tier.maxLevel : tier.maxLevel + 1;
 
   return {
-    title: tier.title,
+    titleKey: tier.titleKey,
     palier: tier.palier,
     level,
     points,
