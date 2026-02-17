@@ -66,7 +66,12 @@ export function useSearch() {
   const [sortMode, setSortMode] = useState<SortMode>("match");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [filters, setFilters] = useState<SearchFilters>({ minRating: 0, maxDistance: 0 });
-  const [history, setHistory] = useState<SearchHistoryEntry[]>(() => loadHistory());
+  const [history, setHistory] = useState<SearchHistoryEntry[]>([]);
+
+  // Load history from localStorage on mount (avoids SSR hydration mismatch)
+  useEffect(() => {
+    setHistory(loadHistory());
+  }, []);
 
   // Restore last search from localStorage on mount
   useEffect(() => {
