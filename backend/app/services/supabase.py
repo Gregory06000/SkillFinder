@@ -340,7 +340,9 @@ async def get_user_profile(user_id: str) -> dict | None:
     row = rows[0]
     # If the entry is from a previous week, weekly_points should be 0
     current_week = _current_week_start()
-    weekly = row["weekly_points"] if row.get("week_start") == current_week else 0
+    # Supabase may return date as "2026-02-16" or "2026-02-16T00:00:00+00:00"
+    row_week = str(row.get("week_start", ""))[:10]
+    weekly = row["weekly_points"] if row_week == current_week else 0
 
     return {
         "pseudo": row["pseudo"],
