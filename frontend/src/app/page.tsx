@@ -81,7 +81,7 @@ function Home() {
   ) {
     setSelectedIndex(null);
     compare.resetCompare();
-    search.handleSearch(service, keyword, location, radiusKm);
+    search.handleSearch(service, keyword, location, radiusKm, locale);
   }
 
   const SORT_OPTIONS: { key: SortMode; labelKey: string }[] = [
@@ -640,7 +640,7 @@ function Home() {
           <button
             onClick={() =>
               search.lastSearch &&
-              compare.handleCompare(search.lastSearch.keyword, search.results)
+              compare.handleCompare(search.lastSearch.keyword, search.results, locale)
             }
             disabled={compare.compareSet.size < 2}
             className="flex items-center gap-2 px-6 py-3 rounded-full shadow-sf-lg

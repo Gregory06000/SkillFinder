@@ -29,6 +29,7 @@ export function useCompare() {
   async function handleCompare(
     keyword: string,
     results: BusinessResult[],
+    locale: string = "fr",
   ) {
     if (compareSet.size !== 2) return;
     const [i1, i2] = Array.from(compareSet);
@@ -41,7 +42,7 @@ export function useCompare() {
     setCompareError(null);
 
     try {
-      const data = await compareBusinesses(keyword, biz1, biz2);
+      const data = await compareBusinesses(keyword, biz1, biz2, locale);
       setCompareData(data);
     } catch (err) {
       setCompareError(

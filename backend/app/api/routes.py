@@ -99,6 +99,7 @@ async def search(request: Request, req: SearchRequest):
             keyword=req.keyword,
             synonyms=effective_synonyms,
             businesses=businesses,
+            locale=req.locale,
         )
     except Exception as e:
         logger.warning("LLM scoring failed for %r/%r: %s", req.service, req.keyword, e)
@@ -169,6 +170,7 @@ async def compare(request: Request, req: CompareRequest):
             biz2_name=req.business_2.name,
             biz2_reviews=req.business_2.reviews,
             keyword=req.keyword,
+            locale=req.locale,
         )
     except RuntimeError as e:
         raise HTTPException(status_code=502, detail=str(e))

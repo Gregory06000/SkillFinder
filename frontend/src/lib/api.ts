@@ -69,7 +69,8 @@ export async function searchBusinesses(
   keyword: string,
   location: string = "",
   radiusKm: number = 10,
-  synonyms: string[] = []
+  synonyms: string[] = [],
+  locale: string = "fr"
 ): Promise<SearchResponse> {
   const res = await fetch(`${API_BASE}/api/search`, {
     method: "POST",
@@ -80,6 +81,7 @@ export async function searchBusinesses(
       synonyms,
       location,
       radius_km: radiusKm,
+      locale,
     }),
   });
 
@@ -94,7 +96,8 @@ export async function searchBusinesses(
 export async function compareBusinesses(
   keyword: string,
   biz1: BusinessResult,
-  biz2: BusinessResult
+  biz2: BusinessResult,
+  locale: string = "fr"
 ): Promise<CompareResponse> {
   const res = await fetch(`${API_BASE}/api/compare`, {
     method: "POST",
@@ -113,6 +116,7 @@ export async function compareBusinesses(
         match_score: biz2.match_score,
         global_rating: biz2.global_rating,
       },
+      locale,
     }),
   });
 

@@ -145,6 +145,7 @@ export function useSearch() {
     keyword: string,
     location: string,
     radiusKm: number,
+    locale: string = "fr",
   ) {
     setIsLoading(true);
     setError(null);
@@ -154,7 +155,7 @@ export function useSearch() {
     setFilters({ minRating: 0, maxDistance: 0 });
 
     try {
-      const data = await searchBusinesses(service, keyword, location, radiusKm);
+      const data = await searchBusinesses(service, keyword, location, radiusKm, [], locale);
       setResults(data.results);
       setLastSearch({ service, keyword, location, radiusKm });
 

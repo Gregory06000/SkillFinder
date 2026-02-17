@@ -9,6 +9,7 @@ class SearchRequest(BaseModel):
     synonyms: list[str] = Field(default=[])
     location: str = Field(default="", max_length=200)
     radius_km: int = Field(default=10, ge=1, le=50)
+    locale: str = Field(default="fr", pattern=r"^(fr|en)$")
 
     @field_validator("synonyms")
     @classmethod
@@ -64,6 +65,7 @@ class CompareRequest(BaseModel):
     keyword: str
     business_1: CompareBusinessInput
     business_2: CompareBusinessInput
+    locale: str = Field(default="fr", pattern=r"^(fr|en)$")
 
 
 class BusinessAnalysis(BaseModel):

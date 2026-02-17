@@ -145,6 +145,7 @@ def _build_scoring_prompt(
     keyword: str,
     synonyms: list[str] | None,
     businesses: list[dict],
+    locale: str = "fr",
 ) -> str:
     service = _sanitize(service)
     keyword = _sanitize(keyword)
@@ -218,7 +219,8 @@ IMPORTANT :
   Exemple : « L'avis mentionne 'croûte bien dorée' qui correspond au désir 'baguette trop cuite'. »
   Si score = 0 : reasoning = "Aucun avis ne correspond au critère recherché."
 - Si aucune correspondance réelle → relevance_score = 0.0, evidence = [], reasoning explique pourquoi.
-- Inclus les {count} établissements dans ta réponse (index 0 à {count - 1})."""
+- Inclus les {count} établissements dans ta réponse (index 0 à {count - 1}).
+- IMPORTANT : Rédige le champ "reasoning" en {"anglais" if locale == "en" else "français"}."""
 
 
 async def score_reviews_batch(
@@ -226,6 +228,7 @@ async def score_reviews_batch(
     keyword: str,
     synonyms: list[str] | None,
     businesses: list[dict],
+    locale: str = "fr",
 ) -> list[dict]:
     """
     Use Gemini to score each business's reviews for relevance to the user's intent.
@@ -234,7 +237,7 @@ async def score_reviews_batch(
     Raises RuntimeError if the API key is missing or the call fails.
     """
     api_key = _get_api_key()
-    prompt = _build_scoring_prompt(service, keyword, synonyms, businesses)
+    prompt = _build_scoring_prompt(service, keyword, synonyms, businesses, locale)
 
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
@@ -284,6 +287,7 @@ def _build_prompt(
     biz2_name: str,
     biz2_reviews: list[str],
     keyword: str,
+    locale: str = "fr",
 ) -> str:
     keyword = _sanitize(keyword)
     biz1_name = _sanitize(biz1_name)
@@ -324,7 +328,7 @@ Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
 
 Règles :
 - Base ton analyse UNIQUEMENT sur les avis fournis.
-- Réponds en français.
+- Réponds en {"anglais" if locale == "en" else "français"}.
 - Si une information n'est pas mentionnée dans les avis, mets null.
 - 2 à 4 points forts/faibles maximum par établissement.
 - Sois concis et factuel."""
@@ -336,13 +340,14 @@ async def compare_businesses(
     biz2_name: str,
     biz2_reviews: list[str],
     keyword: str,
+    locale: str = "fr",
 ) -> dict:
     """
     Call Gemini to generate a structured comparison of two businesses.
     Returns a dict with keys: business_1, business_2, verdict.
     """
     api_key = _get_api_key()
-    prompt = _build_prompt(biz1_name, biz1_reviews, biz2_name, biz2_reviews, keyword)
+    prompt = _build_prompt(biz1_name, biz1_reviews, biz2_name, biz2_reviews, keyword, locale)
 
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
