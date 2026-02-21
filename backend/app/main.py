@@ -16,10 +16,16 @@ logger = logging.getLogger("skillfinder")
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 
+# Disable API docs in production (FRONTEND_URL is only set in prod)
+_is_prod = bool(os.environ.get("FRONTEND_URL"))
+
 app = FastAPI(
     title="SkillFinder API",
     description="Rank businesses by keyword-specific review sentiment",
     version="0.2.0",
+    docs_url=None if _is_prod else "/docs",
+    redoc_url=None if _is_prod else "/redoc",
+    openapi_url=None if _is_prod else "/openapi.json",
 )
 
 app.state.limiter = limiter

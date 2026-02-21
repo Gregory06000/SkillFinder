@@ -197,6 +197,17 @@ const fr: Dict = {
   "tier.8": "Oracle des Quartiers",
   "tier.9": "Architecte du Savoir",
   "tier.10": "Divinité Suprême",
+
+  // ── Cookie banner ──
+  "cookie.label": "Bandeau cookies",
+  "cookie.message": "Ce site utilise le stockage local de votre navigateur pour la gamification et Google Maps pour la cartographie.",
+  "cookie.policy": "Politique de confidentialité",
+  "cookie.accept": "J'accepte",
+
+  // ── Footer ──
+  "footer.privacy": "Confidentialité",
+  "footer.legal": "Mentions légales",
+  "footer.rights": "Tous droits réservés",
 };
 
 const en: Dict = {
@@ -372,6 +383,17 @@ const en: Dict = {
   "tier.8": "District Oracle",
   "tier.9": "Knowledge Architect",
   "tier.10": "Supreme Deity",
+
+  // ── Cookie banner ──
+  "cookie.label": "Cookie notice",
+  "cookie.message": "This site uses your browser's local storage for gamification and Google Maps for mapping.",
+  "cookie.policy": "Privacy policy",
+  "cookie.accept": "Accept",
+
+  // ── Footer ──
+  "footer.privacy": "Privacy",
+  "footer.legal": "Legal notice",
+  "footer.rights": "All rights reserved",
 };
 
 const dictionaries: Record<Locale, Dict> = { fr, en };

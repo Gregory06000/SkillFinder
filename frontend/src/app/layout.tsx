@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
 import { AuthProvider } from "@/lib/AuthContext";
 import I18nProvider from "@/lib/I18nProvider";
+import CookieBanner from "@/components/CookieBanner";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -38,9 +40,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${dmSans.variable} ${playfair.variable}`}>
-      <body className="min-h-screen font-sans">
+      <body className="min-h-screen font-sans flex flex-col">
         <I18nProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <div className="flex-1">{children}</div>
+            <Footer />
+            <CookieBanner />
+          </AuthProvider>
         </I18nProvider>
       </body>
     </html>
