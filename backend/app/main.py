@@ -18,17 +18,17 @@ logger = logging.getLogger("skillfinder")
 
 # ── Sentry ────────────────────────────────────
 _sentry_dsn = os.environ.get("SENTRY_DSN")
-sentry_sdk.init(
-    dsn=_sentry_dsn,
-    enabled=bool(_sentry_dsn),
-    integrations=[
-        StarletteIntegration(transaction_style="endpoint"),
-        FastApiIntegration(transaction_style="endpoint"),
-    ],
-    traces_sample_rate=0.1,
-    # Don't send personally identifiable information
-    send_default_pii=False,
-)
+if _sentry_dsn:
+    sentry_sdk.init(
+        dsn=_sentry_dsn,
+        integrations=[
+            StarletteIntegration(transaction_style="endpoint"),
+            FastApiIntegration(transaction_style="endpoint"),
+        ],
+        traces_sample_rate=0.1,
+        # Don't send personally identifiable information
+        send_default_pii=False,
+    )
 
 # ── Rate Limiter ──────────────────────────────
 
