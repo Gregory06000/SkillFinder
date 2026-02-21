@@ -51,6 +51,34 @@ export interface CompareResponse {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "";
 
+// Retry helper: retries on network errors or 5xx, not on 4xx (client errors)
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit,
+  retries = 1,
+): Promise<Response> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      // Don't retry on client errors (4xx) — those are intentional responses
+      if (res.ok || (res.status >= 400 && res.status < 500)) return res;
+      // Server error (5xx) — retry if attempts remain
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+        continue;
+      }
+      return res;
+    } catch {
+      if (attempt < retries) {
+        await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)));
+        continue;
+      }
+      throw new Error("Impossible de joindre le serveur. Vérifiez votre connexion.");
+    }
+  }
+  throw new Error("Impossible de joindre le serveur.");
+}
+
 export function getPhotoUrl(photoName: string): string {
   return `${API_BASE}/api/photo?ref=${encodeURIComponent(photoName)}`;
 }
@@ -72,7 +100,7 @@ export async function searchBusinesses(
   synonyms: string[] = [],
   locale: string = "fr"
 ): Promise<SearchResponse> {
-  const res = await fetch(`${API_BASE}/api/search`, {
+  const res = await fetchWithRetry(`${API_BASE}/api/search`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -99,7 +127,7 @@ export async function compareBusinesses(
   biz2: BusinessResult,
   locale: string = "fr"
 ): Promise<CompareResponse> {
-  const res = await fetch(`${API_BASE}/api/compare`, {
+  const res = await fetchWithRetry(`${API_BASE}/api/compare`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

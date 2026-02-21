@@ -689,12 +689,6 @@ function Home() {
         />
       )}
 
-      {/* Vote error toast */}
-      {verification.voteError && (
-        <div className="fixed bottom-6 right-6 z-50 bg-red-600 text-white text-sm px-4 py-3 rounded-sf-md shadow-sf-lg animate-fade-in-up">
-          {verification.voteError}
-        </div>
-      )}
     </>
   );
 }

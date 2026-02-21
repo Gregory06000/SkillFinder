@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { verifyBusiness, type BusinessResult } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
+import { useToast } from "@/lib/ToastContext";
 
 interface UseVerificationOptions {
   setResults: React.Dispatch<React.SetStateAction<BusinessResult[]>>;
@@ -18,12 +19,12 @@ export function useVerification({
   setShowConversion,
 }: UseVerificationOptions) {
   const [verifyLoading, setVerifyLoading] = useState(false);
-  const [voteError, setVoteError] = useState<string | null>(null);
   const [conversionVariant, setConversionVariant] = useState<
     "milestone" | "login" | "vote"
   >("milestone");
 
   const { user, getAccessToken } = useAuth();
+  const { addToast } = useToast();
 
   const handleVerify = useCallback(
     async (placeId: string, vote: "yes" | "no") => {
@@ -60,10 +61,8 @@ export function useVerification({
         markVoted(placeId);
         awardVotePoints(() => setConversionVariant("milestone"));
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Erreur inconnue";
-        console.error("Vote error:", msg);
-        setVoteError(msg);
-        setTimeout(() => setVoteError(null), 6000);
+        const msg = err instanceof Error ? err.message : "Erreur lors du vote";
+        addToast(msg);
       } finally {
         setVerifyLoading(false);
       }
@@ -79,7 +78,6 @@ export function useVerification({
 
   return {
     verifyLoading,
-    voteError,
     conversionVariant,
     handleVerify,
     showLoginForVote,
