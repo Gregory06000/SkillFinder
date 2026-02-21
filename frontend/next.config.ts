@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
@@ -22,8 +23,8 @@ const securityHeaders = [
       "font-src 'self' https://fonts.gstatic.com",
       // Google Maps tiles, Street View, Places photos
       "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://*.google.com",
-      // API calls: backend (Render), Supabase, Google APIs
-      "connect-src 'self' https://*.supabase.co https://maps.googleapis.com https://*.onrender.com https://*.vercel.app",
+      // API calls: backend (Render), Supabase, Google APIs, Sentry
+      "connect-src 'self' https://*.supabase.co https://maps.googleapis.com https://*.onrender.com https://*.vercel.app https://*.sentry.io",
       "frame-src 'none'",
       "object-src 'none'",
     ].join("; "),
@@ -53,4 +54,20 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Sentry org and project — set via env or replace with your values
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT ?? "skillfinder",
+
+  // Only print logs for uploading source maps in CI
+  silent: !process.env.CI,
+
+  // Upload a larger set of source maps for prettier stack traces
+  widenClientFileUpload: true,
+
+  // Disable Sentry logger to reduce bundle size
+  disableLogger: true,
+
+  // Automatically tree-shake Sentry logger statements
+  automaticVercelMonitors: false,
+});

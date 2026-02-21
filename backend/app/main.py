@@ -1,6 +1,10 @@
 import os
 import logging
 
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastApiIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -11,6 +15,20 @@ from slowapi.errors import RateLimitExceeded
 from app.api.routes import router
 
 logger = logging.getLogger("skillfinder")
+
+# ── Sentry ────────────────────────────────────
+_sentry_dsn = os.environ.get("SENTRY_DSN")
+sentry_sdk.init(
+    dsn=_sentry_dsn,
+    enabled=bool(_sentry_dsn),
+    integrations=[
+        StarletteIntegration(transaction_style="endpoint"),
+        FastApiIntegration(transaction_style="endpoint"),
+    ],
+    traces_sample_rate=0.1,
+    # Don't send personally identifiable information
+    send_default_pii=False,
+)
 
 # ── Rate Limiter ──────────────────────────────
 
@@ -69,10 +87,13 @@ async def validate_environment():
     supabase = bool(os.environ.get("SUPABASE_URL") and os.environ.get("SUPABASE_KEY"))
     frontend = os.environ.get("FRONTEND_URL", "")
 
+    sentry = bool(os.environ.get("SENTRY_DSN"))
+
     logger.info("── SkillFinder startup ──")
     logger.info("  Google Places API : %s", "OK" if google else "MISSING")
     logger.info("  Gemini API        : %s", "OK" if gemini else "MISSING (lexicon fallback)")
     logger.info("  Supabase          : %s", "OK" if supabase else "DISABLED")
+    logger.info("  Sentry            : %s", "OK" if sentry else "DISABLED")
     logger.info("  Frontend URL      : %s", frontend or "localhost only")
 
     if not google:
