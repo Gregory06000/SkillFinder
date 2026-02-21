@@ -215,6 +215,7 @@ node_modules/
 .next/
 out/
 .vercel
+tsconfig.tsbuildinfo
 
 # Sentry auth token (contains secret, never commit)
 .env.sentry-build-plugin
