@@ -216,6 +216,9 @@ node_modules/
 out/
 .vercel
 
+# Sentry auth token (contains secret, never commit)
+.env.sentry-build-plugin
+
 # OS
 .DS_Store
 Thumbs.db

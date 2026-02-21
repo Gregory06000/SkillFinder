@@ -1,23 +1,12 @@
+// This file configures the initialization of Sentry on the browser.
+// The config you add here will be used whenever a users loads a page in their browser.
+// https://docs.sentry.io/platforms/javascript/guides/nextjs/
+
 import * as Sentry from "@sentry/nextjs";
 
 Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  dsn: "https://3cbe626f2c60f3684dca86b72dc2f9f2@o4510925392117760.ingest.de.sentry.io/4510925399261264",
 
-  // Only enable if DSN is configured
-  enabled: !!process.env.NEXT_PUBLIC_SENTRY_DSN,
-
-  // Capture 10% of transactions for performance monitoring
-  tracesSampleRate: 0.1,
-
-  // Replay: capture 100% of sessions with errors, 1% otherwise
-  replaysOnErrorSampleRate: 1.0,
-  replaysSessionSampleRate: 0.01,
-
-  integrations: [
-    Sentry.replayIntegration({
-      // Mask all text and inputs for privacy
-      maskAllText: true,
-      blockAllMedia: true,
-    }),
-  ],
+  // Do not send personally identifiable information (RGPD compliance)
+  sendDefaultPii: false,
 });
