@@ -12,6 +12,7 @@
   "dependencies": {
     "@sentry/nextjs": "^10.39.0",
     "@supabase/supabase-js": "^2.95.3",
+    "@vercel/analytics": "^1.6.1",
     "@vis.gl/react-google-maps": "^1.7.1",
     "next": "^15.1.0",
     "react": "^19.0.0",

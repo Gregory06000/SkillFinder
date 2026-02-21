@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import { AuthProvider } from "@/lib/AuthContext";
 import I18nProvider from "@/lib/I18nProvider";
 import { ToastProvider } from "@/lib/ToastContext";
@@ -67,6 +68,7 @@ export default function RootLayout({
             </AuthProvider>
           </ToastProvider>
         </I18nProvider>
+        <Analytics />
       </body>
     </html>
   );
