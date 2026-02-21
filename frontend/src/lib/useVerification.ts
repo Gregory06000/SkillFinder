@@ -4,6 +4,7 @@ import { useState, useCallback } from "react";
 import { verifyBusiness, type BusinessResult } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/lib/ToastContext";
+import { trackEvent } from "@/lib/analytics";
 
 interface UseVerificationOptions {
   setResults: React.Dispatch<React.SetStateAction<BusinessResult[]>>;
@@ -60,6 +61,7 @@ export function useVerification({
         );
         markVoted(placeId);
         awardVotePoints(() => setConversionVariant("milestone"));
+        trackEvent("Vote", { vote });
       } catch (err) {
         const msg = err instanceof Error ? err.message : "Erreur lors du vote";
         addToast(msg);

@@ -18,13 +18,13 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Next.js needs unsafe-inline for styles; Google Maps needs its CDN
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com https://plausible.io",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       // Google Maps tiles, Street View, Places photos
       "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://*.google.com",
       // API calls: backend (Render), Supabase, Google APIs, Sentry
-      "connect-src 'self' https://*.supabase.co https://maps.googleapis.com https://*.onrender.com https://*.vercel.app https://*.sentry.io",
+      "connect-src 'self' https://*.supabase.co https://maps.googleapis.com https://*.onrender.com https://*.vercel.app https://*.sentry.io https://plausible.io",
       "frame-src 'none'",
       "object-src 'none'",
     ].join("; "),

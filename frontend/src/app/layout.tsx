@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import { AuthProvider } from "@/lib/AuthContext";
 import I18nProvider from "@/lib/I18nProvider";
 import { ToastProvider } from "@/lib/ToastContext";
@@ -35,6 +36,8 @@ export const metadata: Metadata = {
   },
 };
 
+const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
+
 export default function RootLayout({
   children,
 }: {
@@ -42,6 +45,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${dmSans.variable} ${playfair.variable}`}>
+      <head>
+        {plausibleDomain && (
+          <Script
+            defer
+            data-domain={plausibleDomain}
+            src="https://plausible.io/js/script.js"
+            strategy="afterInteractive"
+          />
+        )}
+      </head>
       <body className="min-h-screen font-sans flex flex-col">
         <I18nProvider>
           <ToastProvider>

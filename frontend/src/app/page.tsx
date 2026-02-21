@@ -19,6 +19,7 @@ import { useVerification } from "@/lib/useVerification";
 import { useFavorites } from "@/lib/useFavorites";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
+import { trackEvent } from "@/lib/analytics";
 
 function SkeletonCard() {
   return (
@@ -82,6 +83,7 @@ function Home() {
     setSelectedIndex(null);
     compare.resetCompare();
     search.handleSearch(service, keyword, location, radiusKm, locale);
+    trackEvent("Search", { keyword, service, radiusKm });
   }
 
   const SORT_OPTIONS: { key: SortMode; labelKey: string }[] = [
@@ -655,10 +657,12 @@ function Home() {
       {compare.compareSet.size > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
           <button
-            onClick={() =>
-              search.lastSearch &&
-              compare.handleCompare(search.lastSearch.keyword, search.results, locale)
-            }
+            onClick={() => {
+              if (search.lastSearch) {
+                compare.handleCompare(search.lastSearch.keyword, search.results, locale);
+                trackEvent("Compare", { keyword: search.lastSearch.keyword });
+              }
+            }}
             disabled={compare.compareSet.size < 2}
             className="flex items-center gap-2 px-6 py-3 rounded-full shadow-sf-lg
                        bg-sf-accent text-white font-semibold text-sm
