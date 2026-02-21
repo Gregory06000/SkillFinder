@@ -134,6 +134,8 @@ function ResultCard({
     <div
       ref={cardRef}
       onClick={onClick}
+      role="article"
+      aria-label={result.name}
       className={`group bg-white border rounded-sf-lg overflow-hidden
                   transition-all duration-300 cursor-pointer relative
                   animate-fade-in-up
@@ -284,6 +286,7 @@ function ResultCard({
               <button
                 onClick={() => handleVote("yes")}
                 disabled={verifyLoading}
+                aria-label={t("card.yes")}
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
                            bg-green-50 text-sf-success hover:bg-green-100
                            transition-colors disabled:opacity-50"
@@ -296,6 +299,7 @@ function ResultCard({
               <button
                 onClick={() => handleVote("no")}
                 disabled={verifyLoading}
+                aria-label={t("card.no")}
                 className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full
                            bg-red-50 text-red-600 hover:bg-red-100
                            transition-colors disabled:opacity-50"
@@ -367,6 +371,7 @@ function ResultCard({
                            flex items-center justify-center text-sf-text-light
                            hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light
                            transition-all"
+                aria-label={`${result.name} — Google Maps`}
                 title="Google Maps"
               >
                 <svg
@@ -384,6 +389,8 @@ function ResultCard({
             {onToggleFavorite && (
               <button
                 onClick={onToggleFavorite}
+                aria-label={isFavorite ? t("card.removeFav") : t("card.addFav")}
+                aria-pressed={isFavorite}
                 className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all
                            ${isFavorite
                              ? "border-red-300 bg-red-50 text-red-500"
@@ -398,6 +405,7 @@ function ResultCard({
             )}
             <button
               onClick={() => shareResult(result)}
+              aria-label={t("card.share")}
               className="w-9 h-9 rounded-full border border-sf-border bg-white
                          flex items-center justify-center text-sf-text-light
                          hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light
@@ -416,6 +424,8 @@ function ResultCard({
               <button
                 onClick={onCompareToggle}
                 disabled={compareDisabled && !isCompareSelected}
+                aria-label={isCompareSelected ? t("compare.selected") : t("compare.select")}
+                aria-pressed={isCompareSelected}
                 className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all
                            ${
                              isCompareSelected

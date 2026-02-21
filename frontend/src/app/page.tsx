@@ -94,6 +94,7 @@ function Home() {
     <>
       {/* ── NAVBAR ── */}
       <nav
+        aria-label={t("nav.ariaLabel")}
         className="sticky top-0 z-50 border-b border-sf-border px-5 sm:px-10 h-16
                    flex items-center justify-between"
         style={{
@@ -123,6 +124,8 @@ function Home() {
         <div className="relative flex items-center gap-6">
           <button
             onClick={() => setActiveTab(activeTab === "leaderboard" ? "search" : "leaderboard")}
+            aria-label={t("nav.leaderboard")}
+            aria-pressed={activeTab === "leaderboard"}
             className={`hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border
                         text-[13px] font-medium transition-all cursor-pointer
                         ${activeTab === "leaderboard"
@@ -138,6 +141,7 @@ function Home() {
           {/* Language toggle */}
           <button
             onClick={() => setLocale(locale === "fr" ? "en" : "fr")}
+            aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
             className="hidden sm:flex items-center px-2.5 py-1.5 rounded-full border
                         text-[12px] font-semibold transition-all cursor-pointer
                         bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
@@ -161,6 +165,8 @@ function Home() {
           )}
           <button
             onClick={() => rewards.setShowProfile((p) => !p)}
+            aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
+            aria-expanded={rewards.showProfile}
             className="hidden sm:flex items-center gap-2.5 border border-sf-gold/25
                         rounded-full py-1 pl-1.5 pr-3.5 cursor-pointer transition-shadow
                         hover:shadow-sf-sm"
@@ -192,6 +198,8 @@ function Home() {
           {/* Mobile avatar button */}
           <button
             onClick={() => rewards.setShowProfile((p) => !p)}
+            aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
+            aria-expanded={rewards.showProfile}
             className="sm:hidden"
           >
             {rewards.avatarData.avatarPhoto ? (
@@ -316,6 +324,7 @@ function Home() {
                       href={fav.mapsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      aria-label={`${fav.name} — Google Maps`}
                       className="w-7 h-7 rounded-full border border-sf-border flex items-center justify-center
                                  text-sf-text-light hover:text-sf-accent hover:border-sf-accent/40 transition-all"
                     >
@@ -326,6 +335,7 @@ function Home() {
                   )}
                   <button
                     onClick={() => favs.removeFavorite(fav.name)}
+                    aria-label={`${t("fav.remove")} ${fav.name}`}
                     className="w-7 h-7 rounded-full border border-sf-border flex items-center justify-center
                                text-sf-text-light hover:text-red-500 hover:border-red-200 transition-all"
                   >
@@ -341,7 +351,7 @@ function Home() {
       )}
 
       {/* ── RESULTS ── */}
-      <section className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-8 pb-16">
+      <section aria-live="polite" aria-label={t("results.ariaRegion")} className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-8 pb-16">
         {search.error && (
           <div className="rounded-sf-md bg-red-50 border border-red-200 p-4 text-sm text-red-700 mb-6">
             {search.error}
@@ -384,13 +394,18 @@ function Home() {
         )}
 
         {search.lastSearch && search.results.length === 0 && !search.isLoading && !search.error && (
-          <div className="text-center py-16">
-            <p className="text-sf-text-light text-4xl mb-3">:/</p>
-            <p className="text-sm text-sf-text-secondary">
+          <div className="text-center py-16 animate-fade-in-up">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-sf-bg flex items-center justify-center">
+              <svg className="w-7 h-7 text-sf-text-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+            </div>
+            <p className="text-sm font-semibold text-sf-text mb-1">
               {t("results.noResults")}{" "}
-              <strong>{search.lastSearch.keyword}</strong>.
+              <span className="text-sf-accent">{search.lastSearch.keyword}</span>
             </p>
-            <p className="text-xs text-sf-text-light mt-1">
+            <p className="text-xs text-sf-text-light max-w-[280px] mx-auto">
               {t("results.tryOther")}
             </p>
           </div>
@@ -537,6 +552,8 @@ function Home() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
               {/* Cards */}
               <div
+                role="list"
+                aria-label={t("results.ariaList")}
                 className={`flex flex-col gap-4 ${
                   search.showMap && mobileView === "map"
                     ? "hidden lg:flex"

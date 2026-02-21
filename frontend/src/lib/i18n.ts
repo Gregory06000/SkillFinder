@@ -31,6 +31,8 @@ const fr: Dict = {
   "nav.login": "Connexion",
   "nav.tier": "Palier {palier}",
   "nav.pts": "{pts} pts",
+  "nav.ariaLabel": "Navigation principale",
+  "nav.profileAria": "Profil de {pseudo}",
 
   // ── Hero ──
   "hero.title1": "Trouvez le meilleur pour",
@@ -58,6 +60,7 @@ const fr: Dict = {
   // ── Favorites ──
   "fav.title": "Mes favoris ({count})",
   "fav.clearAll": "Tout supprimer",
+  "fav.remove": "Supprimer des favoris",
 
   // ── Results ──
   "results.count": "{count} résultat{plural}",
@@ -76,6 +79,8 @@ const fr: Dict = {
   "results.mapLoading": "Chargement de la carte...",
   "results.noResults": "Aucun résultat trouvé pour",
   "results.tryOther": "Essayez un autre mot-clé ou une autre catégorie.",
+  "results.ariaRegion": "Résultats de recherche",
+  "results.ariaList": "Liste des résultats",
 
   // ── Filters ──
   "filters.label": "Filtres",
@@ -217,6 +222,8 @@ const en: Dict = {
   "nav.login": "Login",
   "nav.tier": "Tier {palier}",
   "nav.pts": "{pts} pts",
+  "nav.ariaLabel": "Main navigation",
+  "nav.profileAria": "{pseudo}'s profile",
 
   // ── Hero ──
   "hero.title1": "Find the best for",
@@ -244,6 +251,7 @@ const en: Dict = {
   // ── Favorites ──
   "fav.title": "My favorites ({count})",
   "fav.clearAll": "Remove all",
+  "fav.remove": "Remove from favorites",
 
   // ── Results ──
   "results.count": "{count} result{plural}",
@@ -262,6 +270,8 @@ const en: Dict = {
   "results.mapLoading": "Loading map...",
   "results.noResults": "No results found for",
   "results.tryOther": "Try a different keyword or category.",
+  "results.ariaRegion": "Search results",
+  "results.ariaList": "Results list",
 
   // ── Filters ──
   "filters.label": "Filters",

@@ -123,6 +123,7 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
             type="button"
             onClick={handleGeo}
             disabled={geoLoading}
+            aria-label={t("search.geoTitle")}
             title={t("search.geoTitle")}
             className="flex-shrink-0 p-1 rounded-full text-sf-text-light
                        hover:text-sf-accent transition-colors disabled:opacity-50"
