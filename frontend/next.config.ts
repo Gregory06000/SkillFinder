@@ -65,9 +65,10 @@ export default withSentryConfig(nextConfig, {
   // Upload a larger set of source maps for prettier stack traces
   widenClientFileUpload: true,
 
-  // Disable Sentry logger to reduce bundle size
-  disableLogger: true,
-
-  // Automatically tree-shake Sentry logger statements
-  automaticVercelMonitors: false,
+  webpack: {
+    // Disable Sentry logger to reduce bundle size
+    treeshake: { removeDebugLogging: true },
+    // Disable automatic Vercel Cron monitors
+    automaticVercelMonitors: false,
+  },
 });
