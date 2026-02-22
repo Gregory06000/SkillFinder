@@ -203,7 +203,7 @@ function ResultCard({
       )}
 
       {/* Body */}
-      <div className="p-5">
+      <div className={`p-5 ${!hasPhoto ? "pt-14" : ""}`}>
         {/* Top: name + score */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="min-w-0 flex-1">
