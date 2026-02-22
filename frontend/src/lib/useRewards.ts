@@ -18,7 +18,7 @@ const AI_REASONING_KEY = "sf_show_reasoning";
 const MERGE_FLAG_KEY = "sf_points_merged";
 
 export function useRewards(searchCenter: { lat: number; lng: number } | null) {
-  const { user, getAccessToken } = useAuth();
+  const { user, loading, getAccessToken } = useAuth();
   const [rewards, setRewards] = useState<RewardsData>({
     points: 0,
     pseudo: "Guest",
@@ -65,8 +65,13 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
   // - Subsequent logins: just load server points (merge flag prevents re-merge)
   // When user logs out: clear localStorage so guest sees 0 pts
   useEffect(() => {
+    // Wait for auth state to be determined — avoids wiping localStorage during
+    // the brief moment user=null before the OAuth session is restored (race condition)
+    if (loading) return;
+
     if (!user) {
-      // Logged out → clear gamification localStorage and show fresh guest (0 pts)
+      // Truly logged out → reset merge flag so next login can re-merge
+      localStorage.removeItem(MERGE_FLAG_KEY);
       clearRewards();
       setRewards(loadRewards());
       return;
@@ -139,7 +144,7 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, loading]);
 
   const rank = getUserRank(rewards.points);
 
