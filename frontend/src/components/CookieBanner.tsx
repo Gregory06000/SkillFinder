@@ -18,6 +18,7 @@ export default function CookieBanner() {
 
   function accept() {
     localStorage.setItem(CONSENT_KEY, "1");
+    window.dispatchEvent(new CustomEvent("sf:consent"));
     setVisible(false);
   }
 
