@@ -27,14 +27,14 @@ export default function MentionsLegales() {
           <section>
             <h2 className="text-xl font-semibold mb-3">Éditeur du site</h2>
             <div className="text-gray-700 leading-relaxed space-y-1">
-              <p><strong>Nom / Raison sociale :</strong> [VOTRE NOM / SOCIÉTÉ]</p>
-              <p><strong>Adresse :</strong> [ADRESSE COMPLÈTE]</p>
+              <p><strong>Nom / Raison sociale :</strong> Gregory Semeria</p>
+              <p><strong>Adresse :</strong> 1 Rue Roger Martin du Gard, 06000 Nice</p>
               <p><strong>E-mail :</strong>{" "}
                 <a href="mailto:contact@skillfinder.fr" className="text-[#C45D3E] hover:underline">
                   contact@skillfinder.fr
                 </a>
               </p>
-              <p><strong>Directeur de la publication :</strong> [VOTRE NOM]</p>
+              <p><strong>Directeur de la publication :</strong> Gregory Semeria</p>
             </div>
           </section>
 
