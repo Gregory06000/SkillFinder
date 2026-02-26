@@ -62,10 +62,13 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 allowed_origins = [
     "http://localhost:3000",
 ]
-# In production, add your Vercel URL
-extra_origin = os.environ.get("FRONTEND_URL")
-if extra_origin:
-    allowed_origins.append(extra_origin)
+# In production, FRONTEND_URL can be a comma-separated list of allowed origins
+# e.g. "https://skillfinder.fr,https://www.skillfinder.fr,https://skill-finder-o6lm-psi.vercel.app"
+extra_origins = os.environ.get("FRONTEND_URL", "")
+for origin in extra_origins.split(","):
+    origin = origin.strip()
+    if origin:
+        allowed_origins.append(origin)
 
 app.add_middleware(
     CORSMiddleware,
