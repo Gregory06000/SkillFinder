@@ -470,64 +470,59 @@ function Home() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-0.5">
-                {SORT_OPTIONS.map((opt) => (
+              <div className="flex flex-col gap-2 w-full sm:w-auto">
+                {/* Row 1 : tri + IA */}
+                <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
+                  {SORT_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => search.setSortMode(opt.key)}
+                      className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
+                                 transition-all cursor-pointer
+                                 ${
+                                   search.sortMode === opt.key
+                                     ? "bg-sf-dark text-white border-sf-dark"
+                                     : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                                 }`}
+                    >
+                      {t(opt.labelKey)}
+                    </button>
+                  ))}
+
+                  {/* AI Reasoning toggle */}
                   <button
-                    key={opt.key}
-                    onClick={() => search.setSortMode(opt.key)}
+                    onClick={rewards.toggleReasoning}
                     className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
-                               transition-all cursor-pointer
+                               transition-all cursor-pointer inline-flex items-center gap-1.5
                                ${
-                                 search.sortMode === opt.key
+                                 rewards.showReasoning
                                    ? "bg-sf-dark text-white border-sf-dark"
                                    : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                }`}
+                    title={t("results.aiTitle")}
                   >
-                    {t(opt.labelKey)}
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 16v-4M12 8h.01" />
+                    </svg>
+                    {t("results.aiToggle")}
                   </button>
-                ))}
+                </div>
 
-                {/* AI Reasoning toggle */}
-                <button
-                  onClick={rewards.toggleReasoning}
-                  className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
-                             transition-all cursor-pointer inline-flex items-center gap-1.5
-                             ${
-                               rewards.showReasoning
-                                 ? "bg-sf-dark text-white border-sf-dark"
-                                 : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
-                             }`}
-                  title={t("results.aiTitle")}
-                >
-                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 16v-4M12 8h.01" />
-                  </svg>
-                  {t("results.aiToggle")}
-                </button>
-
-                {/* Mobile list/map toggle */}
+                {/* Row 2 : Liste / Carte (mobile only) */}
                 {search.showMap && (
-                  <div className="shrink-0 flex lg:hidden rounded-sf-sm border border-sf-border overflow-hidden">
+                  <div className="flex lg:hidden rounded-sf-sm border border-sf-border overflow-hidden self-start">
                     <button
                       onClick={() => setMobileView("list")}
-                      className={`px-3 py-1.5 text-xs font-medium transition-all
-                                 ${
-                                   mobileView === "list"
-                                     ? "bg-sf-dark text-white"
-                                     : "bg-white text-sf-text-secondary"
-                                 }`}
+                      className={`px-4 py-1.5 text-xs font-medium transition-all
+                                 ${mobileView === "list" ? "bg-sf-dark text-white" : "bg-white text-sf-text-secondary"}`}
                     >
                       {t("results.list")}
                     </button>
                     <button
                       onClick={() => setMobileView("map")}
-                      className={`px-3 py-1.5 text-xs font-medium transition-all
-                                 ${
-                                   mobileView === "map"
-                                     ? "bg-sf-dark text-white"
-                                     : "bg-white text-sf-text-secondary"
-                                 }`}
+                      className={`px-4 py-1.5 text-xs font-medium transition-all
+                                 ${mobileView === "map" ? "bg-sf-dark text-white" : "bg-white text-sf-text-secondary"}`}
                     >
                       {t("results.map")}
                     </button>
