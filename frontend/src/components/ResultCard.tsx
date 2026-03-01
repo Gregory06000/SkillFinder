@@ -32,6 +32,7 @@ interface ResultCardProps {
   showReasoning?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  isVoted?: boolean;
 }
 
 function renderSnippet(snippet: string) {
@@ -88,16 +89,19 @@ function ResultCard({
   showReasoning,
   isFavorite,
   onToggleFavorite,
+  isVoted,
 }: ResultCardProps) {
   const { t } = useT();
   const cardRef = useRef<HTMLDivElement>(null);
   const [imgError, setImgError] = useState(false);
   const hasPhoto = result.photo_name && !imgError;
 
-  const [hasVoted, setHasVoted] = useState(false);
+  // isVoted prop (from server-synced React state) takes precedence over localStorage
+  const [localVoted, setLocalVoted] = useState(false);
   useEffect(() => {
-    setHasVoted(checkVoted(result.name));
+    setLocalVoted(checkVoted(result.name));
   }, [result.name, result.verification_last]);
+  const hasVoted = isVoted ?? localVoted;
 
   const totalVotes = result.verification_yes + result.verification_no;
   const isVerified =

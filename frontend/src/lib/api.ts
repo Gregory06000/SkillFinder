@@ -178,6 +178,20 @@ export async function verifyBusiness(
   return res.json();
 }
 
+export async function fetchMyVotes(placeIds: string[], token: string): Promise<string[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/votes/mine`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ place_ids: placeIds }),
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
 export interface UserProfile {
   found: boolean;
   pseudo?: string;

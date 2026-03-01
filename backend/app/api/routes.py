@@ -2,6 +2,7 @@ import os
 import logging
 
 from fastapi import APIRouter, Header, HTTPException, Request
+from pydantic import BaseModel
 from fastapi.responses import Response
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -266,6 +267,34 @@ async def verify(
         raise HTTPException(status_code=502, detail=f"Erreur base de données: {e}")
 
     return VerifyResponse(success=True, message="Vote enregistré !")
+
+
+class MyVotesRequest(BaseModel):
+    place_ids: list[str]
+
+
+@router.post("/votes/mine", response_model=list[str])
+@limiter.limit("30/minute")
+async def get_my_votes(
+    request: Request,
+    req: MyVotesRequest,
+    authorization: str | None = Header(default=None),
+):
+    """Return which place_ids from the list the current user has already voted on."""
+    from app.services.supabase import is_enabled as supabase_enabled, get_user_votes, get_user_from_token
+
+    if not supabase_enabled():
+        return []
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        return []
+
+    try:
+        return await get_user_votes(req.place_ids, user_id)
+    except Exception as e:
+        logger.warning("get_user_votes failed: %s", e)
+        return []
 
 
 @router.get("/leaderboard")

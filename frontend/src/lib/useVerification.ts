@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { verifyBusiness, type BusinessResult } from "@/lib/api";
+import { useState, useCallback, useEffect } from "react";
+import { verifyBusiness, fetchMyVotes, type BusinessResult } from "@/lib/api";
+import { markVoted as markVotedStorage, hasVoted } from "@/lib/gamification";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/lib/ToastContext";
 import { trackEvent } from "@/lib/analytics";
@@ -24,8 +25,46 @@ export function useVerification({
     "milestone" | "login" | "vote"
   >("milestone");
 
+  // React state set for voted places (source of truth for UI)
+  const [votedPlaces, setVotedPlaces] = useState<Set<string>>(() => {
+    try {
+      const raw = localStorage.getItem("sf_voted_places");
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch {
+      return new Set();
+    }
+  });
+
   const { user, getAccessToken } = useAuth();
   const { addToast } = useToast();
+
+  // Clear voted state on logout
+  useEffect(() => {
+    if (!user) setVotedPlaces(new Set());
+  }, [user]);
+
+  // Mark a place as voted in both React state and localStorage
+  const markVotedBoth = useCallback((placeId: string) => {
+    setVotedPlaces((prev) => new Set([...prev, placeId]));
+    markVoted(placeId);       // localStorage via gamification
+    markVotedStorage(placeId); // direct localStorage write
+  }, [markVoted]);
+
+  // Sync server-side voted places after search results arrive
+  const syncServerVotes = useCallback(async (placeIds: string[]) => {
+    if (!user || !placeIds.length) return;
+    const token = await getAccessToken();
+    if (!token) return;
+    const voted = await fetchMyVotes(placeIds, token);
+    if (voted.length > 0) {
+      setVotedPlaces((prev) => {
+        const next = new Set(prev);
+        voted.forEach((id) => next.add(id));
+        return next;
+      });
+      voted.forEach((id) => markVotedStorage(id));
+    }
+  }, [user, getAccessToken]);
 
   const handleVerify = useCallback(
     async (placeId: string, vote: "yes" | "no") => {
@@ -45,7 +84,6 @@ export function useVerification({
           return;
         }
         await verifyBusiness(placeId, vote, token);
-        // Only update UI after server confirmation
         setResults((prev) =>
           prev.map((r) =>
             r.name === placeId
@@ -59,7 +97,7 @@ export function useVerification({
               : r,
           ),
         );
-        markVoted(placeId);
+        markVotedBoth(placeId);
         awardVotePoints(() => setConversionVariant("milestone"));
         trackEvent("Vote", { vote });
       } catch (err) {
@@ -70,7 +108,7 @@ export function useVerification({
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, getAccessToken, setResults, markVoted, awardVotePoints, setShowConversion],
+    [user, getAccessToken, setResults, markVotedBoth, awardVotePoints, setShowConversion],
   );
 
   const showLoginForVote = useCallback(() => {
@@ -83,5 +121,7 @@ export function useVerification({
     conversionVariant,
     handleVerify,
     showLoginForVote,
+    votedPlaces,
+    syncServerVotes,
   };
 }

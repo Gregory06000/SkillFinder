@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, lazy, Suspense, useMemo } from "react";
+import { useState, lazy, Suspense, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
@@ -73,6 +73,14 @@ function Home() {
     awardVotePoints: rewards.awardVotePoints,
     setShowConversion: rewards.setShowConversion,
   });
+
+  // Sync server-side voted places when results arrive and user is logged in
+  useEffect(() => {
+    if (user && search.results.length > 0) {
+      verification.syncServerVotes(search.results.map((r) => r.name));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.results, user]);
 
   function onSearch(
     service: string,
@@ -613,6 +621,7 @@ function Home() {
                     onVerify={verification.handleVerify}
                     verifyLoading={verification.verifyLoading}
                     showReasoning={rewards.showReasoning}
+                    isVoted={verification.votedPlaces.has(result.name)}
                     isFavorite={favs.isFavorite(result.name)}
                     onToggleFavorite={() =>
                       favs.toggleFavorite({

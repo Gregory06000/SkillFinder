@@ -119,6 +119,29 @@ async def add_vote(
     resp.raise_for_status()
 
 
+async def get_user_votes(place_ids: list[str], user_id: str) -> list[str]:
+    """Return which of the given place_ids the user has already voted on."""
+    if not place_ids or not is_enabled():
+        return []
+    client = _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    ids_filter = ",".join(place_ids)
+    resp = await client.get(
+        "/rest/v1/verifications",
+        headers=headers,
+        params={
+            "select": "place_id",
+            "user_id": f"eq.{user_id}",
+            "place_id": f"in.({ids_filter})",
+        },
+    )
+    if resp.status_code != 200:
+        return []
+    return [row["place_id"] for row in resp.json()]
+
+
 async def get_stats(place_ids: list[str]) -> dict[str, dict]:
     """
     Fetch verification stats for a list of place_ids.
