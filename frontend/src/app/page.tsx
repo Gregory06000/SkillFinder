@@ -123,7 +123,7 @@ function Home() {
             SkillFinder
           </span>
         </a>
-        <div className="relative flex items-center gap-6">
+        <div className="relative flex items-center gap-3 sm:gap-6">
           <button
             onClick={() => setActiveTab(activeTab === "leaderboard" ? "search" : "leaderboard")}
             aria-label={t("nav.leaderboard")}
@@ -166,6 +166,7 @@ function Home() {
             </button>
           )}
           <button
+            data-no-panel-close
             onClick={() => rewards.setShowProfile((p) => !p)}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
             aria-expanded={rewards.showProfile}
@@ -197,8 +198,48 @@ function Home() {
             </div>
           </button>
 
+          {/* Mobile: Classement */}
+          <button
+            onClick={() => setActiveTab(activeTab === "leaderboard" ? "search" : "leaderboard")}
+            aria-label={t("nav.leaderboard")}
+            className={`sm:hidden flex items-center justify-center w-8 h-8 rounded-full border transition-colors
+              ${activeTab === "leaderboard" ? "bg-sf-dark text-white border-sf-dark" : "bg-white text-sf-text-secondary border-sf-border"}`}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
+            </svg>
+          </button>
+
+          {/* Mobile: Language toggle */}
+          <button
+            onClick={() => setLocale(locale === "fr" ? "en" : "fr")}
+            aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
+            className="sm:hidden flex items-center px-2 py-1 rounded-full border text-[12px] font-semibold
+                       bg-white text-sf-text-secondary border-sf-border"
+          >
+            {locale === "fr" ? "EN" : "FR"}
+          </button>
+
+          {/* Mobile: Connexion / Déconnexion */}
+          {user ? (
+            <button
+              onClick={signOut}
+              className="sm:hidden text-[11px] text-sf-text-light hover:text-sf-text transition-colors"
+            >
+              {t("nav.logout")}
+            </button>
+          ) : (
+            <button
+              onClick={verification.showLoginForVote}
+              className="sm:hidden text-[11px] font-medium text-sf-accent"
+            >
+              {t("nav.login")}
+            </button>
+          )}
+
           {/* Mobile avatar button */}
           <button
+            data-no-panel-close
             onClick={() => rewards.setShowProfile((p) => !p)}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
             aria-expanded={rewards.showProfile}

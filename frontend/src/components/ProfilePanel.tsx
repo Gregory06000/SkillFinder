@@ -60,10 +60,12 @@ export default function ProfilePanel({
   const [editingPseudo, setEditingPseudo] = useState(false);
   const [pseudoInput, setPseudoInput] = useState(rewards.pseudo);
 
-  // Close on click outside
+  // Close on click outside (skip the trigger button to avoid toggle race on mobile)
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+      const target = e.target as HTMLElement;
+      if (target.closest("[data-no-panel-close]")) return;
+      if (panelRef.current && !panelRef.current.contains(target)) {
         onClose();
       }
     }
@@ -121,7 +123,7 @@ export default function ProfilePanel({
   return (
     <div
       ref={panelRef}
-      className="absolute right-0 top-full mt-2 w-[360px] bg-white border border-sf-border
+      className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-[360px] bg-white border border-sf-border
                  rounded-sf-lg shadow-sf-lg z-[200] overflow-hidden animate-fade-in-up"
       style={{ animationDuration: "0.2s" }}
     >
