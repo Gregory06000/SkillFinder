@@ -470,12 +470,12 @@ function Home() {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-0.5">
                 {SORT_OPTIONS.map((opt) => (
                   <button
                     key={opt.key}
                     onClick={() => search.setSortMode(opt.key)}
-                    className={`px-3.5 py-1.5 rounded-full border text-[13px] font-medium
+                    className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
                                transition-all cursor-pointer
                                ${
                                  search.sortMode === opt.key
@@ -490,7 +490,7 @@ function Home() {
                 {/* AI Reasoning toggle */}
                 <button
                   onClick={rewards.toggleReasoning}
-                  className={`px-3.5 py-1.5 rounded-full border text-[13px] font-medium
+                  className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
                              transition-all cursor-pointer inline-flex items-center gap-1.5
                              ${
                                rewards.showReasoning
@@ -508,7 +508,7 @@ function Home() {
 
                 {/* Mobile list/map toggle */}
                 {search.showMap && (
-                  <div className="flex lg:hidden rounded-sf-sm border border-sf-border overflow-hidden">
+                  <div className="shrink-0 flex lg:hidden rounded-sf-sm border border-sf-border overflow-hidden">
                     <button
                       onClick={() => setMobileView("list")}
                       className={`px-3 py-1.5 text-xs font-medium transition-all
