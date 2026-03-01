@@ -167,7 +167,7 @@ function Home() {
           )}
           <button
             data-no-panel-close
-            onClick={() => rewards.setShowProfile((p) => !p)}
+            onClick={() => rewards.showProfile ? rewards.handleProfileClose() : rewards.setShowProfile(true)}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
             aria-expanded={rewards.showProfile}
             className="hidden sm:flex items-center gap-2.5 border border-sf-gold/25
@@ -240,7 +240,7 @@ function Home() {
           {/* Mobile avatar button */}
           <button
             data-no-panel-close
-            onClick={() => rewards.setShowProfile((p) => !p)}
+            onClick={() => rewards.showProfile ? rewards.handleProfileClose() : rewards.setShowProfile(true)}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
             aria-expanded={rewards.showProfile}
             className="sm:hidden"
