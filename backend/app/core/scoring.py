@@ -137,8 +137,11 @@ def rank_businesses(
             ]
 
             reasoning = llm.get("reasoning", "")
-            if not reasoning and evidence:
-                reasoning = f"Score {score:.1f}/5 basé sur {mentions} mention(s) dans les avis."
+            if not reasoning:
+                if evidence:
+                    reasoning = f"Score {score:.1f}/5 basé sur {mentions} mention(s) dans les avis."
+                else:
+                    reasoning = f"Score IA : {score:.1f}/5."
 
             entry = _biz_base(biz)
             entry.update({
@@ -159,13 +162,15 @@ def rank_businesses(
             if score_data["weighted_score"] <= 0:
                 continue  # Quality gate
 
+            freq = score_data["frequency"]
             entry = _biz_base(biz)
             entry.update({
                 "match_score": score_data["weighted_score"],
                 "raw_score": score_data["raw_score"],
-                "frequency": score_data["frequency"],
+                "frequency": freq,
                 "best_snippet": score_data["best_snippet"],
                 "snippets": score_data["snippets"],
+                "reasoning": f"Score {score_data['weighted_score']:.1f}/5 basé sur {freq} mention(s) dans les avis.",
             })
             results.append(entry)
         # else: LLM was used but didn't return this business → skip
