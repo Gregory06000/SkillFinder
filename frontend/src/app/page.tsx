@@ -52,6 +52,7 @@ function Home() {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
   const [activeTab, setActiveTab] = useState<"search" | "leaderboard">("search");
+  const [searchBarKey, setSearchBarKey] = useState(0);
 
   const searchParams = useSearchParams();
   const urlParams = useMemo(() => ({
@@ -121,6 +122,7 @@ function Home() {
             search.resetSearch();
             setSelectedIndex(null);
             compare.resetCompare();
+            setSearchBarKey((k) => k + 1);
           }}
           className="flex items-center gap-2.5 no-underline"
         >
@@ -295,6 +297,7 @@ function Home() {
         </div>
 
         <SearchBar
+          key={searchBarKey}
           onSearch={onSearch}
           isLoading={search.isLoading}
           initialService={urlParams.service}
