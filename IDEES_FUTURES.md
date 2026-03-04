@@ -5,17 +5,19 @@ Légende complexité : 🟢 Faible · 🟡 Moyenne · 🔴 Élevée
 
 ---
 
-## 1. Recherche sans critère spécifique obligatoire
+## 1. ~~Recherche sans critère spécifique obligatoire~~ ✅ Implémenté — mars 2025
 
 **Description**
-Permettre de lancer une recherche en renseignant uniquement le service et la ville (sans remplir le champ "critère spécifique"). Le moteur renverrait alors les meilleures entreprises de la catégorie selon la note globale et les avis, sans scoring sémantique IA.
+Permettre de lancer une recherche en renseignant uniquement le service et la ville (sans remplir le champ "critère spécifique"). Le moteur renvoie les meilleures entreprises de la catégorie selon la note globale, sans scoring sémantique IA.
 
-**Avis**
-✅ Idée prioritaire. Le champ critère spécifique est aujourd'hui un frein à l'entrée : un utilisateur qui cherche juste "un bon plombier à Paris" ne sait pas forcément quoi écrire. Supprimer cette obligation améliorerait significativement le taux de conversion des visiteurs. Techniquement simple : il suffit de rendre le champ optionnel et d'afficher les résultats triés par note globale quand aucun critère n'est fourni.
+**Ce qui a été fait**
+- Backend : `keyword` rendu optionnel dans `SearchRequest` ; mode exploration dans `rank_businesses()` (tri par `global_rating`) ; synonymes et LLM court-circuités si keyword vide
+- Frontend : bouton de recherche débloqué sans keyword ; tri par défaut "Note" en mode exploration ; bouton IA et option "Meilleur match" masqués ; résumé, historique et messages adaptés ; label du champ mis à jour "(optionnel)"
+- Bonus : clic sur le logo SkillFinder efface les champs service et critère
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟢 Faible | ⭐⭐⭐⭐⭐ Très élevé | 🔥 Court terme |
+| 🟢 Faible | ⭐⭐⭐⭐⭐ Très élevé | ✅ Livré |
 
 ---
 
@@ -107,7 +109,7 @@ Surveiller en arrière-plan les nouvelles entreprises référencées corresponda
 
 | # | Fonctionnalité | Priorité |
 |---|---|---|
-| 1 | Recherche sans critère obligatoire | 🔥 Court terme |
+| 1 | ~~Recherche sans critère obligatoire~~ | ✅ Livré |
 | 5 | Commentaires SkillFinder | 📅 Moyen terme |
 | 2 | Comparaison jusqu'à 4 entreprises | 📅 Moyen terme |
 | 3 | Système d'amis | 📆 Long terme |
