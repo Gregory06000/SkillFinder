@@ -325,7 +325,7 @@ function Home() {
                              text-sf-text-secondary hover:border-sf-accent/40 hover:text-sf-accent
                              transition-all cursor-pointer"
                 >
-                  {h.keyword} &middot; {h.service}
+                  {h.keyword ? `${h.keyword} · ${h.service}` : h.service}
                 </button>
               ))}
             </div>
@@ -431,7 +431,7 @@ function Home() {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                 />
               </svg>
-              {t("results.loading")}
+              {search.lastSearch?.keyword ? t("results.loading") : t("results.loadingExplore")}
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -453,8 +453,11 @@ function Home() {
               </svg>
             </div>
             <p className="text-sm font-semibold text-sf-text mb-1">
-              {t("results.noResults")}{" "}
-              <span className="text-sf-accent">{search.lastSearch.keyword}</span>
+              {search.lastSearch.keyword ? (
+                <>{t("results.noResults")}{" "}<span className="text-sf-accent">{search.lastSearch.keyword}</span></>
+              ) : (
+                t("results.noResultsExplore")
+              )}
             </p>
             <p className="text-xs text-sf-text-light max-w-[280px] mx-auto">
               {t("results.tryOther")}
@@ -470,8 +473,10 @@ function Home() {
                 <strong className="text-sf-text font-semibold">
                   {t("results.count", { count: search.sortedResults.length, plural: search.sortedResults.length > 1 ? "s" : "" })}
                 </strong>{" "}
-                {t("results.for")} <strong className="text-sf-text font-semibold">{search.lastSearch?.keyword}</strong>{" "}
-                {t("results.in")} {search.lastSearch?.service}
+                {t("results.in")} <strong className="text-sf-text font-semibold">{search.lastSearch?.service}</strong>
+                {search.lastSearch?.keyword && (
+                  <> {t("results.for")} <strong className="text-sf-text font-semibold">{search.lastSearch.keyword}</strong></>
+                )}
                 {search.sortedResults.length < search.results.length && (
                   <span className="text-sf-text-light ml-1">
                     {t("results.filtered", { count: search.results.length - search.sortedResults.length })}
@@ -481,40 +486,44 @@ function Home() {
               <div className="flex flex-col gap-2 w-full sm:w-auto">
                 {/* Row 1 : tri + IA */}
                 <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
-                  {SORT_OPTIONS.map((opt) => (
+                  {SORT_OPTIONS
+                    .filter((opt) => opt.key !== "match" || !!search.lastSearch?.keyword)
+                    .map((opt) => (
+                      <button
+                        key={opt.key}
+                        onClick={() => search.setSortMode(opt.key)}
+                        className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
+                                   transition-all cursor-pointer
+                                   ${
+                                     search.sortMode === opt.key
+                                       ? "bg-sf-dark text-white border-sf-dark"
+                                       : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                                   }`}
+                      >
+                        {t(opt.labelKey)}
+                      </button>
+                    ))}
+
+                  {/* AI Reasoning toggle — masqué sans critère spécifique */}
+                  {search.lastSearch?.keyword && (
                     <button
-                      key={opt.key}
-                      onClick={() => search.setSortMode(opt.key)}
+                      onClick={rewards.toggleReasoning}
                       className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
-                                 transition-all cursor-pointer
+                                 transition-all cursor-pointer inline-flex items-center gap-1.5
                                  ${
-                                   search.sortMode === opt.key
+                                   rewards.showReasoning
                                      ? "bg-sf-dark text-white border-sf-dark"
                                      : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                  }`}
+                      title={t("results.aiTitle")}
                     >
-                      {t(opt.labelKey)}
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M12 16v-4M12 8h.01" />
+                      </svg>
+                      {t("results.aiToggle")}
                     </button>
-                  ))}
-
-                  {/* AI Reasoning toggle */}
-                  <button
-                    onClick={rewards.toggleReasoning}
-                    className={`shrink-0 px-3.5 py-1.5 rounded-full border text-[13px] font-medium
-                               transition-all cursor-pointer inline-flex items-center gap-1.5
-                               ${
-                                 rewards.showReasoning
-                                   ? "bg-sf-dark text-white border-sf-dark"
-                                   : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
-                               }`}
-                    title={t("results.aiTitle")}
-                  >
-                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 16v-4M12 8h.01" />
-                    </svg>
-                    {t("results.aiToggle")}
-                  </button>
+                  )}
                 </div>
 
                 {/* Row 2 : Liste / Carte (mobile only) */}

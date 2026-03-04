@@ -34,7 +34,7 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (service.trim() && keyword.trim()) {
+    if (service.trim()) {
       onSearch(service.trim(), keyword.trim(), location.trim(), radiusKm);
     }
   }
@@ -168,7 +168,7 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
       {/* Search button */}
       <button
         type="submit"
-        disabled={isLoading || !service.trim() || !keyword.trim()}
+        disabled={isLoading || !service.trim()}
         aria-label={t("search.submit")}
         className="flex-shrink-0 w-full sm:w-[52px] h-12 sm:h-[52px] rounded-sf-md
                    bg-sf-accent text-white flex items-center justify-center

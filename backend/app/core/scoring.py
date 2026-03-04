@@ -112,6 +112,23 @@ def rank_businesses(
 
     Returns a sorted list (top 10) by match_score descending.
     """
+    # --- Mode exploration : aucun keyword, tri par note globale ---
+    if not keyword or not keyword.strip():
+        results = []
+        for biz in businesses:
+            entry = _biz_base(biz)
+            entry.update({
+                "match_score": round(biz.get("global_rating", 0), 2),
+                "raw_score": round(biz.get("global_rating", 0), 2),
+                "frequency": 0,
+                "best_snippet": "",
+                "snippets": [],
+                "reasoning": "",
+            })
+            results.append(entry)
+        results.sort(key=lambda x: x["match_score"], reverse=True)
+        return results[:10]
+
     # Index LLM results by business position for O(1) lookup
     llm_map: dict[int, dict] = {}
     if llm_scores:

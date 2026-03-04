@@ -46,9 +46,10 @@ async def search(request: Request, req: SearchRequest):
         if req.location:
             center = await geocode(req.location)
 
-        query = f"{req.service} {req.keyword}"
+        keyword_part = f" {req.keyword}" if req.keyword.strip() else ""
+        query = f"{req.service}{keyword_part}"
         if req.location:
-            query = f"{req.service} {req.keyword} {req.location}"
+            query = f"{req.service}{keyword_part} {req.location}"
 
         try:
             businesses = await search_places(
@@ -73,44 +74,46 @@ async def search(request: Request, req: SearchRequest):
                 detail=f"No mock data for '{req.service}'. Available: {available}",
             )
 
-    # --- Synonym expansion (enrich keyword with related terms) ---
-    synonyms = list(req.synonyms) if req.synonyms else []
-    try:
-        from app.services.llm import generate_synonyms
-
-        ai_synonyms = await generate_synonyms(req.service, req.keyword)
-        # Merge without duplicates, keep order
-        existing = {s.lower() for s in synonyms}
-        for s in ai_synonyms:
-            if s.lower() not in existing:
-                synonyms.append(s)
-                existing.add(s.lower())
-    except Exception as e:
-        logger.warning("Synonym expansion failed for %r/%r: %s", req.service, req.keyword, e)
-
-    effective_synonyms = synonyms or None
-
-    # --- LLM intent-based scoring (falls back to lexicon if unavailable) ---
+    effective_synonyms = None
     llm_scores = None
-    try:
-        from app.services.llm import score_reviews_batch
 
-        llm_scores = await score_reviews_batch(
-            service=req.service,
-            keyword=req.keyword,
-            synonyms=effective_synonyms,
-            businesses=businesses,
-            locale=req.locale,
-        )
-    except Exception as e:
-        logger.warning("LLM scoring failed for %r/%r: %s", req.service, req.keyword, e)
+    if req.keyword.strip():
+        # --- Synonym expansion (enrich keyword with related terms) ---
+        synonyms = list(req.synonyms) if req.synonyms else []
+        try:
+            from app.services.llm import generate_synonyms
+
+            ai_synonyms = await generate_synonyms(req.service, req.keyword)
+            existing = {s.lower() for s in synonyms}
+            for s in ai_synonyms:
+                if s.lower() not in existing:
+                    synonyms.append(s)
+                    existing.add(s.lower())
+        except Exception as e:
+            logger.warning("Synonym expansion failed for %r/%r: %s", req.service, req.keyword, e)
+
+        effective_synonyms = synonyms or None
+
+        # --- LLM intent-based scoring (falls back to lexicon if unavailable) ---
+        try:
+            from app.services.llm import score_reviews_batch
+
+            llm_scores = await score_reviews_batch(
+                service=req.service,
+                keyword=req.keyword,
+                synonyms=effective_synonyms,
+                businesses=businesses,
+                locale=req.locale,
+            )
+        except Exception as e:
+            logger.warning("LLM scoring failed for %r/%r: %s", req.service, req.keyword, e)
 
     ranked = rank_businesses(
         businesses, req.keyword, effective_synonyms, llm_scores
     )
 
     # If LLM scored but filtered everything out, fall back to lexicon
-    if not ranked and llm_scores is not None:
+    if not ranked and llm_scores is not None and req.keyword.strip():
         ranked = rank_businesses(
             businesses, req.keyword, effective_synonyms, None
         )

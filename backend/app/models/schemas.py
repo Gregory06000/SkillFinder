@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class SearchRequest(BaseModel):
     service: str = Field(..., min_length=1, max_length=100)
-    keyword: str = Field(..., min_length=1, max_length=100)
+    keyword: str = Field(default="", max_length=100)
     synonyms: list[str] = Field(default=[])
     location: str = Field(default="", max_length=200)
     radius_km: int = Field(default=10, ge=1, le=50)

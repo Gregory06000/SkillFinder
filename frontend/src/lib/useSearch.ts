@@ -150,7 +150,7 @@ export function useSearch() {
     setIsLoading(true);
     setError(null);
     setResults([]);
-    setSortMode("match");
+    setSortMode(keyword.trim() ? "match" : "rating");
     setVisibleCount(PAGE_SIZE);
     setFilters({ minRating: 0, maxDistance: 0 });
 
