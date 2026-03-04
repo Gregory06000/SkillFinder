@@ -5,7 +5,7 @@ Légende complexité : 🟢 Faible · 🟡 Moyenne · 🔴 Élevée
 
 ---
 
-## 1. ~~Recherche sans critère spécifique obligatoire~~ ✅ Implémenté — mars 2025
+## 1. ~~Recherche sans critère spécifique obligatoire~~ ✅ Implémenté — mars 2026
 
 **Description**
 Permettre de lancer une recherche en renseignant uniquement le service et la ville (sans remplir le champ "critère spécifique"). Le moteur renvoie les meilleures entreprises de la catégorie selon la note globale, sans scoring sémantique IA.
