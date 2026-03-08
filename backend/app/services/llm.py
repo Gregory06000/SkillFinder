@@ -242,7 +242,7 @@ async def score_reviews_batch(
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.1,
+            "temperature": 0,
             "maxOutputTokens": 4096,
             "responseMimeType": "application/json",
         },
