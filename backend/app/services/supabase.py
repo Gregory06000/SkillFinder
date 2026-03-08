@@ -573,7 +573,7 @@ async def add_comment(
     return rows[0] if rows else {}
 
 
-async def delete_comment(comment_id: str, user_id: str) -> bool:
+async def delete_comment(comment_id: str, user_id: str, user_token: str | None = None) -> bool:
     """Delete a comment by ID, only if it belongs to user_id. Returns True on success."""
     if not is_enabled():
         return False
@@ -581,6 +581,8 @@ async def delete_comment(comment_id: str, user_id: str) -> bool:
     auth_headers: dict[str, str] = {}
     if _SERVICE_ROLE_KEY:
         auth_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        auth_headers["Authorization"] = f"Bearer {user_token}"
 
     # Verify ownership before deleting
     check_resp = await client.get(

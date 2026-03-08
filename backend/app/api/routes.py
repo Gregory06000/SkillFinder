@@ -482,7 +482,8 @@ async def delete_comment_endpoint(
     if not user_id:
         raise HTTPException(status_code=401, detail="Connexion requise.")
 
-    success = await _delete_comment(comment_id, user_id)
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+    success = await _delete_comment(comment_id, user_id, user_token=raw_token)
     if not success:
         raise HTTPException(status_code=404, detail="Commentaire introuvable ou non autorisé.")
     return {"success": True}
