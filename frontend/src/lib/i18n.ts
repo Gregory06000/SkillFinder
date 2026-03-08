@@ -139,6 +139,7 @@ const fr: Dict = {
   "comments.minutesAgo": "il y a {count} min",
   "comments.hoursAgo": "il y a {count}h",
   "comments.daysAgo": "il y a {count}j",
+  "comments.hasMore": "Affichage des {limit} avis les plus récents.",
 
   // ── UserStats ──
   "stats.tier": "Palier {palier}",
@@ -347,6 +348,7 @@ const en: Dict = {
   "comments.minutesAgo": "{count} min ago",
   "comments.hoursAgo": "{count}h ago",
   "comments.daysAgo": "{count}d ago",
+  "comments.hasMore": "Showing the {limit} most recent reviews.",
 
   // ── UserStats ──
   "stats.tier": "Tier {palier}",

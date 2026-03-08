@@ -245,14 +245,19 @@ export async function updateLeaderboard(
   return res.json();
 }
 
-export async function fetchComments(placeId: string, keyword: string): Promise<SkillComment[]> {
+export interface CommentsResponse {
+  comments: SkillComment[];
+  has_more: boolean;
+}
+
+export async function fetchComments(placeId: string, keyword: string): Promise<CommentsResponse> {
   try {
     const params = new URLSearchParams({ place_id: placeId, keyword });
     const res = await fetch(`${API_BASE}/api/comments?${params}`);
-    if (!res.ok) return [];
+    if (!res.ok) return { comments: [], has_more: false };
     return res.json();
   } catch {
-    return [];
+    return { comments: [], has_more: false };
   }
 }
 

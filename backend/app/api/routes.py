@@ -13,7 +13,7 @@ from app.models.schemas import (
     SearchRequest, SearchResponse, BusinessResult,
     CompareRequest, CompareResponse, BusinessAnalysis,
     VerifyRequest, VerifyResponse,
-    CommentOut, CommentRequest,
+    CommentOut, CommentRequest, CommentsResponse,
 )
 from app.core.scoring import rank_businesses
 from app.core.cache_manager import get_cached_search, save_search_to_cache
@@ -421,18 +421,18 @@ async def admin_stats(authorization: str | None = Header(default=None)):
         raise HTTPException(status_code=500, detail="Erreur lors de la récupération des statistiques.")
 
 
-@router.get("/comments", response_model=list[CommentOut])
+@router.get("/comments", response_model=CommentsResponse)
 @limiter.limit("30/minute")
 async def get_comments(request: Request, place_id: str, keyword: str):
     """Fetch comments for a business + keyword, newest first."""
     from app.services.supabase import is_enabled as supabase_enabled, get_comments as _get_comments
     if not supabase_enabled():
-        return []
+        return CommentsResponse(comments=[], has_more=False)
     try:
         return await _get_comments(place_id, keyword)
     except Exception as e:
         logger.warning("get_comments failed: %s", e)
-        return []
+        return CommentsResponse(comments=[], has_more=False)
 
 
 @router.post("/comments", response_model=CommentOut)

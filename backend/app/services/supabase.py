@@ -474,10 +474,13 @@ async def get_admin_stats() -> dict:
 
 # ── Comments ──────────────────────────────
 
-async def get_comments(place_id: str, keyword: str, limit: int = 10) -> list[dict]:
-    """Fetch comments for a given place + keyword, newest first."""
+async def get_comments(place_id: str, keyword: str, limit: int = 20) -> dict:
+    """Fetch comments for a given place + keyword, newest first.
+    Fetches limit+1 rows to detect whether more exist (has_more flag).
+    Returns {"comments": [...], "has_more": bool}.
+    """
     if not is_enabled():
-        return []
+        return {"comments": [], "has_more": False}
     client = _get_client()
     resp = await client.get(
         "/rest/v1/comments",
@@ -486,13 +489,15 @@ async def get_comments(place_id: str, keyword: str, limit: int = 10) -> list[dic
             "place_id": f"eq.{place_id}",
             "keyword": f"eq.{keyword.strip().lower()}",
             "order": "created_at.desc",
-            "limit": str(limit),
+            "limit": str(limit + 1),
         },
     )
     if resp.status_code != 200:
         logger.warning("get_comments failed: %s %s", resp.status_code, resp.text)
-        return []
-    return resp.json()
+        return {"comments": [], "has_more": False}
+    rows = resp.json()
+    has_more = len(rows) > limit
+    return {"comments": rows[:limit], "has_more": has_more}
 
 
 async def add_comment(

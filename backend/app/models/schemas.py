@@ -95,6 +95,11 @@ class CommentOut(BaseModel):
     created_at: str
 
 
+class CommentsResponse(BaseModel):
+    comments: list[CommentOut]
+    has_more: bool = False
+
+
 class CommentRequest(BaseModel):
     place_id: str = Field(..., min_length=1, max_length=500)
     keyword: str = Field(..., min_length=1, max_length=100)

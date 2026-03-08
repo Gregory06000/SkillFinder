@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from "react";
 import type { User } from "@supabase/supabase-js";
 import { fetchComments, postComment, type SkillComment } from "@/lib/api";
+
+const DISPLAY_LIMIT = 20;
 import { useT } from "@/lib/i18n";
 
 const MAX_CHARS = 280;
@@ -36,6 +38,7 @@ export default function CommentsSection({
   const { t } = useT();
   const [open, setOpen] = useState(false);
   const [comments, setComments] = useState<SkillComment[]>([]);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
   const [draft, setDraft] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -43,8 +46,9 @@ export default function CommentsSection({
 
   const load = useCallback(async () => {
     setLoading(true);
-    const data = await fetchComments(placeId, keyword);
+    const { comments: data, has_more } = await fetchComments(placeId, keyword);
     setComments(data);
+    setHasMore(has_more);
     setLoading(false);
   }, [placeId, keyword]);
 
@@ -95,6 +99,7 @@ export default function CommentsSection({
         </svg>
         <span>
           {t("comments.toggle", { count: comments.length })}
+          {hasMore && <span className="text-[10px] text-sf-text-light">+</span>}
         </span>
         <svg
           className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`}
@@ -145,17 +150,24 @@ export default function CommentsSection({
           ) : comments.length === 0 ? (
             <p className="text-[11px] text-sf-text-light italic">{t("comments.empty")}</p>
           ) : (
-            <ul className="space-y-2">
-              {comments.map((c) => (
-                <li key={c.id} className="bg-gray-50 rounded-sf-sm px-3 py-2">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-[11px] font-semibold text-sf-text">{c.pseudo}</span>
-                    <span className="text-[10px] text-sf-text-light">{timeAgo(c.created_at, t)}</span>
-                  </div>
-                  <p className="text-[12px] text-sf-text-secondary leading-relaxed">{c.content}</p>
-                </li>
-              ))}
-            </ul>
+            <>
+              <ul className={`space-y-2 ${comments.length > 5 ? "max-h-64 overflow-y-auto pr-1" : ""}`}>
+                {comments.map((c) => (
+                  <li key={c.id} className="bg-gray-50 rounded-sf-sm px-3 py-2">
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-[11px] font-semibold text-sf-text">{c.pseudo}</span>
+                      <span className="text-[10px] text-sf-text-light">{timeAgo(c.created_at, t)}</span>
+                    </div>
+                    <p className="text-[12px] text-sf-text-secondary leading-relaxed">{c.content}</p>
+                  </li>
+                ))}
+              </ul>
+              {hasMore && (
+                <p className="text-[10px] text-sf-text-light italic text-center">
+                  {t("comments.hasMore", { limit: DISPLAY_LIMIT })}
+                </p>
+              )}
+            </>
           )}
         </div>
       )}
