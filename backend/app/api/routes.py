@@ -456,8 +456,10 @@ async def post_comment(
     profile = await get_user_profile(user_id)
     pseudo = profile["pseudo"] if profile and profile.get("pseudo") else "Anonyme"
 
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+
     try:
-        comment = await add_comment(req.place_id, req.keyword, user_id, pseudo, req.content)
+        comment = await add_comment(req.place_id, req.keyword, user_id, pseudo, req.content, user_token=raw_token)
         return comment
     except Exception as e:
         logger.warning("add_comment failed: %s", e)

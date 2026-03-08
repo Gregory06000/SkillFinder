@@ -496,7 +496,8 @@ async def get_comments(place_id: str, keyword: str, limit: int = 10) -> list[dic
 
 
 async def add_comment(
-    place_id: str, keyword: str, user_id: str, pseudo: str, content: str
+    place_id: str, keyword: str, user_id: str, pseudo: str, content: str,
+    user_token: str | None = None,
 ) -> dict:
     """Insert a new comment. Returns the created row."""
     client = _get_client()
@@ -506,6 +507,8 @@ async def add_comment(
     }
     if _SERVICE_ROLE_KEY:
         headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        headers["Authorization"] = f"Bearer {user_token}"
     resp = await client.post(
         "/rest/v1/comments",
         headers=headers,
