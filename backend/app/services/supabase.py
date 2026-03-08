@@ -504,30 +504,57 @@ async def add_comment(
     place_id: str, keyword: str, user_id: str, pseudo: str, content: str,
     user_token: str | None = None,
 ) -> dict:
-    """Insert a new comment. Returns the created row."""
+    """Insert or update a comment (one per user per place+keyword).
+    Tries PATCH first (update existing row), falls back to POST (new insert).
+    Returns the resulting row.
+    """
     client = _get_client()
-    headers = {
-        "Content-Type": "application/json",
-        # Upsert: update content if (place_id, keyword, user_id) already exists
-        "Prefer": "resolution=merge-duplicates,return=representation",
-    }
+    auth_headers: dict[str, str] = {}
     if _SERVICE_ROLE_KEY:
-        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+        auth_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
     elif user_token:
-        headers["Authorization"] = f"Bearer {user_token}"
-    resp = await client.post(
+        auth_headers["Authorization"] = f"Bearer {user_token}"
+
+    normalized_keyword = keyword.strip().lower()
+
+    # 1) Try PATCH: update the existing comment for this user + place + keyword
+    patch_resp = await client.patch(
         "/rest/v1/comments",
-        headers=headers,
+        params={
+            "place_id": f"eq.{place_id}",
+            "keyword": f"eq.{normalized_keyword}",
+            "user_id": f"eq.{user_id}",
+        },
+        headers={
+            "Content-Type": "application/json",
+            "Prefer": "return=representation",
+            **auth_headers,
+        },
+        json={"content": content.strip()},
+    )
+    if patch_resp.status_code == 200:
+        rows = patch_resp.json()
+        if rows:
+            return rows[0]
+
+    # 2) No existing row — INSERT
+    insert_resp = await client.post(
+        "/rest/v1/comments",
+        headers={
+            "Content-Type": "application/json",
+            "Prefer": "return=representation",
+            **auth_headers,
+        },
         json={
             "place_id": place_id,
-            "keyword": keyword.strip().lower(),
+            "keyword": normalized_keyword,
             "user_id": user_id,
             "pseudo": pseudo,
             "content": content.strip(),
         },
     )
-    resp.raise_for_status()
-    rows = resp.json()
+    insert_resp.raise_for_status()
+    rows = insert_resp.json()
     return rows[0] if rows else {}
 
 
