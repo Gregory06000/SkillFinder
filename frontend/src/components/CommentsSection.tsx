@@ -3,11 +3,10 @@
 import { useState, useEffect, useCallback } from "react";
 import type { User } from "@supabase/supabase-js";
 import { fetchComments, postComment, type SkillComment } from "@/lib/api";
-
-const DISPLAY_LIMIT = 20;
 import { useT } from "@/lib/i18n";
 
 const MAX_CHARS = 280;
+const DISPLAY_LIMIT = 20;
 
 function timeAgo(dateStr: string, t: (k: string, v?: Record<string, string | number>) => string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
