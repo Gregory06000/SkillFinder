@@ -251,9 +251,9 @@ export interface CommentsResponse {
   has_more: boolean;
 }
 
-export async function fetchComments(placeId: string, keyword: string): Promise<CommentsResponse> {
+export async function fetchComments(placeId: string, keyword: string, offset = 0): Promise<CommentsResponse> {
   try {
-    const params = new URLSearchParams({ place_id: placeId, keyword });
+    const params = new URLSearchParams({ place_id: placeId, keyword, offset: String(offset) });
     const res = await fetch(`${API_BASE}/api/comments?${params}`);
     if (!res.ok) return { comments: [], has_more: false };
     return res.json();
@@ -281,5 +281,17 @@ export async function postComment(
     return res.json();
   } catch {
     return null;
+  }
+}
+
+export async function deleteComment(commentId: string, token: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.ok;
+  } catch {
+    return false;
   }
 }

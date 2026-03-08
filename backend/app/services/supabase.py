@@ -474,7 +474,7 @@ async def get_admin_stats() -> dict:
 
 # ── Comments ──────────────────────────────
 
-async def get_comments(place_id: str, keyword: str, limit: int = 20) -> dict:
+async def get_comments(place_id: str, keyword: str, limit: int = 20, offset: int = 0) -> dict:
     """Fetch comments for a given place + keyword, newest first.
     Fetches limit+1 rows to detect whether more exist (has_more flag).
     Returns {"comments": [...], "has_more": bool}.
@@ -490,6 +490,7 @@ async def get_comments(place_id: str, keyword: str, limit: int = 20) -> dict:
             "keyword": f"eq.{keyword.strip().lower()}",
             "order": "created_at.desc",
             "limit": str(limit + 1),
+            "offset": str(offset),
         },
     )
     if resp.status_code != 200:
@@ -570,6 +571,32 @@ async def add_comment(
     insert_resp.raise_for_status()
     rows = insert_resp.json()
     return rows[0] if rows else {}
+
+
+async def delete_comment(comment_id: str, user_id: str) -> bool:
+    """Delete a comment by ID, only if it belongs to user_id. Returns True on success."""
+    if not is_enabled():
+        return False
+    client = _get_client()
+    auth_headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        auth_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    # Verify ownership before deleting
+    check_resp = await client.get(
+        "/rest/v1/comments",
+        params={"select": "id", "id": f"eq.{comment_id}", "user_id": f"eq.{user_id}", "limit": "1"},
+        headers=auth_headers,
+    )
+    if check_resp.status_code != 200 or not check_resp.json():
+        return False
+
+    del_resp = await client.delete(
+        "/rest/v1/comments",
+        params={"id": f"eq.{comment_id}"},
+        headers={"Prefer": "return=minimal", **auth_headers},
+    )
+    return del_resp.status_code in (200, 204)
 
 
 async def get_user_from_token(authorization: str | None) -> str | None:

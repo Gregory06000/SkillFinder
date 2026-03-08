@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import type { User } from "@supabase/supabase-js";
-import { fetchComments, postComment, type SkillComment } from "@/lib/api";
+import { fetchComments, postComment, deleteComment, type SkillComment } from "@/lib/api";
 import { useT } from "@/lib/i18n";
 
 const MAX_CHARS = 280;
@@ -40,9 +40,12 @@ export default function CommentsSection({
   const [open, setOpen] = useState(false);
   const [comments, setComments] = useState<SkillComment[]>([]);
   const [hasMore, setHasMore] = useState(false);
+  const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [draft, setDraft] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   // The current user's own comment (if any)
@@ -50,9 +53,10 @@ export default function CommentsSection({
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { comments: data, has_more } = await fetchComments(placeId, keyword);
+    const { comments: data, has_more } = await fetchComments(placeId, keyword, 0);
     setComments(data);
     setHasMore(has_more);
+    setOffset(data.length);
     setLoading(false);
   }, [placeId, keyword]);
 
@@ -67,6 +71,15 @@ export default function CommentsSection({
       setDraft(myComment.content);
     }
   }, [myComment?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function handleLoadMore() {
+    setLoadingMore(true);
+    const { comments: more, has_more } = await fetchComments(placeId, keyword, offset);
+    setComments((prev) => [...prev, ...more]);
+    setHasMore(has_more);
+    setOffset((o) => o + more.length);
+    setLoadingMore(false);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -83,13 +96,23 @@ export default function CommentsSection({
     if (!created) {
       setError(t("comments.submitError"));
     } else {
-      // Replace existing comment or prepend new one
-      setComments((prev) => [
-        created,
-        ...prev.filter((c) => c.user_id !== userId),
-      ]);
+      setComments((prev) => [created, ...prev.filter((c) => c.user_id !== userId)]);
+      setOffset((o) => o + (myComment ? 0 : 1));
     }
     setSubmitting(false);
+  }
+
+  async function handleDelete(commentId: string) {
+    setDeleting(commentId);
+    const token = await getAccessToken();
+    if (!token) { setDeleting(null); return; }
+    const ok = await deleteComment(commentId, token);
+    if (ok) {
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+      setOffset((o) => Math.max(0, o - 1));
+      setDraft("");
+    }
+    setDeleting(null);
   }
 
   // Sorted list: own comment first, then others
@@ -194,7 +217,30 @@ export default function CommentsSection({
                             </span>
                           )}
                         </span>
-                        <span className="text-[10px] text-sf-text-light">{timeAgo(c.created_at, t)}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] text-sf-text-light">{timeAgo(c.created_at, t)}</span>
+                          {isMine && (
+                            <button
+                              onClick={() => handleDelete(c.id)}
+                              disabled={deleting === c.id}
+                              aria-label={t("comments.delete")}
+                              className="text-sf-text-light hover:text-red-500 transition-colors disabled:opacity-40"
+                            >
+                              {deleting === c.id ? (
+                                <svg className="w-3 h-3 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                                </svg>
+                              ) : (
+                                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                  <polyline points="3 6 5 6 21 6" />
+                                  <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+                                  <path d="M10 11v6M14 11v6" />
+                                  <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+                                </svg>
+                              )}
+                            </button>
+                          )}
+                        </div>
                       </div>
                       <p className="text-[12px] text-sf-text-secondary leading-relaxed">{c.content}</p>
                     </li>
@@ -202,9 +248,15 @@ export default function CommentsSection({
                 })}
               </ul>
               {hasMore && (
-                <p className="text-[10px] text-sf-text-light italic text-center">
-                  {t("comments.hasMore", { limit: DISPLAY_LIMIT })}
-                </p>
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="w-full text-[11px] text-sf-text-light hover:text-sf-accent transition-colors
+                             py-1 border border-sf-border rounded-sf-sm hover:border-sf-accent/30
+                             disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {loadingMore ? t("comments.loading") : t("comments.loadMore")}
+                </button>
               )}
             </>
           )}

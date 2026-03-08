@@ -143,6 +143,8 @@ const fr: Dict = {
   "comments.update": "Mettre à jour",
   "comments.editHint": "Vous avez déjà un avis — modifiez-le ci-dessous.",
   "comments.myComment": "(moi)",
+  "comments.delete": "Supprimer mon avis",
+  "comments.loadMore": "Voir plus d'avis",
 
   // ── UserStats ──
   "stats.tier": "Palier {palier}",
@@ -355,6 +357,8 @@ const en: Dict = {
   "comments.update": "Update",
   "comments.editHint": "You already have a review — edit it below.",
   "comments.myComment": "(me)",
+  "comments.delete": "Delete my review",
+  "comments.loadMore": "Load more reviews",
 
   // ── UserStats ──
   "stats.tier": "Tier {palier}",
