@@ -63,7 +63,7 @@ Donner la possibilité de rendre sa liste de favoris visible, en totalité ou en
 
 ---
 
-## 5. Commentaires SkillFinder (avis communautaires courts)
+## 5. ~~Commentaires SkillFinder (avis communautaires courts)~~ ✅ Implémenté — mars 2026
 
 **Description**
 En plus du vote Oui/Non sur le critère spécifique, les utilisateurs connectés pourraient écrire un commentaire court (ex. 280 caractères max) visible par tous, spécifiquement lié à la recherche en cours. Ces commentaires seraient distincts des avis Google et complémentaires : ils portent sur le critère recherché, pas sur l'entreprise en général.
@@ -71,9 +71,13 @@ En plus du vote Oui/Non sur le critère spécifique, les utilisateurs connectés
 **Avis**
 ✅✅ Excellente idée et probablement la plus différenciante de la liste. C'est ce qui ferait de SkillFinder une vraie plateforme communautaire et non un simple agrégateur Google. Le fait que les commentaires soient liés au critère de recherche (pas à l'établissement en général) est une vraie valeur ajoutée introuvable ailleurs. Risques à anticiper : modération du contenu, spam, commentaires hors sujet. À implémenter avec un système de signalement dès le départ.
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+**Ce qui a été fait**
+- Backend : table Supabase `comments` (RLS par `user_id`) ; `get_comments()` et `add_comment()` dans supabase.py ; endpoints `GET /api/comments` et `POST /api/comments` avec auth JWT ; keyword normalisé en minuscules
+- Frontend : interface `SkillComment` et fonctions `fetchComments()` / `postComment()` dans api.ts ; composant `CommentsSection` autonome (chargement lazy, compteur 280 chars, horodatage relatif) ; intégré dans `ResultCard` ; traductions FR/EN complètes
+
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟡 Moyenne | ⭐⭐⭐⭐⭐ Très élevé | 📅 Moyen terme |
+| 🟡 Moyenne | ⭐⭐⭐⭐⭐ Très élevé | ✅ Livré |
 
 ---
 
@@ -110,7 +114,7 @@ Surveiller en arrière-plan les nouvelles entreprises référencées corresponda
 | # | Fonctionnalité | Priorité |
 |---|---|---|
 | 1 | ~~Recherche sans critère obligatoire~~ | ✅ Livré |
-| 5 | Commentaires SkillFinder | 📅 Moyen terme |
+| 5 | ~~Commentaires SkillFinder~~ | ✅ Livré |
 | 2 | Comparaison jusqu'à 4 entreprises | 📅 Moyen terme |
 | 3 | Système d'amis | 📆 Long terme |
 | 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |
