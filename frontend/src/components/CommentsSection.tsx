@@ -48,6 +48,12 @@ export default function CommentsSection({
     setLoading(false);
   }, [placeId, keyword]);
 
+  // Load count on mount so the toggle button shows the correct number immediately
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  // Reload when re-opening if a comment was just posted
   useEffect(() => {
     if (open && comments.length === 0) {
       load();
@@ -88,7 +94,7 @@ export default function CommentsSection({
           <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
         </svg>
         <span>
-          {t("comments.toggle", { count: comments.length > 0 || open ? comments.length : 0 })}
+          {t("comments.toggle", { count: comments.length })}
         </span>
         <svg
           className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`}
