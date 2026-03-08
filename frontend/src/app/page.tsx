@@ -649,6 +649,7 @@ function Home() {
                     user={user}
                     pseudo={rewards.rewards.pseudo}
                     getAccessToken={getAccessToken}
+                    userId={user?.id}
                   />
                 ))}
 

@@ -485,7 +485,7 @@ async def get_comments(place_id: str, keyword: str, limit: int = 20) -> dict:
     resp = await client.get(
         "/rest/v1/comments",
         params={
-            "select": "id,pseudo,content,created_at",
+            "select": "id,user_id,pseudo,content,created_at",
             "place_id": f"eq.{place_id}",
             "keyword": f"eq.{keyword.strip().lower()}",
             "order": "created_at.desc",
@@ -508,7 +508,8 @@ async def add_comment(
     client = _get_client()
     headers = {
         "Content-Type": "application/json",
-        "Prefer": "return=representation",
+        # Upsert: update content if (place_id, keyword, user_id) already exists
+        "Prefer": "resolution=merge-duplicates,return=representation",
     }
     if _SERVICE_ROLE_KEY:
         headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"

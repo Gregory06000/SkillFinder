@@ -90,6 +90,7 @@ class CompareResponse(BaseModel):
 
 class CommentOut(BaseModel):
     id: str
+    user_id: str
     pseudo: str
     content: str
     created_at: str

@@ -25,6 +25,7 @@ interface CommentsSectionProps {
   user: User | null;
   pseudo: string;
   getAccessToken: () => Promise<string | null>;
+  userId?: string;
 }
 
 export default function CommentsSection({
@@ -33,6 +34,7 @@ export default function CommentsSection({
   user,
   pseudo,
   getAccessToken,
+  userId,
 }: CommentsSectionProps) {
   const { t } = useT();
   const [open, setOpen] = useState(false);
@@ -43,6 +45,9 @@ export default function CommentsSection({
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // The current user's own comment (if any)
+  const myComment = userId ? comments.find((c) => c.user_id === userId) : undefined;
+
   const load = useCallback(async () => {
     setLoading(true);
     const { comments: data, has_more } = await fetchComments(placeId, keyword);
@@ -51,17 +56,17 @@ export default function CommentsSection({
     setLoading(false);
   }, [placeId, keyword]);
 
-  // Load count on mount so the toggle button shows the correct number immediately
+  // Load on mount so the toggle button shows the correct count immediately
   useEffect(() => {
     load();
   }, [load]);
 
-  // Reload when re-opening if a comment was just posted
+  // Pre-fill the textarea with the user's existing comment when found
   useEffect(() => {
-    if (open && comments.length === 0) {
-      load();
+    if (myComment) {
+      setDraft(myComment.content);
     }
-  }, [open, load, comments.length]);
+  }, [myComment?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -78,13 +83,22 @@ export default function CommentsSection({
     if (!created) {
       setError(t("comments.submitError"));
     } else {
-      setComments((prev) => [created, ...prev]);
-      setDraft("");
+      // Replace existing comment or prepend new one
+      setComments((prev) => [
+        created,
+        ...prev.filter((c) => c.user_id !== userId),
+      ]);
     }
     setSubmitting(false);
   }
 
+  // Sorted list: own comment first, then others
+  const sortedComments = myComment
+    ? [myComment, ...comments.filter((c) => c.user_id !== userId)]
+    : comments;
+
   const charsLeft = MAX_CHARS - draft.length;
+  const isEditing = !!myComment;
 
   return (
     <div className="mt-3" onClick={(e) => e.stopPropagation()}>
@@ -110,9 +124,18 @@ export default function CommentsSection({
 
       {open && (
         <div className="mt-2 space-y-3">
-          {/* Write form — logged in users */}
+          {/* Write / edit form — logged in users */}
           {user ? (
             <form onSubmit={handleSubmit} className="space-y-1.5">
+              {isEditing && (
+                <p className="text-[10px] text-sf-text-light italic flex items-center gap-1">
+                  <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                  {t("comments.editHint")}
+                </p>
+              )}
               <div className="relative">
                 <textarea
                   value={draft}
@@ -134,7 +157,11 @@ export default function CommentsSection({
                 className="text-[11px] font-semibold px-3 py-1 rounded-full bg-sf-accent text-white
                            hover:bg-sf-accent-light transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {submitting ? t("comments.sending") : t("comments.submit")}
+                {submitting
+                  ? t("comments.sending")
+                  : isEditing
+                    ? t("comments.update")
+                    : t("comments.submit")}
               </button>
             </form>
           ) : (
@@ -146,20 +173,33 @@ export default function CommentsSection({
           {/* Comments list */}
           {loading ? (
             <p className="text-[11px] text-sf-text-light">{t("comments.loading")}</p>
-          ) : comments.length === 0 ? (
+          ) : sortedComments.length === 0 ? (
             <p className="text-[11px] text-sf-text-light italic">{t("comments.empty")}</p>
           ) : (
             <>
-              <ul className={`space-y-2 ${comments.length > 5 ? "max-h-64 overflow-y-auto pr-1" : ""}`}>
-                {comments.map((c) => (
-                  <li key={c.id} className="bg-gray-50 rounded-sf-sm px-3 py-2">
-                    <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-[11px] font-semibold text-sf-text">{c.pseudo}</span>
-                      <span className="text-[10px] text-sf-text-light">{timeAgo(c.created_at, t)}</span>
-                    </div>
-                    <p className="text-[12px] text-sf-text-secondary leading-relaxed">{c.content}</p>
-                  </li>
-                ))}
+              <ul className={`space-y-2 ${sortedComments.length > 5 ? "max-h-64 overflow-y-auto pr-1" : ""}`}>
+                {sortedComments.map((c) => {
+                  const isMine = c.user_id === userId;
+                  return (
+                    <li
+                      key={c.id}
+                      className={`rounded-sf-sm px-3 py-2 ${isMine ? "bg-sf-accent-pale border border-sf-accent/20" : "bg-gray-50"}`}
+                    >
+                      <div className="flex items-center justify-between mb-0.5">
+                        <span className={`text-[11px] font-semibold ${isMine ? "text-sf-accent" : "text-sf-text"}`}>
+                          {c.pseudo}
+                          {isMine && (
+                            <span className="ml-1.5 text-[9px] font-normal opacity-70">
+                              {t("comments.myComment")}
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-[10px] text-sf-text-light">{timeAgo(c.created_at, t)}</span>
+                      </div>
+                      <p className="text-[12px] text-sf-text-secondary leading-relaxed">{c.content}</p>
+                    </li>
+                  );
+                })}
               </ul>
               {hasMore && (
                 <p className="text-[10px] text-sf-text-light italic text-center">

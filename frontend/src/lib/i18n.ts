@@ -140,6 +140,9 @@ const fr: Dict = {
   "comments.hoursAgo": "il y a {count}h",
   "comments.daysAgo": "il y a {count}j",
   "comments.hasMore": "Affichage des {limit} avis les plus récents.",
+  "comments.update": "Mettre à jour",
+  "comments.editHint": "Vous avez déjà un avis — modifiez-le ci-dessous.",
+  "comments.myComment": "(moi)",
 
   // ── UserStats ──
   "stats.tier": "Palier {palier}",
@@ -349,6 +352,9 @@ const en: Dict = {
   "comments.hoursAgo": "{count}h ago",
   "comments.daysAgo": "{count}d ago",
   "comments.hasMore": "Showing the {limit} most recent reviews.",
+  "comments.update": "Update",
+  "comments.editHint": "You already have a review — edit it below.",
+  "comments.myComment": "(me)",
 
   // ── UserStats ──
   "stats.tier": "Tier {palier}",

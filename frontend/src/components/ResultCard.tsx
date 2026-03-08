@@ -40,6 +40,7 @@ interface ResultCardProps {
   user?: User | null;
   pseudo?: string;
   getAccessToken?: () => Promise<string | null>;
+  userId?: string;
 }
 
 function renderSnippet(snippet: string) {
@@ -101,6 +102,7 @@ function ResultCard({
   user,
   pseudo,
   getAccessToken,
+  userId,
 }: ResultCardProps) {
   const { t } = useT();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -359,6 +361,7 @@ function ResultCard({
             user={user ?? null}
             pseudo={pseudo ?? "Anonyme"}
             getAccessToken={getAccessToken}
+            userId={userId}
           />
         )}
 

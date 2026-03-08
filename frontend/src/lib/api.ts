@@ -1,5 +1,6 @@
 export interface SkillComment {
   id: string;
+  user_id: string;
   pseudo: string;
   content: string;
   created_at: string;
