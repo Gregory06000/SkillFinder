@@ -584,21 +584,21 @@ async def delete_comment(comment_id: str, user_id: str, user_token: str | None =
     elif user_token:
         auth_headers["Authorization"] = f"Bearer {user_token}"
 
-    # Verify ownership before deleting
-    check_resp = await client.get(
-        "/rest/v1/comments",
-        params={"select": "id", "id": f"eq.{comment_id}", "user_id": f"eq.{user_id}", "limit": "1"},
-        headers=auth_headers,
-    )
-    if check_resp.status_code != 200 or not check_resp.json():
-        return False
-
+    # DELETE with both id and user_id filters — ownership enforced at DB level
     del_resp = await client.delete(
         "/rest/v1/comments",
-        params={"id": f"eq.{comment_id}"},
-        headers={"Prefer": "return=minimal", **auth_headers},
+        params={"id": f"eq.{comment_id}", "user_id": f"eq.{user_id}"},
+        headers={"Prefer": "return=representation", **auth_headers},
     )
-    return del_resp.status_code in (200, 204)
+    if del_resp.status_code not in (200, 204):
+        logger.warning("delete_comment failed: %s %s", del_resp.status_code, del_resp.text)
+        return False
+    # return=representation gives back deleted rows; empty list = nothing was deleted
+    try:
+        deleted = del_resp.json()
+        return isinstance(deleted, list) and len(deleted) > 0
+    except Exception:
+        return del_resp.status_code == 204
 
 
 async def get_user_from_token(authorization: str | None) -> str | None:
