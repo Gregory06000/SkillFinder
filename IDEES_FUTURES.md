@@ -21,20 +21,6 @@ Permettre de lancer une recherche en renseignant uniquement le service et la vil
 
 ---
 
-## 2. Comparaison de plus de 2 entreprises (jusqu'à 4)
-
-**Description**
-Étendre le mode comparaison actuel pour permettre de sélectionner jusqu'à 4 entreprises et les comparer côte à côte.
-
-**Avis**
-✅ Bonne idée, mais à ne pas précipiter. La comparaison à 2 est déjà bien pensée. Passer à 4 implique de repenser l'affichage (4 colonnes sur mobile = illisible) et d'adapter le prompt LLM de comparaison qui est aujourd'hui conçu pour 2 entreprises. Une solution intermédiaire serait un affichage en tableau synthétique plutôt qu'un texte narratif. À intégrer après stabilisation de la V1.
-
-| Complexité | Impact utilisateur | Priorité suggérée |
-|---|---|---|
-| 🟡 Moyenne | ⭐⭐⭐ Modéré | 📅 Moyen terme |
-
----
-
 ## 3. Système d'amis entre utilisateurs
 
 **Description**
@@ -115,7 +101,6 @@ Surveiller en arrière-plan les nouvelles entreprises référencées corresponda
 |---|---|---|
 | 1 | ~~Recherche sans critère obligatoire~~ | ✅ Livré |
 | 5 | ~~Commentaires SkillFinder~~ | ✅ Livré |
-| 2 | Comparaison jusqu'à 4 entreprises | 📅 Moyen terme |
 | 3 | Système d'amis | 📆 Long terme |
 | 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |
 | 7 | Suggestions intelligentes (favoris) | 📆 Long terme |
