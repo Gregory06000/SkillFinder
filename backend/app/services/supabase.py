@@ -474,7 +474,7 @@ async def get_admin_stats() -> dict:
 
 # ── Comments ──────────────────────────────
 
-async def get_comments(place_id: str, keyword: str, limit: int = 20, offset: int = 0) -> dict:
+async def get_comments(place_id: str, keyword: str, limit: int = 5, offset: int = 0) -> dict:
     """Fetch comments for a given place + keyword, newest first.
     Fetches limit+1 rows to detect whether more exist (has_more flag).
     Returns {"comments": [...], "has_more": bool}.
