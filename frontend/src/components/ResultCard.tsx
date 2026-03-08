@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback, memo } from "react";
+import type { User } from "@supabase/supabase-js";
 import type { BusinessResult } from "@/lib/api";
 import { getPhotoUrl } from "@/lib/api";
 import { hasVoted as checkVoted } from "@/lib/gamification";
 import { useT } from "@/lib/i18n";
+import CommentsSection from "@/components/CommentsSection";
 
 function shareResult(result: BusinessResult) {
   const text = `${result.name} - Score ${result.match_score.toFixed(1)}/5\n${result.address}`;
@@ -33,6 +35,11 @@ interface ResultCardProps {
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
   isVoted?: boolean;
+  // Comments
+  keyword?: string;
+  user?: User | null;
+  pseudo?: string;
+  getAccessToken?: () => Promise<string | null>;
 }
 
 function renderSnippet(snippet: string) {
@@ -90,6 +97,10 @@ function ResultCard({
   isFavorite,
   onToggleFavorite,
   isVoted,
+  keyword,
+  user,
+  pseudo,
+  getAccessToken,
 }: ResultCardProps) {
   const { t } = useT();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -338,6 +349,17 @@ function ResultCard({
               {result.reasoning}
             </p>
           </div>
+        )}
+
+        {/* SkillFinder Comments */}
+        {keyword && getAccessToken && (
+          <CommentsSection
+            placeId={result.name}
+            keyword={keyword}
+            user={user ?? null}
+            pseudo={pseudo ?? "Anonyme"}
+            getAccessToken={getAccessToken}
+          />
         )}
 
         {/* Actions */}

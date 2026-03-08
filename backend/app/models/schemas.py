@@ -86,6 +86,21 @@ class CompareResponse(BaseModel):
     verdict: str
 
 
+# --- Comments ---
+
+class CommentOut(BaseModel):
+    id: str
+    pseudo: str
+    content: str
+    created_at: str
+
+
+class CommentRequest(BaseModel):
+    place_id: str = Field(..., min_length=1, max_length=500)
+    keyword: str = Field(..., min_length=1, max_length=100)
+    content: str = Field(..., min_length=1, max_length=280)
+
+
 # --- Community verification ---
 
 class VerifyRequest(BaseModel):

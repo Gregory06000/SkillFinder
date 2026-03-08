@@ -125,6 +125,21 @@ const fr: Dict = {
   "card.timeDays": "il y a {count}j",
   "card.timeMonths": "il y a {count} mois",
 
+  // ── Comments ──
+  "comments.toggle": "Avis SkillFinder ({count})",
+  "comments.placeholder": "Votre expérience avec « {keyword} » dans cet établissement...",
+  "comments.submit": "Publier",
+  "comments.sending": "Envoi...",
+  "comments.loading": "Chargement...",
+  "comments.empty": "Aucun avis SkillFinder pour le moment. Soyez le premier !",
+  "comments.loginPrompt": "Connectez-vous pour laisser un avis SkillFinder.",
+  "comments.authError": "Erreur d'authentification. Reconnectez-vous.",
+  "comments.submitError": "Erreur lors de l'envoi. Réessayez.",
+  "comments.justNow": "à l'instant",
+  "comments.minutesAgo": "il y a {count} min",
+  "comments.hoursAgo": "il y a {count}h",
+  "comments.daysAgo": "il y a {count}j",
+
   // ── UserStats ──
   "stats.tier": "Palier {palier}",
   "stats.maxLevel": "Niveau maximum atteint",
@@ -317,6 +332,21 @@ const en: Dict = {
   "card.timeHours": "{count}h ago",
   "card.timeDays": "{count}d ago",
   "card.timeMonths": "{count} months ago",
+
+  // ── Comments ──
+  "comments.toggle": "SkillFinder reviews ({count})",
+  "comments.placeholder": "Your experience with \"{keyword}\" at this place...",
+  "comments.submit": "Post",
+  "comments.sending": "Sending...",
+  "comments.loading": "Loading...",
+  "comments.empty": "No SkillFinder reviews yet. Be the first!",
+  "comments.loginPrompt": "Log in to leave a SkillFinder review.",
+  "comments.authError": "Authentication error. Please log in again.",
+  "comments.submitError": "Error while posting. Please try again.",
+  "comments.justNow": "just now",
+  "comments.minutesAgo": "{count} min ago",
+  "comments.hoursAgo": "{count}h ago",
+  "comments.daysAgo": "{count}d ago",
 
   // ── UserStats ──
   "stats.tier": "Tier {palier}",

@@ -1,3 +1,10 @@
+export interface SkillComment {
+  id: string;
+  pseudo: string;
+  content: string;
+  created_at: string;
+}
+
 export interface BusinessResult {
   name: string;
   address: string;
@@ -236,4 +243,37 @@ export async function updateLeaderboard(
     return { success: false };
   }
   return res.json();
+}
+
+export async function fetchComments(placeId: string, keyword: string): Promise<SkillComment[]> {
+  try {
+    const params = new URLSearchParams({ place_id: placeId, keyword });
+    const res = await fetch(`${API_BASE}/api/comments?${params}`);
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export async function postComment(
+  placeId: string,
+  keyword: string,
+  content: string,
+  token: string,
+): Promise<SkillComment | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/comments`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ place_id: placeId, keyword, content }),
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
 }

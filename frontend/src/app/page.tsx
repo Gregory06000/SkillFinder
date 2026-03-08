@@ -64,7 +64,7 @@ function Home() {
   const search = useSearch();
   const rewards = useRewards(search.searchCenter);
   const compare = useCompare();
-  const { user, signOut } = useAuth();
+  const { user, signOut, getAccessToken } = useAuth();
   const { t, locale, setLocale } = useT();
   const favs = useFavorites();
 
@@ -645,6 +645,10 @@ function Home() {
                         mapsUrl: result.maps_url,
                       })
                     }
+                    keyword={search.lastSearch?.keyword || ""}
+                    user={user}
+                    pseudo={rewards.rewards.pseudo}
+                    getAccessToken={getAccessToken}
                   />
                 ))}
 

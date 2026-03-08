@@ -472,6 +472,56 @@ async def get_admin_stats() -> dict:
     }
 
 
+# ── Comments ──────────────────────────────
+
+async def get_comments(place_id: str, keyword: str, limit: int = 10) -> list[dict]:
+    """Fetch comments for a given place + keyword, newest first."""
+    if not is_enabled():
+        return []
+    client = _get_client()
+    resp = await client.get(
+        "/rest/v1/comments",
+        params={
+            "select": "id,pseudo,content,created_at",
+            "place_id": f"eq.{place_id}",
+            "keyword": f"eq.{keyword.strip().lower()}",
+            "order": "created_at.desc",
+            "limit": str(limit),
+        },
+    )
+    if resp.status_code != 200:
+        logger.warning("get_comments failed: %s %s", resp.status_code, resp.text)
+        return []
+    return resp.json()
+
+
+async def add_comment(
+    place_id: str, keyword: str, user_id: str, pseudo: str, content: str
+) -> dict:
+    """Insert a new comment. Returns the created row."""
+    client = _get_client()
+    headers = {
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    resp = await client.post(
+        "/rest/v1/comments",
+        headers=headers,
+        json={
+            "place_id": place_id,
+            "keyword": keyword.strip().lower(),
+            "user_id": user_id,
+            "pseudo": pseudo,
+            "content": content.strip(),
+        },
+    )
+    resp.raise_for_status()
+    rows = resp.json()
+    return rows[0] if rows else {}
+
+
 async def get_user_from_token(authorization: str | None) -> str | None:
     """
     Extract and verify user_id from a Supabase JWT Bearer token.

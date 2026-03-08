@@ -13,6 +13,7 @@ from app.models.schemas import (
     SearchRequest, SearchResponse, BusinessResult,
     CompareRequest, CompareResponse, BusinessAnalysis,
     VerifyRequest, VerifyResponse,
+    CommentOut, CommentRequest,
 )
 from app.core.scoring import rank_businesses
 from app.core.cache_manager import get_cached_search, save_search_to_cache
@@ -418,6 +419,49 @@ async def admin_stats(authorization: str | None = Header(default=None)):
     except Exception as e:
         logger.error("Admin stats failed: %s", e)
         raise HTTPException(status_code=500, detail="Erreur lors de la récupération des statistiques.")
+
+
+@router.get("/comments", response_model=list[CommentOut])
+@limiter.limit("30/minute")
+async def get_comments(request: Request, place_id: str, keyword: str):
+    """Fetch comments for a business + keyword, newest first."""
+    from app.services.supabase import is_enabled as supabase_enabled, get_comments as _get_comments
+    if not supabase_enabled():
+        return []
+    try:
+        return await _get_comments(place_id, keyword)
+    except Exception as e:
+        logger.warning("get_comments failed: %s", e)
+        return []
+
+
+@router.post("/comments", response_model=CommentOut)
+@limiter.limit("10/minute")
+async def post_comment(
+    request: Request,
+    req: CommentRequest,
+    authorization: str | None = Header(default=None),
+):
+    """Post a new SkillFinder comment (authenticated users only)."""
+    from app.services.supabase import is_enabled as supabase_enabled, get_user_from_token, add_comment
+    if not supabase_enabled():
+        raise HTTPException(status_code=503, detail="Service indisponible.")
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Connexion requise pour commenter.")
+
+    # Retrieve user pseudo from leaderboard
+    from app.services.supabase import get_user_profile
+    profile = await get_user_profile(user_id)
+    pseudo = profile["pseudo"] if profile and profile.get("pseudo") else "Anonyme"
+
+    try:
+        comment = await add_comment(req.place_id, req.keyword, user_id, pseudo, req.content)
+        return comment
+    except Exception as e:
+        logger.warning("add_comment failed: %s", e)
+        raise HTTPException(status_code=500, detail="Erreur lors de l'envoi du commentaire.")
 
 
 @router.get("/categories")
