@@ -505,7 +505,7 @@ async def add_comment(
     user_token: str | None = None,
 ) -> dict:
     """Insert or update a comment (one per user per place+keyword).
-    Tries PATCH first (update existing row), falls back to POST (new insert).
+    Checks for an existing row first, then PATCHes by primary key ID or INSERTs.
     Returns the resulting row.
     """
     client = _get_client()
@@ -517,27 +517,41 @@ async def add_comment(
 
     normalized_keyword = keyword.strip().lower()
 
-    # 1) Try PATCH: update the existing comment for this user + place + keyword
-    patch_resp = await client.patch(
+    # 1) Look for an existing comment by this user for this place+keyword
+    get_resp = await client.get(
         "/rest/v1/comments",
         params={
+            "select": "id",
             "place_id": f"eq.{place_id}",
             "keyword": f"eq.{normalized_keyword}",
             "user_id": f"eq.{user_id}",
+            "limit": "1",
         },
-        headers={
-            "Content-Type": "application/json",
-            "Prefer": "return=representation",
-            **auth_headers,
-        },
-        json={"content": content.strip()},
+        headers=auth_headers,
     )
-    if patch_resp.status_code == 200:
-        rows = patch_resp.json()
+    existing_id: str | None = None
+    if get_resp.status_code == 200:
+        rows = get_resp.json()
         if rows:
-            return rows[0]
+            existing_id = rows[0]["id"]
 
-    # 2) No existing row — INSERT
+    if existing_id:
+        # 2) Update by primary key — no ambiguity, bypasses any RLS filter issues
+        patch_resp = await client.patch(
+            "/rest/v1/comments",
+            params={"id": f"eq.{existing_id}"},
+            headers={
+                "Content-Type": "application/json",
+                "Prefer": "return=representation",
+                **auth_headers,
+            },
+            json={"content": content.strip()},
+        )
+        patch_resp.raise_for_status()
+        rows = patch_resp.json()
+        return rows[0] if rows else {}
+
+    # 3) No existing row — INSERT
     insert_resp = await client.post(
         "/rest/v1/comments",
         headers={
