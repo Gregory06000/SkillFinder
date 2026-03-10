@@ -80,7 +80,7 @@
 ---
 
 ## Étape 4 — Tests end-to-end 🧪 ✅ TERMINÉE
-> Complétée le 26 Février 2026 — tous les tests passés sur skillfinder.fr
+> Complétée le 10 Mars 2026 — tous les tests passés sur skillfinder.fr
 
 ### 4.1 Checklist fonctionnelle
 - [x] Recherche "plombier Paris fuite d'eau" → résultats s'affichent avec scores IA
@@ -164,6 +164,12 @@ Issues identifiées lors de l'audit code — à traiter par ordre de priorité :
 | 🟠 Majeur | Vérification content-range PATCH fragile | `backend/app/services/supabase.py` | ✅ Corrigé |
 | 🟡 Mineur | console.log/warn en production | `useRewards.ts`, `api.ts` | ✅ Corrigé |
 | 🟡 Mineur | Accès admin par env var string | `backend/app/api/routes.py` | ✅ Corrigé |
+
+| 🟠 Majeur | CORS backend — méthode DELETE manquante | `backend/app/main.py` | ✅ Corrigé |
+| 🟠 Majeur | LLM température non-déterministe (résultats variables) | `backend/app/services/llm.py` | ✅ Corrigé |
+| 🟡 Mineur | CSP `img-src` manquant `onrender.com` (photos bloquées) | `next.config.ts` | ✅ Corrigé |
+| 🟡 Mineur | Bandeau cookie sans bouton "Refuser" (non conforme RGPD) | `CookieBanner.tsx` | ✅ Corrigé |
+| 🟡 Mineur | `aria-label` manquant sur textarea et input classement | `CommentsSection.tsx`, `LeaderboardTab.tsx` | ✅ Corrigé |
 
 *Corrections déjà effectuées hors tableau : bug race condition points au login Google, Sentry deprecation warnings, badge classement qui chevauchait le nom.*
 
