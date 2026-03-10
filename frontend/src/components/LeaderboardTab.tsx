@@ -208,6 +208,7 @@ export default function LeaderboardTab({
               onChange={(e) => setCityQuery(e.target.value)}
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
               placeholder={t("lb.searchPlaceholder")}
+              aria-label={t("lb.searchPlaceholder")}
               className="flex-1 px-3 py-3.5 text-sm text-sf-text placeholder-sf-text-light outline-none bg-transparent"
             />
             {cityQuery && (

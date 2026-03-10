@@ -164,6 +164,7 @@ export default function CommentsSection({
                   value={draft}
                   onChange={(e) => setDraft(e.target.value.slice(0, MAX_CHARS))}
                   placeholder={t("comments.placeholder", { keyword })}
+                  aria-label={t("comments.placeholder", { keyword })}
                   rows={2}
                   className="w-full text-[12px] border border-sf-border rounded-sf-sm px-3 py-2
                              outline-none focus:border-sf-accent/50 resize-none
