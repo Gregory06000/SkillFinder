@@ -21,8 +21,8 @@ const securityHeaders = [
       "script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://maps.gstatic.com https://plausible.io",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
-      // Google Maps tiles, Street View, Places photos
-      "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://*.google.com",
+      // Google Maps tiles, Street View, Places photos (lh3.googleusercontent.com for Places photos)
+      "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com https://*.google.com https://*.googleusercontent.com",
       // API calls: backend (Render), Supabase, Google APIs, Sentry
       "connect-src 'self' https://*.supabase.co https://maps.googleapis.com https://*.onrender.com https://*.vercel.app https://*.sentry.io https://plausible.io",
       "frame-src 'none'",

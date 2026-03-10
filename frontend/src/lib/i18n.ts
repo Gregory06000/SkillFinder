@@ -231,6 +231,7 @@ const fr: Dict = {
   "cookie.message": "Ce site utilise le stockage local de votre navigateur pour la gamification et Google Maps pour la cartographie.",
   "cookie.policy": "Politique de confidentialité",
   "cookie.accept": "J'accepte",
+  "cookie.refuse": "Refuser",
 
   // ── Footer ──
   "footer.privacy": "Confidentialité",
@@ -445,6 +446,7 @@ const en: Dict = {
   "cookie.message": "This site uses your browser's local storage for gamification and Google Maps for mapping.",
   "cookie.policy": "Privacy policy",
   "cookie.accept": "Accept",
+  "cookie.refuse": "Decline",
 
   // ── Footer ──
   "footer.privacy": "Privacy",

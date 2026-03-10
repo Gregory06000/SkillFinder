@@ -11,7 +11,7 @@ export default function CookieBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (localStorage.getItem(CONSENT_KEY) !== "1") {
+    if (localStorage.getItem(CONSENT_KEY) === null) {
       setVisible(true);
     }
   }, []);
@@ -19,6 +19,11 @@ export default function CookieBanner() {
   function accept() {
     localStorage.setItem(CONSENT_KEY, "1");
     window.dispatchEvent(new CustomEvent("sf:consent"));
+    setVisible(false);
+  }
+
+  function refuse() {
+    localStorage.setItem(CONSENT_KEY, "0");
     setVisible(false);
   }
 
@@ -38,12 +43,20 @@ export default function CookieBanner() {
           </Link>
           .
         </p>
-        <button
-          onClick={accept}
-          className="shrink-0 bg-[#C45D3E] hover:bg-[#a84c32] text-white text-sm font-medium px-5 py-2 rounded-full transition-colors"
-        >
-          {t("cookie.accept")}
-        </button>
+        <div className="flex shrink-0 gap-2">
+          <button
+            onClick={refuse}
+            className="bg-white border border-gray-300 hover:border-gray-400 text-gray-600 text-sm font-medium px-5 py-2 rounded-full transition-colors"
+          >
+            {t("cookie.refuse")}
+          </button>
+          <button
+            onClick={accept}
+            className="bg-[#C45D3E] hover:bg-[#a84c32] text-white text-sm font-medium px-5 py-2 rounded-full transition-colors"
+          >
+            {t("cookie.accept")}
+          </button>
+        </div>
       </div>
     </div>
   );
