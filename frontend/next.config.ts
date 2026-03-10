@@ -18,7 +18,7 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       // Next.js needs unsafe-inline for styles; Google Maps needs its CDN
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com https://plausible.io",
+      "script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://maps.gstatic.com https://plausible.io",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       // Google Maps tiles, Street View, Places photos

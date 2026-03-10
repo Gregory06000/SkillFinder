@@ -67,6 +67,27 @@ def _get_api_key() -> str:
     return key
 
 
+def _parse_gemini_json(text: str) -> dict | list | None:
+    """
+    Robustly parse JSON from a Gemini response text.
+
+    Strips markdown code fences (```json ... ``` or ``` ... ```) before
+    attempting to parse, and returns None on any parse error instead of raising.
+    """
+    text = text.strip()
+    # Strip opening fence (```json or ```)
+    if text.startswith("```"):
+        # Remove the first line (the fence opener)
+        text = re.sub(r"^```[a-zA-Z]*\n?", "", text)
+        # Remove the closing fence
+        text = re.sub(r"```\s*$", "", text)
+        text = text.strip()
+    try:
+        return json.loads(text)
+    except (json.JSONDecodeError, ValueError):
+        return None
+
+
 # ---------------------------------------------------------------------------
 # Synonym expansion — enrich keyword with related terms
 # ---------------------------------------------------------------------------
@@ -123,17 +144,11 @@ Exemples :
     except (KeyError, IndexError):
         return []
 
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1]
-        text = text.rsplit("```", 1)[0]
-
-    try:
-        result = json.loads(text)
-        synonyms = result.get("synonyms", [])
-        return [s.strip().lower() for s in synonyms if isinstance(s, str) and s.strip()]
-    except (json.JSONDecodeError, AttributeError):
+    result = _parse_gemini_json(text)
+    if not isinstance(result, dict):
         return []
+    synonyms = result.get("synonyms", [])
+    return [s.strip().lower() for s in synonyms if isinstance(s, str) and s.strip()]
 
 
 ## ---------------------------------------------------------------------------
@@ -263,16 +278,10 @@ async def score_reviews_batch(
         logger.error("Unexpected Gemini scoring response: %s", data)
         raise RuntimeError("Unexpected Gemini scoring response.") from e
 
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1]
-        text = text.rsplit("```", 1)[0]
-
-    try:
-        result = json.loads(text)
-    except json.JSONDecodeError as e:
+    result = _parse_gemini_json(text)
+    if not isinstance(result, dict):
         logger.error("Gemini scoring returned invalid JSON: %s", text[:500])
-        raise RuntimeError("Gemini scoring returned invalid JSON.") from e
+        raise RuntimeError("Gemini scoring returned invalid JSON.")
 
     return result.get("businesses", [])
 
@@ -376,14 +385,9 @@ async def compare_businesses(
         logger.error("Unexpected Gemini response structure: %s", data)
         raise RuntimeError("Unexpected response from Gemini API.") from e
 
-    # Clean potential markdown code block wrapping
-    text = text.strip()
-    if text.startswith("```"):
-        text = text.split("\n", 1)[1]
-        text = text.rsplit("```", 1)[0]
-
-    try:
-        return json.loads(text)
-    except json.JSONDecodeError as e:
+    # Clean potential markdown code block wrapping and parse
+    result = _parse_gemini_json(text)
+    if not isinstance(result, dict):
         logger.error("Gemini returned invalid JSON: %s", text[:500])
-        raise RuntimeError("Gemini returned invalid JSON.") from e
+        raise RuntimeError("Gemini returned invalid JSON.")
+    return result

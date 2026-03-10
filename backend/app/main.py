@@ -105,6 +105,17 @@ async def validate_environment():
         )
 
 
+@app.on_event("shutdown")
+async def close_http_clients():
+    """Gracefully close all singleton httpx AsyncClients on shutdown."""
+    import app.services.google_maps as gm
+    import app.services.llm as llm
+
+    for client in (gm._google_client, gm._photo_client, llm._gemini_client):
+        if client is not None and not client.is_closed:
+            await client.aclose()
+
+
 # ── Health check ──────────────────────────────
 
 @app.get("/health")

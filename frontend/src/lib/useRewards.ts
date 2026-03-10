@@ -194,11 +194,9 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
     if (user) {
       getAccessToken().then((token) => {
         if (!token) {
-          console.warn("Leaderboard sync skipped: no token");
           return;
         }
         const cities = Object.entries(newData.weeklyPointsByCity);
-        console.log("Syncing leaderboard:", { total: newData.points, cities });
         for (const [city, cityWeekly] of cities) {
           if (city && cityWeekly > 0) {
             updateLeaderboard(
@@ -207,9 +205,7 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
               cityWeekly,
               newData.points,
               token,
-            ).then((r) => {
-              if (!r.success) console.warn("Sync failed for", city);
-            }).catch((err) => console.error("Sync error for", city, err));
+            ).catch(() => {});
           }
         }
       });

@@ -48,6 +48,7 @@ SQL to run in Supabase SQL Editor:
   CREATE INDEX idx_leaderboard_city_week ON leaderboard (city, week_start);
 """
 
+import asyncio
 import os
 import logging
 from datetime import date, timedelta
@@ -64,19 +65,37 @@ _JWT_SECRET = os.environ.get("SUPABASE_JWT_SECRET", "")
 
 # Singleton client — avoids creating a new TCP connection per request
 _client: httpx.AsyncClient | None = None
+_client_lock: asyncio.Lock | None = None
 
 
-def _get_client() -> httpx.AsyncClient:
+def _get_lock() -> asyncio.Lock:
+    """Return (creating if necessary) the module-level asyncio Lock.
+
+    The Lock must be created inside the running event loop, so we lazily
+    instantiate it on first use rather than at import time.
+    """
+    global _client_lock
+    if _client_lock is None:
+        _client_lock = asyncio.Lock()
+    return _client_lock
+
+
+async def _get_client() -> httpx.AsyncClient:
     global _client
-    if _client is None or _client.is_closed:
-        _client = httpx.AsyncClient(
-            base_url=_SUPABASE_URL,
-            headers={
-                "apikey": _SUPABASE_KEY,
-                "Authorization": f"Bearer {_SUPABASE_KEY}",
-            },
-            timeout=10.0,
-        )
+    if _client is not None and not _client.is_closed:
+        return _client
+    async with _get_lock():
+        # Double-checked locking: another coroutine may have created it while
+        # we were waiting for the lock.
+        if _client is None or _client.is_closed:
+            _client = httpx.AsyncClient(
+                base_url=_SUPABASE_URL,
+                headers={
+                    "apikey": _SUPABASE_KEY,
+                    "Authorization": f"Bearer {_SUPABASE_KEY}",
+                },
+                timeout=10.0,
+            )
     return _client
 
 
@@ -100,7 +119,7 @@ async def add_vote(
     Uses upsert with ON CONFLICT (place_id, user_id) to enforce one vote per user
     per place. If the user votes again, their vote is updated.
     """
-    client = _get_client()
+    client = await _get_client()
     headers: dict[str, str] = {"Content-Type": "application/json"}
     if _SERVICE_ROLE_KEY:
         headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
@@ -123,7 +142,7 @@ async def get_user_votes(place_ids: list[str], user_id: str) -> list[str]:
     """Return which of the given place_ids the user has already voted on."""
     if not place_ids or not is_enabled():
         return []
-    client = _get_client()
+    client = await _get_client()
     headers: dict[str, str] = {}
     if _SERVICE_ROLE_KEY:
         headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
@@ -152,7 +171,7 @@ async def get_stats(place_ids: list[str]) -> dict[str, dict]:
     if not place_ids or not is_enabled():
         return {}
 
-    client = _get_client()
+    client = await _get_client()
     ids_filter = ",".join(place_ids)
 
     # Try the aggregated view first (fast: 1 row per place_id)
@@ -213,7 +232,7 @@ async def get_leaderboard(city: str, limit: int = 50) -> list[dict]:
     if not is_enabled() or not city:
         return []
 
-    client = _get_client()
+    client = await _get_client()
     week = _current_week_start()
     resp = await client.get(
         "/rest/v1/leaderboard",
@@ -234,7 +253,7 @@ async def search_cities(query: str) -> list[str]:
     if not is_enabled() or not query:
         return []
 
-    client = _get_client()
+    client = await _get_client()
     week = _current_week_start()
     resp = await client.get(
         "/rest/v1/leaderboard",
@@ -275,7 +294,7 @@ async def upsert_leaderboard(
     if not is_enabled():
         return
 
-    client = _get_client()
+    client = await _get_client()
     week = _current_week_start()
 
     auth_headers: dict[str, str] = {}
@@ -308,9 +327,17 @@ async def upsert_leaderboard(
         json=update_payload,
     )
 
-    # Check if PATCH updated any rows (content-range header tells us)
+    # Check if PATCH updated any rows via content-range header.
+    # PostgREST returns "0-N/total" when rows match, "*/0" when nothing matched.
+    # Parse the count after "/" to determine if at least one row was updated.
     content_range = patch_resp.headers.get("content-range", "")
-    if patch_resp.status_code == 200 and "0-" in content_range:
+    updated_count = 0
+    if "/" in content_range:
+        try:
+            updated_count = int(content_range.split("/", 1)[1])
+        except (ValueError, IndexError):
+            pass
+    if patch_resp.status_code == 200 and updated_count > 0:
         # Updated at least one row — done
         return
 
@@ -345,7 +372,7 @@ async def get_user_profile(user_id: str) -> dict | None:
     if not is_enabled() or not user_id:
         return None
 
-    client = _get_client()
+    client = await _get_client()
     resp = await client.get(
         "/rest/v1/leaderboard",
         params={
@@ -386,7 +413,7 @@ async def get_admin_stats() -> dict:
     if not is_enabled():
         return {}
 
-    client = _get_client()
+    client = await _get_client()
     week = _current_week_start()
 
     # Total votes
@@ -481,7 +508,7 @@ async def get_comments(place_id: str, keyword: str, limit: int = 5, offset: int 
     """
     if not is_enabled():
         return {"comments": [], "has_more": False}
-    client = _get_client()
+    client = await _get_client()
     resp = await client.get(
         "/rest/v1/comments",
         params={
@@ -509,7 +536,7 @@ async def add_comment(
     Checks for an existing row first, then PATCHes by primary key ID or INSERTs.
     Returns the resulting row.
     """
-    client = _get_client()
+    client = await _get_client()
     auth_headers: dict[str, str] = {}
     if _SERVICE_ROLE_KEY:
         auth_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
@@ -577,7 +604,7 @@ async def delete_comment(comment_id: str, user_id: str, user_token: str | None =
     """Delete a comment by ID, only if it belongs to user_id. Returns True on success."""
     if not is_enabled():
         return False
-    client = _get_client()
+    client = await _get_client()
     auth_headers: dict[str, str] = {}
     if _SERVICE_ROLE_KEY:
         auth_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
@@ -636,7 +663,7 @@ async def get_user_from_token(authorization: str | None) -> str | None:
         return None
 
     try:
-        client = _get_client()
+        client = await _get_client()
         resp = await client.get(
             "/auth/v1/user",
             headers={
