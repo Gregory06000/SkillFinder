@@ -185,4 +185,4 @@ Issues identifiées lors de l'audit code — à traiter par ordre de priorité :
 
 ---
 
-*Document créé le 22 Février 2026 — dernière mise à jour le 26 Février 2026.*
+*Document créé le 22 Février 2026 — dernière mise à jour le 10 Mars 2026.*
