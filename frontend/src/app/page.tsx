@@ -163,7 +163,7 @@ function Home() {
           {user ? (
             <button
               onClick={signOut}
-              className="hidden sm:block text-xs text-sf-text-light hover:text-sf-text transition-colors"
+              className="hidden sm:block text-xs text-sf-text-secondary hover:text-sf-text transition-colors"
             >
               {t("nav.logout")}
             </button>
@@ -234,7 +234,7 @@ function Home() {
           {user ? (
             <button
               onClick={signOut}
-              className="sm:hidden text-[11px] text-sf-text-light hover:text-sf-text transition-colors"
+              className="sm:hidden text-[11px] text-sf-text-secondary hover:text-sf-text transition-colors"
             >
               {t("nav.logout")}
             </button>
@@ -281,6 +281,7 @@ function Home() {
         </div>
       </nav>
 
+      <main>
       {activeTab === "search" ? (
       <>
       {/* ── HERO ── */}
@@ -714,6 +715,7 @@ function Home() {
           />
         </section>
       )}
+      </main>
 
       {/* Floating compare button */}
       {compare.compareSet.size > 0 && (

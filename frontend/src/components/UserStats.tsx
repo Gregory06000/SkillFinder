@@ -61,7 +61,7 @@ export default function UserStats({
             <div className="text-sm font-semibold text-sf-text">
               {t(rank.titleKey)} &middot; {t("stats.tier", { palier: rank.palier })}
             </div>
-            <div className="text-xs text-sf-text-light">
+            <div className="text-xs text-sf-text-secondary">
               {rank.palier >= 10
                 ? t("stats.maxLevel")
                 : t("stats.nextTier", { threshold: rank.nextThreshold })}
@@ -70,7 +70,7 @@ export default function UserStats({
         </div>
         <div className="text-[22px] font-bold text-sf-gold tabular-nums">
           {rewards.points}
-          <span className="text-xs font-medium text-sf-text-light ml-0.5">
+          <span className="text-xs font-medium text-sf-text-secondary ml-0.5">
             pts
           </span>
         </div>
@@ -88,7 +88,7 @@ export default function UserStats({
       </div>
 
       {/* Bottom row */}
-      <div className="flex justify-between mt-1.5 text-[11px] text-sf-text-light">
+      <div className="flex justify-between mt-1.5 text-[11px] text-sf-text-secondary">
         <span>{t("stats.level", { level: rank.level })}</span>
         <span>{t("stats.weeklyPts", { pts: rewards.weeklyPoints })}</span>
       </div>

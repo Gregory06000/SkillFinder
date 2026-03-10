@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-white border-t border-gray-100 py-4 px-4 mt-auto">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500">
         <span>© {year} SkillFinder — {t("footer.rights")}</span>
         <div className="flex items-center gap-4">
           <Link href="/confidentialite" className="hover:text-[#C45D3E] transition-colors">

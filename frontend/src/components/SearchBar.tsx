@@ -71,10 +71,11 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
     >
       {/* Service */}
       <div className="flex-1 px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors min-w-0 w-full sm:w-auto">
-        <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
+        <label htmlFor="search-service" className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-secondary">
           {t("search.service")}
         </label>
         <input
+          id="search-service"
           type="text"
           value={service}
           onChange={(e) => setService(e.target.value)}
@@ -89,10 +90,11 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
 
       {/* Keyword */}
       <div className="flex-1 px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors min-w-0 w-full sm:w-auto">
-        <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
+        <label htmlFor="search-keyword" className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-secondary">
           {t("search.keyword")}
         </label>
         <input
+          id="search-keyword"
           type="text"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
@@ -107,11 +109,12 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
 
       {/* Location */}
       <div className="flex-1 px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors min-w-0 w-full sm:w-auto">
-        <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
+        <label htmlFor="search-city" className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-secondary">
           {t("search.city")}
         </label>
         <div className="flex items-center gap-1">
           <input
+            id="search-city"
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
@@ -148,10 +151,11 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
 
       {/* Radius */}
       <div className="px-4 py-3 rounded-sf-md hover:bg-sf-bg transition-colors w-full sm:w-auto sm:max-w-[120px]">
-        <label className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
+        <label htmlFor="search-radius" className="block text-[10px] font-semibold uppercase tracking-wider text-sf-text-secondary">
           {t("search.radius")}
         </label>
         <select
+          id="search-radius"
           value={radiusKm}
           onChange={(e) => setRadiusKm(Number(e.target.value))}
           className="bg-transparent border-none outline-none text-sm font-medium
