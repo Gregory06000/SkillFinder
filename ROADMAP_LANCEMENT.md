@@ -95,14 +95,14 @@
 - [x] Pages légales → accessibles depuis le footer, texte complet
 - [x] Bandeau cookie → s'affiche, fonctionne, persiste le choix
 
-### 4.2 Tests mobile
-- [ ] Ouvrir sur un vrai smartphone (iPhone et Android si possible)
-- [ ] Vérifier que l'interface est utilisable : boutons, taille de texte, scroll
-- [ ] Tester la géolocalisation sur mobile
+### 4.2 Tests mobile ✅
+- [x] Ouvrir sur un vrai smartphone (iPhone et Android si possible)
+- [x] Vérifier que l'interface est utilisable : boutons, taille de texte, scroll
+- [x] Tester la géolocalisation sur mobile
 
-### 4.3 Test de performance
-- [ ] Ouvrir Chrome DevTools → Lighthouse
-- [ ] Viser un score Performance > 70, Accessibilité > 90
+### 4.3 Test de performance ✅
+- [x] Ouvrir Chrome DevTools → Lighthouse
+- [x] Viser un score Performance > 70, Accessibilité > 90 — Résultats : Perf 94, Accessibilité 96, Bonnes pratiques 100, SEO 100
 
 ---
 
@@ -157,13 +157,13 @@ Issues identifiées lors de l'audit code — à traiter par ordre de priorité :
 |----------|-------------|---------|--------|
 | 🔴 Critique | Placeholders légaux non remplis | `mentions-legales/page.tsx`, `confidentialite/page.tsx` | ✅ Corrigé |
 | 🔴 Critique | Vercel Analytics sans vérification consentement | `layout.tsx` | ✅ Corrigé |
-| 🔴 Critique | CSP avec `unsafe-eval` (faille sécurité) | `next.config.ts` | ⏳ À traiter |
-| 🟠 Majeur | Parsing JSON Gemini fragile (peut crasher) | `backend/app/services/llm.py` | ⏳ À traiter |
-| 🟠 Majeur | Clients HTTP backend jamais fermés | `backend/app/services/google_maps.py` | ⏳ À traiter |
-| 🟠 Majeur | Race condition client Supabase singleton | `backend/app/services/supabase.py` | ⏳ À traiter |
-| 🟠 Majeur | Vérification content-range PATCH fragile | `backend/app/services/supabase.py` | ⏳ À traiter |
-| 🟡 Mineur | console.log/warn en production | `useRewards.ts`, `api.ts` | ⏳ À traiter |
-| 🟡 Mineur | Accès admin par env var string | `backend/app/api/routes.py` | ⏳ À traiter |
+| 🔴 Critique | CSP avec `unsafe-eval` (faille sécurité) | `next.config.ts` | ✅ Corrigé |
+| 🟠 Majeur | Parsing JSON Gemini fragile (peut crasher) | `backend/app/services/llm.py` | ✅ Corrigé |
+| 🟠 Majeur | Clients HTTP backend jamais fermés | `backend/app/services/google_maps.py` | ✅ Corrigé |
+| 🟠 Majeur | Race condition client Supabase singleton | `backend/app/services/supabase.py` | ✅ Corrigé |
+| 🟠 Majeur | Vérification content-range PATCH fragile | `backend/app/services/supabase.py` | ✅ Corrigé |
+| 🟡 Mineur | console.log/warn en production | `useRewards.ts`, `api.ts` | ✅ Corrigé |
+| 🟡 Mineur | Accès admin par env var string | `backend/app/api/routes.py` | ✅ Corrigé |
 
 *Corrections déjà effectuées hors tableau : bug race condition points au login Google, Sentry deprecation warnings, badge classement qui chevauchait le nom.*
 
@@ -178,7 +178,7 @@ Issues identifiées lors de l'audit code — à traiter par ordre de priorité :
 - [x] sitemap.xml et robots.txt créés
 - [x] Soumission Google Search Console
 - [x] Tests end-to-end passés sur la prod
-- [ ] Tests mobile validés
+- [x] Tests mobile validés
 - [ ] Beta privée terminée sans bug majeur
 - [x] Vercel Analytics conditionné au consentement
 - [x] Sentry configuré et alertes email activées
