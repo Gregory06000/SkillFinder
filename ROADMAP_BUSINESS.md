@@ -117,17 +117,15 @@
 - Récompense directement les utilisateurs actifs (votes, commentaires)
 
 **Items payants :**
-- **Achat unitaire** : 1,99€ — items thématiques disponibles à la carte
-- **Caisses de hasard** : 2,49€ — items exclusifs non disponibles à l'unité, tirés aléatoirement parmi 10 items d'un même thème (rotation saisonnière : "Artisan", "Été", "Noël", "Rétro"...)
+- **Achat unitaire** : 1,99€ — items cosmétiques thématiques à la carte
+- Catalogue renouvelé régulièrement (collections saisonnières)
 
-**Réglementation :** Probabilité de chaque item de caisse affichée obligatoirement (directive européenne sur les loot boxes).
-
-**Prérequis technique :** Mascotte (voir IDEES_FUTURES.md #8 et #9), système d'inventaire en base, intégration Stripe pour paiements unitaires.
+**Prérequis technique :** Mascotte (voir IDEES_FUTURES.md #8 et #9), système d'amis (#3), système d'inventaire en base, intégration Stripe pour paiements unitaires.
 
 **Projections :**
-- 2% de conversion sur 2 000 utilisateurs actifs = 40 acheteurs × 3€ moyen = **120€/mois** (faible au départ)
-- 1% de conversion sur 10 000 utilisateurs = 100 acheteurs × 4€ = **400€/mois** (complément valide)
-- Potentiel spike lors des caisses saisonnières (Noël, etc.)
+- 2% de conversion sur 2 000 utilisateurs actifs = 40 acheteurs × 1,99€ = **80€/mois** (faible au départ)
+- 1% de conversion sur 10 000 utilisateurs = 100 acheteurs × 1,99€ = **200€/mois** (complément)
+- Potentiel hausse avec les collections saisonnières et l'effet social (amis)
 
 ---
 

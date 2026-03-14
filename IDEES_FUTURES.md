@@ -118,19 +118,16 @@ Chaque utilisateur possède une mascotte SkillFinder personnalisable avec des it
 - 2-3 items par palier (récompense la fidélité et la participation)
 - Exemples : chapeau, accessoire, couleur de fond à débloquer en atteignant 100 pts, 500 pts, 1 000 pts...
 
-**Items payants — deux formats :**
-- **Achat unitaire** : 1,99€ l'item — items thématiques disponibles à la carte
-- **Caisses de hasard** : 2,49€ par caisse, contenant des items exclusifs non disponibles à l'unité
-  - Chaque caisse a un **thème** différent (ex : "Artisan", "Été", "Noël", "Rétro"...)
-  - Chaque caisse contient un pool de 10 items — le joueur reçoit 1 item aléatoire parmi les 10
-  - Plusieurs caisses actives simultanément avec rotation saisonnière
+**Items payants :**
+- **Achat unitaire** : 1,99€ l'item — items cosmétiques thématiques disponibles à la carte
+- Catalogue renouvelé régulièrement (collections saisonnières : "Été", "Noël", "Artisan"...)
 
 **Avis**
-✅✅ Modèle de monétisation B2C éprouvé (cf. jeux mobile, Duolingo, Discord Nitro). L'avantage : entièrement cosmétique, ne crée pas de déséquilibre. Les paliers gratuits incitent à voter/commenter davantage (engagement++). Les caisses de hasard ont un fort potentiel FOMO saisonnier. Points de vigilance : respecter la réglementation européenne sur les loot boxes (transparence sur les probabilités de chaque item obligatoire). À intégrer dans le modèle Freemium (voir ROADMAP_BUSINESS.md, Modèle F).
+✅ Modèle de monétisation B2C simple et transparent (pas de loot boxes). Entièrement cosmétique, ne crée pas de déséquilibre. Les paliers gratuits incitent à voter/commenter davantage (engagement++). Les items payants à prix unique évitent tout problème réglementaire. Prend tout son sens une fois le système d'amis (#3) en place — les utilisateurs pourront voir la mascotte personnalisée de leurs amis. À intégrer dans le modèle Freemium (voir ROADMAP_BUSINESS.md, Modèle F).
 
 | Complexité | Impact utilisateur | Priorité suggérée |
 |---|---|---|
-| 🔴 Élevée | ⭐⭐⭐⭐⭐ Très élevé (engagement + revenus) | 📆 Long terme (après lancement stable) |
+| 🟡 Moyenne | ⭐⭐⭐⭐ Élevé (engagement + revenus) | 📆 Long terme (après #3 et #8) |
 
 ---
 
