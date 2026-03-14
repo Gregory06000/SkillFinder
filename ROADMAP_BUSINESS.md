@@ -12,7 +12,7 @@
 
 ---
 
-## Les 5 modèles de revenus identifiés
+## Les 6 modèles de revenus identifiés
 
 ---
 
@@ -107,6 +107,30 @@
 
 ---
 
+### 🎮 Modèle F — Micro-transactions Cosmétiques (B2C)
+**Engagement + revenus passifs**
+
+**Concept :** Chaque utilisateur possède une mascotte SkillFinder personnalisable. La personnalisation est cosmétique uniquement (pas de pay-to-win).
+
+**Items gratuits — paliers de fidélité :**
+- 2-3 items débloqués automatiquement à chaque palier de points (100 pts, 500 pts, 1 000 pts...)
+- Récompense directement les utilisateurs actifs (votes, commentaires)
+
+**Items payants :**
+- **Achat unitaire** : 1,99€ — items thématiques disponibles à la carte
+- **Caisses de hasard** : 2,49€ — items exclusifs non disponibles à l'unité, tirés aléatoirement parmi 10 items d'un même thème (rotation saisonnière : "Artisan", "Été", "Noël", "Rétro"...)
+
+**Réglementation :** Probabilité de chaque item de caisse affichée obligatoirement (directive européenne sur les loot boxes).
+
+**Prérequis technique :** Mascotte (voir IDEES_FUTURES.md #8 et #9), système d'inventaire en base, intégration Stripe pour paiements unitaires.
+
+**Projections :**
+- 2% de conversion sur 2 000 utilisateurs actifs = 40 acheteurs × 3€ moyen = **120€/mois** (faible au départ)
+- 1% de conversion sur 10 000 utilisateurs = 100 acheteurs × 4€ = **400€/mois** (complément valide)
+- Potentiel spike lors des caisses saisonnières (Noël, etc.)
+
+---
+
 ### 👤 Modèle E — Freemium Utilisateur (B2C)
 **Complément à long terme**
 
@@ -169,6 +193,7 @@ PHASE 3 — Croissance (Mois 18 à 24)
 │
 │  Approcher les franchises et réseaux (Modèle C — offre 199€/mois)
 │  Multiplier les partenariats d'affiliation
+│  Lancer les micro-transactions cosmétiques si la mascotte est prête (Modèle F)
 │  Envisager SkillFinder+ si la base utilisateur le justifie (Modèle E)
 │  Étendre à d'autres catégories métier (médecins, avocats, coachs...)
 │  Objectif revenus phase 3 : 10 000-20 000€/mois

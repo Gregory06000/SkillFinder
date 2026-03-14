@@ -95,13 +95,54 @@ Surveiller en arrière-plan les nouvelles entreprises référencées corresponda
 
 ---
 
+## 8. Mascotte SkillFinder
+
+**Description**
+Créer une mascotte officielle SkillFinder qui servirait d'identité visuelle au logo et à l'interface. Personnage emblématique de la marque, cohérent avec l'univers des services locaux.
+
+**Avis**
+✅ Une mascotte forte est un vecteur de mémorabilité puissant (Duolingo, Clippy, Michelin). Elle humanise la marque et crée un attachement émotionnel. À définir soigneusement pour qu'elle reflète les valeurs de SkillFinder : confiance, expertise locale, proximité. Peut être déclinée sur tous les supports (logo, emails, appli, réseaux sociaux).
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🟡 Moyenne (design) | ⭐⭐⭐⭐ Élevé (branding) | 📆 Moyen terme |
+
+---
+
+## 9. Micro-transactions — Personnalisation de mascotte
+
+**Description**
+Chaque utilisateur possède une mascotte SkillFinder personnalisable avec des items cosmétiques. Deux types d'items :
+
+**Items gratuits — débloqués par paliers de points :**
+- 2-3 items par palier (récompense la fidélité et la participation)
+- Exemples : chapeau, accessoire, couleur de fond à débloquer en atteignant 100 pts, 500 pts, 1 000 pts...
+
+**Items payants — deux formats :**
+- **Achat unitaire** : 1,99€ l'item — items thématiques disponibles à la carte
+- **Caisses de hasard** : 2,49€ par caisse, contenant des items exclusifs non disponibles à l'unité
+  - Chaque caisse a un **thème** différent (ex : "Artisan", "Été", "Noël", "Rétro"...)
+  - Chaque caisse contient un pool de 10 items — le joueur reçoit 1 item aléatoire parmi les 10
+  - Plusieurs caisses actives simultanément avec rotation saisonnière
+
+**Avis**
+✅✅ Modèle de monétisation B2C éprouvé (cf. jeux mobile, Duolingo, Discord Nitro). L'avantage : entièrement cosmétique, ne crée pas de déséquilibre. Les paliers gratuits incitent à voter/commenter davantage (engagement++). Les caisses de hasard ont un fort potentiel FOMO saisonnier. Points de vigilance : respecter la réglementation européenne sur les loot boxes (transparence sur les probabilités de chaque item obligatoire). À intégrer dans le modèle Freemium (voir ROADMAP_BUSINESS.md, Modèle F).
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🔴 Élevée | ⭐⭐⭐⭐⭐ Très élevé (engagement + revenus) | 📆 Long terme (après lancement stable) |
+
+---
+
 ## Synthèse et ordre de priorité suggéré
 
 | # | Fonctionnalité | Priorité |
 |---|---|---|
 | 1 | ~~Recherche sans critère obligatoire~~ | ✅ Livré |
 | 5 | ~~Commentaires SkillFinder~~ | ✅ Livré |
+| 8 | Mascotte SkillFinder | 📆 Moyen terme |
 | 3 | Système d'amis | 📆 Long terme |
 | 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |
+| 9 | Micro-transactions (personnalisation mascotte) | 📆 Long terme |
 | 7 | Suggestions intelligentes (favoris) | 📆 Long terme |
 | 6 | Application mobile native | 📆 Long terme |
