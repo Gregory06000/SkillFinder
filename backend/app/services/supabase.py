@@ -59,6 +59,21 @@ SQL to run in Supabase SQL Editor:
   ALTER TABLE comment_reports ENABLE ROW LEVEL SECURITY;
   CREATE POLICY "Users can report" ON comment_reports FOR INSERT
     TO authenticated WITH CHECK (auth.uid() = reporter_id);
+
+  -- Auto-hide: add report_count to comments + trigger
+  ALTER TABLE comments ADD COLUMN IF NOT EXISTS report_count INT NOT NULL DEFAULT 0;
+
+  CREATE OR REPLACE FUNCTION increment_report_count()
+  RETURNS TRIGGER AS $$
+  BEGIN
+    UPDATE comments SET report_count = report_count + 1 WHERE id = NEW.comment_id;
+    RETURN NEW;
+  END;
+  $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+  CREATE TRIGGER trg_increment_report_count
+    AFTER INSERT ON comment_reports
+    FOR EACH ROW EXECUTE FUNCTION increment_report_count();
 """
 
 import asyncio
@@ -528,6 +543,7 @@ async def get_comments(place_id: str, keyword: str, limit: int = 5, offset: int 
             "select": "id,user_id,pseudo,content,created_at",
             "place_id": f"eq.{place_id}",
             "keyword": f"eq.{keyword.strip().lower()}",
+            "report_count": "lt.5",
             "order": "created_at.desc",
             "limit": str(limit + 1),
             "offset": str(offset),
