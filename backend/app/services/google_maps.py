@@ -51,10 +51,7 @@ FIELD_MASK = ",".join([
 def _get_api_key() -> str:
     key = os.environ.get("GOOGLE_API_KEY")
     if not key:
-        raise RuntimeError(
-            "GOOGLE_API_KEY is not set. "
-            "Add it to your environment variables on Render."
-        )
+        raise RuntimeError("Google API key not configured")
     return key
 
 
@@ -146,22 +143,18 @@ async def reverse_geocode(lat: float, lng: float) -> str:
     return results[0].get("formatted_address", f"{lat:.4f}, {lng:.4f}")
 
 
-def get_photo_url(photo_name: str, max_width: int = 600, max_height: int = 400) -> str:
-    """Build a Google Places photo URL from a photo resource name."""
-    api_key = _get_api_key()
-    return (
-        f"https://places.googleapis.com/v1/{photo_name}/media"
-        f"?maxWidthPx={max_width}&maxHeightPx={max_height}&key={api_key}"
-    )
-
-
 async def fetch_photo_bytes(photo_name: str) -> tuple[bytes, str]:
     """Fetch photo binary from Google and return (bytes, content_type)."""
-    url = get_photo_url(photo_name)
+    api_key = _get_api_key()
+    url = (
+        f"https://places.googleapis.com/v1/{photo_name}/media"
+        f"?maxWidthPx=600&maxHeightPx=400"
+    )
     client = _get_photo_client()
-    resp = await client.get(url)
+    resp = await client.get(url, headers={"X-Goog-Api-Key": api_key})
     if resp.status_code != 200:
-        raise RuntimeError(f"Photo fetch failed: {resp.status_code}")
+        logger.error("Photo fetch failed: %s", resp.status_code)
+        raise RuntimeError("Photo fetch failed")
     content_type = resp.headers.get("content-type", "image/jpeg")
     return resp.content, content_type
 

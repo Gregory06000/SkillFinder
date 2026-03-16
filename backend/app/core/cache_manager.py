@@ -5,6 +5,7 @@ Avoids redundant Google Places + LLM calls for identical queries.
 
 import json
 import sqlite3
+import threading
 import unicodedata
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -12,6 +13,7 @@ from pathlib import Path
 DB_PATH = Path(__file__).resolve().parent.parent.parent / "cache.db"
 
 _conn: sqlite3.Connection | None = None
+_lock = threading.Lock()
 
 
 def _get_conn() -> sqlite3.Connection:
@@ -49,28 +51,29 @@ def get_cached_search(
 ) -> dict | None:
     """Return cached response dict if a valid (non-expired) entry exists."""
     key = _make_key(city, service, keyword, radius_km)
-    conn = _get_conn()
-    row = conn.execute(
-        "SELECT json_results, expires_at FROM search_cache WHERE search_key = ?",
-        (key,),
-    ).fetchone()
+    with _lock:
+        conn = _get_conn()
+        row = conn.execute(
+            "SELECT json_results, expires_at FROM search_cache WHERE search_key = ?",
+            (key,),
+        ).fetchone()
 
-    if row is None:
-        return None
+        if row is None:
+            return None
 
-    expires_at = datetime.fromisoformat(row[1])
-    if datetime.now(timezone.utc) > expires_at:
-        conn.execute("DELETE FROM search_cache WHERE search_key = ?", (key,))
-        conn.commit()
-        return None
+        expires_at = datetime.fromisoformat(row[1])
+        if datetime.now(timezone.utc) > expires_at:
+            conn.execute("DELETE FROM search_cache WHERE search_key = ?", (key,))
+            conn.commit()
+            return None
 
-    cached = json.loads(row[0])
+        cached = json.loads(row[0])
 
-    # Don't serve cached empty results — let the search retry
-    if not cached.get("results"):
-        conn.execute("DELETE FROM search_cache WHERE search_key = ?", (key,))
-        conn.commit()
-        return None
+        # Don't serve cached empty results — let the search retry
+        if not cached.get("results"):
+            conn.execute("DELETE FROM search_cache WHERE search_key = ?", (key,))
+            conn.commit()
+            return None
 
     return cached
 
@@ -87,12 +90,13 @@ def save_search_to_cache(
     key = _make_key(city, service, keyword, radius_km)
     now = datetime.now(timezone.utc)
     expires = now + timedelta(days=duration_days)
-    conn = _get_conn()
-    conn.execute(
-        """
-        INSERT OR REPLACE INTO search_cache (search_key, json_results, created_at, expires_at)
-        VALUES (?, ?, ?, ?)
-        """,
-        (key, json.dumps(data, ensure_ascii=False), now.isoformat(), expires.isoformat()),
-    )
-    conn.commit()
+    with _lock:
+        conn = _get_conn()
+        conn.execute(
+            """
+            INSERT OR REPLACE INTO search_cache (search_key, json_results, created_at, expires_at)
+            VALUES (?, ?, ?, ?)
+            """,
+            (key, json.dumps(data, ensure_ascii=False), now.isoformat(), expires.isoformat()),
+        )
+        conn.commit()

@@ -81,7 +81,6 @@ import os
 import logging
 from datetime import date, timedelta
 
-from html import escape as html_escape
 
 import httpx
 import jwt

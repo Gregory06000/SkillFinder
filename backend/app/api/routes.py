@@ -177,7 +177,8 @@ async def compare(request: Request, req: CompareRequest):
             locale=req.locale,
         )
     except RuntimeError as e:
-        raise HTTPException(status_code=502, detail=str(e))
+        logger.error("compare failed: %s", e)
+        raise HTTPException(status_code=502, detail="Erreur lors de la comparaison. Réessayez.")
 
     biz1 = analysis.get("business_1", {})
     biz2 = analysis.get("business_2", {})

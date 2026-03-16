@@ -55,10 +55,15 @@ class SearchResponse(BaseModel):
 # --- Comparison ---
 
 class CompareBusinessInput(BaseModel):
-    name: str
-    reviews: list[str]
+    name: str = Field(..., max_length=200)
+    reviews: list[str] = Field(default=[], max_length=50)
     match_score: float
     global_rating: float
+
+    @field_validator("reviews")
+    @classmethod
+    def limit_review_size(cls, v: list[str]) -> list[str]:
+        return [r[:2000] for r in v]
 
 
 class CompareRequest(BaseModel):
@@ -102,7 +107,7 @@ class CommentsResponse(BaseModel):
 
 
 class CommentRequest(BaseModel):
-    place_id: str = Field(..., min_length=1, max_length=500)
+    place_id: str = Field(..., min_length=1, max_length=500, pattern=r"^[a-zA-Z0-9_\-]+$")
     keyword: str = Field(..., min_length=1, max_length=100)
     content: str = Field(..., min_length=1, max_length=280)
 
@@ -115,7 +120,7 @@ class ReportRequest(BaseModel):
 # --- Community verification ---
 
 class VerifyRequest(BaseModel):
-    place_id: str = Field(..., min_length=1, max_length=500)
+    place_id: str = Field(..., min_length=1, max_length=500, pattern=r"^[a-zA-Z0-9_\-]+$")
     vote: Literal["yes", "no"]
 
 class VerifyResponse(BaseModel):

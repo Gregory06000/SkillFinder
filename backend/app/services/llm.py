@@ -132,7 +132,7 @@ Exemples :
     }
 
     client = _get_gemini_client()
-    resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
+    resp = await client.post(GEMINI_URL, headers={"x-goog-api-key": api_key}, json=body)
 
     if resp.status_code != 200:
         logger.warning("Synonym generation failed (%s)", resp.status_code)
@@ -264,11 +264,11 @@ async def score_reviews_batch(
     }
 
     client = _get_gemini_client()
-    resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
+    resp = await client.post(GEMINI_URL, headers={"x-goog-api-key": api_key}, json=body)
 
     if resp.status_code != 200:
         logger.error("Gemini scoring error %s: %s", resp.status_code, resp.text)
-        raise RuntimeError(f"Gemini scoring returned {resp.status_code}")
+        raise RuntimeError("Gemini scoring failed")
 
     data = resp.json()
 
@@ -368,14 +368,11 @@ async def compare_businesses(
     }
 
     client = _get_gemini_client()
-    resp = await client.post(f"{GEMINI_URL}?key={api_key}", json=body)
+    resp = await client.post(GEMINI_URL, headers={"x-goog-api-key": api_key}, json=body)
 
     if resp.status_code != 200:
         logger.error("Gemini API error %s: %s", resp.status_code, resp.text)
-        raise RuntimeError(
-            f"Gemini API returned {resp.status_code}. "
-            "Vérifiez que l'API 'Generative Language' est activée dans Google Cloud Console."
-        )
+        raise RuntimeError("Gemini comparison failed")
 
     data = resp.json()
 
