@@ -361,10 +361,10 @@ async def user_profile(request: Request, authorization: str | None = Header(defa
 @limiter.limit("20/minute")
 async def update_leaderboard(
     request: Request,
-    pseudo: str = "",
-    city: str = "",
-    weekly_points: int = 0,
-    total_points: int = 0,
+    pseudo: str = Query("", max_length=50),
+    city: str = Query("", max_length=100),
+    weekly_points: int = Query(0, ge=0, le=1_000_000),
+    total_points: int = Query(0, ge=0, le=10_000_000),
     authorization: str | None = Header(default=None),
 ):
     """Upsert a user's leaderboard entry for the current week."""

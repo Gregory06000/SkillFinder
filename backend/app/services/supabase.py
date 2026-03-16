@@ -283,13 +283,19 @@ async def search_cities(query: str) -> list[str]:
     if not is_enabled() or not query:
         return []
 
+    # Sanitize: only keep alphanumeric, spaces, hyphens, apostrophes (city names)
+    import re
+    safe_query = re.sub(r"[^a-zA-ZÀ-ÿ0-9\s\-']", "", query.strip())
+    if not safe_query:
+        return []
+
     client = await _get_client()
     week = _current_week_start()
     resp = await client.get(
         "/rest/v1/leaderboard",
         params={
             "select": "city",
-            "city": f"ilike.{query}*",
+            "city": f"ilike.{safe_query}*",
             "week_start": f"eq.{week}",
             "order": "city.asc",
             "limit": "20",
