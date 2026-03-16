@@ -1,7 +1,7 @@
 import os
 import logging
 
-from fastapi import APIRouter, Header, HTTPException, Request
+from fastapi import APIRouter, Header, HTTPException, Query, Request
 from pydantic import BaseModel
 from fastapi.responses import Response
 from slowapi import Limiter
@@ -206,7 +206,8 @@ async def compare(request: Request, req: CompareRequest):
 
 
 @router.get("/photo")
-async def photo_proxy(ref: str):
+@limiter.limit("60/minute")
+async def photo_proxy(request: Request, ref: str = Query(..., min_length=1, max_length=500)):
     """
     Proxy endpoint for Google Places photos.
     Keeps the API key server-side so it's never exposed to the frontend.
@@ -229,7 +230,8 @@ async def photo_proxy(ref: str):
 
 
 @router.get("/reverse-geocode")
-async def reverse_geocode_endpoint(lat: float, lng: float):
+@limiter.limit("20/minute")
+async def reverse_geocode_endpoint(request: Request, lat: float, lng: float):
     """Convert lat/lng to a readable city name."""
     if not _is_google_enabled():
         return {"location": f"{lat:.4f}, {lng:.4f}"}
@@ -301,7 +303,8 @@ async def get_my_votes(
 
 
 @router.get("/leaderboard")
-async def leaderboard(city: str = "", limit: int = 50):
+@limiter.limit("30/minute")
+async def leaderboard(request: Request, city: str = Query("", max_length=100), limit: int = Query(50, ge=1, le=100)):
     """Get weekly top N leaderboard for a city."""
     from app.services.supabase import is_enabled as supabase_enabled, get_leaderboard
 
@@ -319,7 +322,8 @@ async def leaderboard(city: str = "", limit: int = 50):
 
 
 @router.get("/leaderboard/cities")
-async def leaderboard_cities(q: str = ""):
+@limiter.limit("20/minute")
+async def leaderboard_cities(request: Request, q: str = Query("", max_length=100)):
     """Autocomplete city names using Google Places API."""
     if not q or len(q) < 2 or not _is_google_enabled():
         return {"cities": []}
@@ -334,7 +338,8 @@ async def leaderboard_cities(q: str = ""):
 
 
 @router.get("/user/profile")
-async def user_profile(authorization: str | None = Header(default=None)):
+@limiter.limit("30/minute")
+async def user_profile(request: Request, authorization: str | None = Header(default=None)):
     """Fetch the authenticated user's saved points and profile."""
     from app.services.supabase import get_user_from_token, get_user_profile
 
@@ -398,7 +403,8 @@ async def update_leaderboard(
 
 
 @router.get("/admin/stats")
-async def admin_stats(authorization: str | None = Header(default=None)):
+@limiter.limit("10/minute")
+async def admin_stats(request: Request, authorization: str | None = Header(default=None)):
     """Fetch aggregated stats for the admin dashboard (requires auth)."""
     from app.services.supabase import get_user_from_token, get_admin_stats
 
@@ -422,7 +428,12 @@ async def admin_stats(authorization: str | None = Header(default=None)):
 
 @router.get("/comments", response_model=CommentsResponse)
 @limiter.limit("30/minute")
-async def get_comments(request: Request, place_id: str, keyword: str, offset: int = 0):
+async def get_comments(
+    request: Request,
+    place_id: str = Query(..., min_length=1, max_length=500),
+    keyword: str = Query(..., min_length=1, max_length=100),
+    offset: int = Query(0, ge=0, le=1000),
+):
     """Fetch comments for a business + keyword, newest first."""
     from app.services.supabase import is_enabled as supabase_enabled, get_comments as _get_comments
     if not supabase_enabled():
@@ -514,7 +525,8 @@ async def report_comment_endpoint(
 
 
 @router.get("/categories")
-async def categories():
+@limiter.limit("30/minute")
+async def categories(request: Request):
     return {
         "categories": get_all_categories(),
         "google_enabled": _is_google_enabled(),

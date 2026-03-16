@@ -75,6 +75,7 @@ app.add_middleware(
     allow_origins=allowed_origins,
     allow_methods=["GET", "POST", "DELETE"],
     allow_headers=["Content-Type", "Authorization"],
+    max_age=3600,
 )
 
 app.include_router(router, prefix="/api")

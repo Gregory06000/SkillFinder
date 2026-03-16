@@ -4,6 +4,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-XSS-Protection", value: "1; mode=block" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   {
     key: "Permissions-Policy",
@@ -17,7 +18,7 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      // Next.js needs unsafe-inline for styles; Google Maps needs its CDN
+      // Next.js requires unsafe-inline for its hydration scripts in production
       "script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://maps.gstatic.com https://plausible.io",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
@@ -27,6 +28,8 @@ const securityHeaders = [
       "connect-src 'self' https://*.supabase.co https://maps.googleapis.com https://*.onrender.com https://*.vercel.app https://*.sentry.io https://plausible.io",
       "frame-src 'none'",
       "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
     ].join("; "),
   },
 ];
