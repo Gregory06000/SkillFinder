@@ -172,7 +172,7 @@ export async function verifyBusiness(
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
-  const res = await fetch(`${API_BASE}/api/verify`, {
+  const res = await fetchWithRetry(`${API_BASE}/api/verify`, {
     method: "POST",
     headers,
     body: JSON.stringify({ place_id: placeId, vote }),
@@ -209,11 +209,15 @@ export interface UserProfile {
 }
 
 export async function fetchUserProfile(token: string): Promise<UserProfile> {
-  const res = await fetch(`${API_BASE}/api/user/profile`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (!res.ok) return { found: false };
-  return res.json();
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/user/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return { found: false };
+    return res.json();
+  } catch {
+    return { found: false };
+  }
 }
 
 export async function updateLeaderboard(
@@ -233,7 +237,7 @@ export async function updateLeaderboard(
     total_points: String(totalPoints),
   });
 
-  const res = await fetch(`${API_BASE}/api/leaderboard?${params}`, {
+  const res = await fetchWithRetry(`${API_BASE}/api/leaderboard?${params}`, {
     method: "POST",
     headers,
   });

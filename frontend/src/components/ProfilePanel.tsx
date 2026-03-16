@@ -186,6 +186,7 @@ export default function ProfilePanel({
                   value={pseudoInput}
                   onChange={(e) => setPseudoInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handlePseudoSave()}
+                  aria-label="Pseudo"
                   className="text-lg font-semibold text-sf-text bg-white/80 border border-sf-border
                              rounded-sf-sm px-2 py-0.5 outline-none focus:border-sf-accent w-full"
                   autoFocus

@@ -158,6 +158,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                 <input
                   type="email"
                   placeholder={t("conv.email")}
+                  aria-label={t("conv.email")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm
@@ -168,6 +169,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                 <input
                   type="password"
                   placeholder={mode === "signup" ? t("conv.passwordSignup") : t("conv.password")}
+                  aria-label={mode === "signup" ? t("conv.passwordSignup") : t("conv.password")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm
