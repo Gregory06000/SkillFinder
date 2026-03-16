@@ -575,8 +575,8 @@ async def add_comment(
         auth_headers["Authorization"] = f"Bearer {user_token}"
 
     normalized_keyword = keyword.strip().lower()
-    content = html_escape(content.strip())
-    pseudo = html_escape(pseudo.strip())
+    content = content.strip()
+    pseudo = pseudo.strip()
 
     # 1) Look for an existing comment by this user for this place+keyword
     get_resp = await client.get(
