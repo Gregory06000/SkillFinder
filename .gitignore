@@ -220,6 +220,9 @@ tsconfig.tsbuildinfo
 # Sentry auth token (contains secret, never commit)
 .env.sentry-build-plugin
 
+# Claude Code
+.claude/
+
 # OS
 .DS_Store
 Thumbs.db
