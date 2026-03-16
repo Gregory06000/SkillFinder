@@ -81,6 +81,8 @@ import os
 import logging
 from datetime import date, timedelta
 
+from html import escape as html_escape
+
 import httpx
 import jwt
 
@@ -573,6 +575,8 @@ async def add_comment(
         auth_headers["Authorization"] = f"Bearer {user_token}"
 
     normalized_keyword = keyword.strip().lower()
+    content = html_escape(content.strip())
+    pseudo = html_escape(pseudo.strip())
 
     # 1) Look for an existing comment by this user for this place+keyword
     get_resp = await client.get(
@@ -602,7 +606,7 @@ async def add_comment(
                 "Prefer": "return=representation",
                 **auth_headers,
             },
-            json={"content": content.strip()},
+            json={"content": content},
         )
         patch_resp.raise_for_status()
         rows = patch_resp.json()
@@ -621,7 +625,7 @@ async def add_comment(
             "keyword": normalized_keyword,
             "user_id": user_id,
             "pseudo": pseudo,
-            "content": content.strip(),
+            "content": content,
         },
     )
     insert_resp.raise_for_status()

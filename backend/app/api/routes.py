@@ -58,21 +58,20 @@ async def search(request: Request, req: SearchRequest):
                 center=center,
                 radius_km=req.radius_km if center else None,
             )
-        except RuntimeError as e:
-            raise HTTPException(status_code=502, detail=str(e))
+        except RuntimeError:
+            raise HTTPException(status_code=502, detail="Erreur lors de la recherche. Réessayez.")
 
         if not businesses:
             raise HTTPException(
                 status_code=404,
-                detail=f"No results found for '{query}'.",
+                detail="Aucun résultat trouvé.",
             )
     else:
         businesses = get_businesses_by_category(req.service)
         if not businesses:
-            available = get_all_categories()
             raise HTTPException(
                 status_code=404,
-                detail=f"No mock data for '{req.service}'. Available: {available}",
+                detail="Aucun résultat trouvé pour cette catégorie.",
             )
 
     effective_synonyms = None
@@ -268,7 +267,7 @@ async def verify(
         await add_vote(req.place_id, req.vote, user_id=user_id, user_token=raw_token)
     except Exception as e:
         logger.error("add_vote failed for place_id=%r user_id=%r: %s", req.place_id, user_id, e)
-        raise HTTPException(status_code=502, detail=f"Erreur base de données: {e}")
+        raise HTTPException(status_code=502, detail="Erreur lors de l'enregistrement du vote.")
 
     return VerifyResponse(success=True, message="Vote enregistré !")
 
@@ -407,10 +406,10 @@ async def admin_stats(authorization: str | None = Header(default=None)):
     if not user_id:
         raise HTTPException(status_code=401, detail="Authentification requise.")
 
-    # Simple admin check: only allow specific user IDs (configure via env)
+    # Admin check: only allow specific user IDs (configure via env)
     admin_ids = os.environ.get("ADMIN_USER_IDS", "").split(",")
     admin_ids = [uid.strip() for uid in admin_ids if uid.strip()]
-    if admin_ids and user_id not in admin_ids:
+    if not admin_ids or user_id not in admin_ids:
         raise HTTPException(status_code=403, detail="Accès refusé.")
 
     try:
