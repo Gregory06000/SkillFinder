@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import type { User } from "@supabase/supabase-js";
-import { fetchComments, postComment, deleteComment, type SkillComment } from "@/lib/api";
+import { fetchComments, postComment, deleteComment, reportComment, type SkillComment } from "@/lib/api";
 import { useT } from "@/lib/i18n";
 
 const MAX_CHARS = 280;
@@ -46,6 +46,7 @@ export default function CommentsSection({
   const [draft, setDraft] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [reported, setReported] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string | null>(null);
 
   // The current user's own comment (if any)
@@ -113,6 +114,13 @@ export default function CommentsSection({
       setDraft("");
     }
     setDeleting(null);
+  }
+
+  async function handleReport(commentId: string) {
+    const token = await getAccessToken();
+    if (!token) return;
+    const ok = await reportComment(commentId, token);
+    if (ok) setReported((prev) => new Set(prev).add(commentId));
   }
 
   // Sorted list: own comment first, then others
@@ -220,7 +228,7 @@ export default function CommentsSection({
                         </span>
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] text-sf-text-light">{timeAgo(c.created_at, t)}</span>
-                          {isMine && (
+                          {isMine ? (
                             <button
                               onClick={() => handleDelete(c.id)}
                               disabled={deleting === c.id}
@@ -239,6 +247,19 @@ export default function CommentsSection({
                                   <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
                                 </svg>
                               )}
+                            </button>
+                          ) : user && (
+                            <button
+                              onClick={() => handleReport(c.id)}
+                              disabled={reported.has(c.id)}
+                              aria-label={t("comments.report")}
+                              className={`transition-colors ${reported.has(c.id) ? "text-orange-400 cursor-default" : "text-sf-text-light hover:text-orange-500"}`}
+                              title={reported.has(c.id) ? t("comments.reported") : t("comments.report")}
+                            >
+                              <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+                                <line x1="4" y1="22" x2="4" y2="15" />
+                              </svg>
                             </button>
                           )}
                         </div>

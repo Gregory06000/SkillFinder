@@ -286,6 +286,22 @@ export async function postComment(
   }
 }
 
+export async function reportComment(commentId: string, token: string, reason = "inappropriate"): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/comments/report`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ comment_id: commentId, reason }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function deleteComment(commentId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {

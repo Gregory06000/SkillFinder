@@ -489,6 +489,31 @@ async def delete_comment_endpoint(
     return {"success": True}
 
 
+@router.post("/comments/report")
+@limiter.limit("5/minute")
+async def report_comment_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Report a comment as inappropriate (authenticated users only)."""
+    from app.models.schemas import ReportRequest
+    from app.services.supabase import is_enabled as supabase_enabled, get_user_from_token, report_comment
+
+    if not supabase_enabled():
+        raise HTTPException(status_code=503, detail="Service indisponible.")
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Connexion requise.")
+
+    body = await request.json()
+    req = ReportRequest(**body)
+    success = await report_comment(req.comment_id, user_id, req.reason)
+    if not success:
+        raise HTTPException(status_code=500, detail="Erreur lors du signalement.")
+    return {"success": True}
+
+
 @router.get("/categories")
 async def categories():
     return {

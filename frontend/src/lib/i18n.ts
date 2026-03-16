@@ -144,6 +144,8 @@ const fr: Dict = {
   "comments.editHint": "Vous avez déjà un avis — modifiez-le ci-dessous.",
   "comments.myComment": "(moi)",
   "comments.delete": "Supprimer mon avis",
+  "comments.report": "Signaler ce commentaire",
+  "comments.reported": "Commentaire signalé",
   "comments.loadMore": "Voir plus d'avis",
 
   // ── UserStats ──
@@ -359,6 +361,8 @@ const en: Dict = {
   "comments.editHint": "You already have a review — edit it below.",
   "comments.myComment": "(me)",
   "comments.delete": "Delete my review",
+  "comments.report": "Report this comment",
+  "comments.reported": "Comment reported",
   "comments.loadMore": "Load more reviews",
 
   // ── UserStats ──

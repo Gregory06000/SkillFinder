@@ -30,6 +30,17 @@ export const metadata: Metadata = {
   description:
     "Comparez les professionnels près de chez vous grâce à l'analyse IA des avis clients. Classement sur mesure par critère, vérification communautaire.",
   metadataBase: new URL("https://skillfinder.fr"),
+  manifest: "/manifest.json",
+  themeColor: "#C45D3E",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "SkillFinder",
+  },
+  icons: {
+    icon: "/favicon.png",
+    apple: "/icons/apple-touch-icon.png",
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",

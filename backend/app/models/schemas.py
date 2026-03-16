@@ -107,6 +107,11 @@ class CommentRequest(BaseModel):
     content: str = Field(..., min_length=1, max_length=280)
 
 
+class ReportRequest(BaseModel):
+    comment_id: str = Field(..., min_length=1, max_length=100)
+    reason: str = Field(default="inappropriate", max_length=200)
+
+
 # --- Community verification ---
 
 class VerifyRequest(BaseModel):

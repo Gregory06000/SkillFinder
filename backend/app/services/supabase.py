@@ -46,6 +46,19 @@ SQL to run in Supabase SQL Editor:
       UNIQUE (pseudo, city, week_start)
   );
   CREATE INDEX idx_leaderboard_city_week ON leaderboard (city, week_start);
+
+  -- Comment reports (moderation)
+  CREATE TABLE comment_reports (
+      id          BIGSERIAL PRIMARY KEY,
+      comment_id  UUID NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+      reporter_id UUID NOT NULL,
+      reason      TEXT NOT NULL DEFAULT 'inappropriate',
+      created_at  TIMESTAMPTZ DEFAULT NOW(),
+      UNIQUE (comment_id, reporter_id)
+  );
+  ALTER TABLE comment_reports ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY "Users can report" ON comment_reports FOR INSERT
+    TO authenticated WITH CHECK (auth.uid() = reporter_id);
 """
 
 import asyncio
@@ -626,6 +639,25 @@ async def delete_comment(comment_id: str, user_id: str, user_token: str | None =
         return isinstance(deleted, list) and len(deleted) > 0
     except Exception:
         return del_resp.status_code == 204
+
+
+async def report_comment(comment_id: str, user_id: str, reason: str = "inappropriate") -> bool:
+    """Insert a report into the comment_reports table. One report per user per comment."""
+    client = await _get_client()
+    headers = _write_headers()
+    headers["Prefer"] = "return=minimal"
+
+    resp = await client.post(
+        "/rest/v1/comment_reports",
+        headers=headers,
+        json={
+            "comment_id": comment_id,
+            "reporter_id": user_id,
+            "reason": reason,
+        },
+    )
+    # 201 = created, 409 = already reported (unique constraint)
+    return resp.status_code in (201, 409)
 
 
 async def get_user_from_token(authorization: str | None) -> str | None:
