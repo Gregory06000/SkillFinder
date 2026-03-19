@@ -131,12 +131,102 @@ Chaque utilisateur possède une mascotte SkillFinder personnalisable avec des it
 
 ---
 
+## 10. Partage par lien (sans système d'amis)
+
+**Description**
+Permettre de partager un commerce ou un résultat de recherche via un lien unique (type `skillfinder.fr/share/place_id?keyword=xxx`). Le lien affiche une page avec le score, les infos clés et une preview OpenGraph (titre, image, score) pour un rendu propre sur les réseaux sociaux et messageries.
+
+**Avis**
+✅✅ Stratégiquement la fonctionnalité la plus importante à court terme. C'est du **marketing gratuit et viral** : un utilisateur trouve un bon artisan → partage le lien → son ami découvre SkillFinder. Aucune dépendance technique, pas besoin du système d'amis (#3). Faible complexité, fort effet levier sur la croissance organique. C'est aussi un accélérateur pour atteindre la masse critique d'utilisateurs nécessaire avant les fonctionnalités sociales (#3, #4, #9).
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🟢 Faible | ⭐⭐⭐⭐⭐ Très élevé (croissance organique) | 📆 Court terme |
+
+---
+
+## 11. Historique de recherche
+
+**Description**
+Sauvegarder automatiquement les dernières recherches de l'utilisateur (service, ville, critère) dans le `localStorage` du navigateur. Afficher un historique cliquable sous le formulaire de recherche ou dans le profil, permettant de relancer une recherche passée en un clic.
+
+**Avis**
+✅ Micro-fonctionnalité à très fort rapport effort/impact. Zéro backend, zéro base de données — tout côté client. Améliore l'expérience au quotidien et encourage le retour sur le site. L'utilisateur qui revient sur SkillFinder retrouve immédiatement ses recherches précédentes sans avoir à retaper les paramètres.
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🟢 Très faible | ⭐⭐⭐⭐ Élevé (rétention) | 📆 Court terme |
+
+---
+
+## 12. Mode carte (résultats sur Google Maps)
+
+**Description**
+Afficher les résultats de recherche sur une carte Google Maps interactive en plus de la liste actuelle. Chaque commerce apparaît comme un marqueur cliquable avec son score et ses infos principales. L'utilisateur peut basculer entre vue liste et vue carte.
+
+**Avis**
+✅✅ Fonctionnalité très naturelle pour un outil de recherche locale. Les données nécessaires (latitude, longitude) sont déjà présentes dans les résultats de la Places API. L'API Google Maps JS est déjà configurée (utilisée pour le geocoding). Fort impact visuel, aucune dépendance avec d'autres fonctionnalités. Seul point d'attention : le coût API Maps (chaque affichage consomme des requêtes Maps JS), à surveiller en cas de croissance.
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🟡 Moyenne | ⭐⭐⭐⭐⭐ Très élevé | 📆 Court/Moyen terme |
+
+---
+
+## 13. Badges utilisateur
+
+**Description**
+Attribuer des badges visuels aux utilisateurs en fonction de leur activité : "Premier commentaire", "10 vérifications", "Top 3 de ta ville", "Membre depuis 6 mois", etc. Les badges sont affichés sur le profil et à côté du pseudo dans les commentaires.
+
+**Avis**
+✅✅ Complément logique du système de points et du leaderboard existants. Les badges créent un cycle d'engagement vertueux : l'utilisateur veut le prochain badge → il vote/commente davantage → il gagne des points → il monte au leaderboard. Parfaitement synergique avec les idées prévues : la mascotte (#8) pourrait porter les badges, les micro-transactions (#9) pourraient inclure des cadres de badges premium, le système d'amis (#3) rendrait les badges visibles socialement. C'est le socle de la gamification — à implémenter avant ou en même temps que la mascotte.
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🟡 Moyenne | ⭐⭐⭐⭐ Élevé (engagement) | 📆 Moyen terme (avant #8) |
+
+---
+
+## 14. Mode sombre
+
+**Description**
+Proposer un thème sombre complet pour l'interface SkillFinder, activable manuellement ou automatiquement selon les préférences système de l'utilisateur. Le design system actuel (sf-cream, sf-accent terracotta) serait transposé en palette sombre cohérente.
+
+**Avis**
+✅ Fonctionnalité confort que les utilisateurs attendent de plus en plus, surtout sur mobile le soir. Avec Tailwind (déjà utilisé), le dark mode est relativement simple via le préfixe `dark:`. Aucune dépendance backend, aucun impact sur les autres fonctionnalités. Ne fait pas venir de nouveaux utilisateurs mais améliore le "polish" du produit. À faire quand il y a un creux dans le développement.
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🟢 Faible | ⭐⭐⭐ Modéré (confort) | 📆 Moyen terme |
+
+---
+
+## 15. Notifications email
+
+**Description**
+Envoyer des emails aux utilisateurs pour des événements clés : réponse à un commentaire, nouveau concurrent d'un favori, badge débloqué, résumé hebdomadaire d'activité. Nécessite un service d'envoi (Resend, SendGrid) et une page de préférences de notification (opt-in RGPD).
+
+**Avis**
+✅ Prérequis technique pour l'idée #7 (suggestions intelligentes basées sur les favoris). Sans notifications, impossible d'alerter l'utilisateur qu'un meilleur commerce est apparu. C'est un gros chantier (service email, templates, gestion opt-in/opt-out, RGPD) mais c'est un investissement structurant. Commencer par l'email uniquement — les notifications push viendront naturellement avec l'app native (#6) ou une PWA plus mature.
+
+| Complexité | Impact utilisateur | Priorité suggérée |
+|---|---|---|
+| 🔴 Élevée | ⭐⭐⭐⭐ Élevé | 📆 Moyen terme |
+
+---
+
 ## Synthèse et ordre de priorité suggéré
 
 | # | Fonctionnalité | Priorité |
 |---|---|---|
 | 1 | ~~Recherche sans critère obligatoire~~ | ✅ Livré |
 | 5 | ~~Commentaires SkillFinder~~ | ✅ Livré |
+| 10 | Partage par lien | 📆 Court terme |
+| 11 | Historique de recherche | 📆 Court terme |
+| 12 | Mode carte (Google Maps) | 📆 Court/Moyen terme |
+| 13 | Badges utilisateur | 📆 Moyen terme (avant #8) |
+| 14 | Mode sombre | 📆 Moyen terme |
+| 15 | Notifications email | 📆 Moyen terme |
 | 8 | Mascotte SkillFinder | 📆 Moyen terme |
 | 3 | Système d'amis | 📆 Long terme |
 | 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |
