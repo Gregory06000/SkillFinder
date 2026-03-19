@@ -129,8 +129,8 @@ function Home() {
           }}
           className="flex items-center gap-2.5 no-underline"
         >
-          <Mascot pose="default" size={36} />
-          <span className="font-serif text-xl font-bold text-sf-text tracking-tight">
+          <Mascot pose="default" size={44} />
+          <span className="font-serif text-2xl font-bold text-sf-text tracking-tight">
             SkillFinder
           </span>
         </a>
