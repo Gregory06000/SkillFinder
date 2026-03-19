@@ -187,7 +187,7 @@ export default function Mascot({
           transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .mascot-svg:hover .mascot-right-arm {
-          transform: rotate(-72deg) translate(-5px, 5px);
+          transform: rotate(-45deg) translate(0px, 14px);
         }
         .mascot-svg .mascot-pupils {
           transition: transform 0.35s ease;
