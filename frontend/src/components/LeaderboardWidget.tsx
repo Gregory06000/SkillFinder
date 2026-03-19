@@ -82,11 +82,11 @@ export default function LeaderboardWidget({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div className="bg-sf-card rounded-xl border border-gray-200 shadow-sm overflow-hidden">
       {/* Toggle header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-4 hover:bg-sf-bg transition-colors"
       >
         <div className="flex items-center gap-2">
           <svg className="w-5 h-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
@@ -133,7 +133,7 @@ export default function LeaderboardWidget({
                     <button
                       onClick={() => setExpandedIdx(isExpanded ? null : idx)}
                       className={`w-full flex items-center gap-3 px-4 py-2.5 text-left
-                                  hover:bg-gray-50 transition-colors text-sm
+                                  hover:bg-sf-bg transition-colors text-sm
                                   ${isUser ? "bg-blue-50/50" : ""}`}
                     >
                       {/* Rank */}

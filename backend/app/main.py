@@ -92,12 +92,14 @@ async def validate_environment():
     frontend = os.environ.get("FRONTEND_URL", "")
 
     sentry = bool(os.environ.get("SENTRY_DSN"))
+    resend = bool(os.environ.get("RESEND_API_KEY"))
 
     logger.info("── SkillFinder startup ──")
     logger.info("  Google Places API : %s", "OK" if google else "MISSING")
     logger.info("  Gemini API        : %s", "OK" if gemini else "MISSING (lexicon fallback)")
     logger.info("  Supabase          : %s", "OK" if supabase else "DISABLED")
     logger.info("  Sentry            : %s", "OK" if sentry else "DISABLED")
+    logger.info("  Resend (email)    : %s", "OK" if resend else "DISABLED")
     logger.info("  Frontend URL      : %s", frontend or "localhost only")
 
     if not google:

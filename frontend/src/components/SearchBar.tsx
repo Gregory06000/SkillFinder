@@ -64,7 +64,7 @@ export default function SearchBar({ onSearch, isLoading, initialService, initial
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white border border-sf-border rounded-sf-lg p-2
+      className="bg-sf-card border border-sf-border rounded-sf-lg p-2
                  flex items-center gap-1 shadow-sf-md transition-shadow
                  focus-within:shadow-sf-lg focus-within:border-sf-accent/25
                  max-w-[900px] flex-col sm:flex-row"

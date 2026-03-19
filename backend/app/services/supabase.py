@@ -685,6 +685,47 @@ async def report_comment(comment_id: str, user_id: str, reason: str = "inappropr
     return resp.status_code in (201, 409)
 
 
+async def get_notification_preferences(user_id: str) -> dict:
+    """Fetch notification preferences for a user. Returns defaults if none exist."""
+    if not is_enabled():
+        return {"email_badges": True, "email_weekly": True}
+
+    client = await _get_client()
+    resp = await client.get(
+        "/rest/v1/notification_preferences",
+        params={
+            "select": "email_badges,email_weekly",
+            "user_id": f"eq.{user_id}",
+            "limit": "1",
+        },
+    )
+    if resp.status_code == 200:
+        rows = resp.json()
+        if rows:
+            return rows[0]
+    return {"email_badges": True, "email_weekly": True}
+
+
+async def upsert_notification_preferences(user_id: str, email_badges: bool, email_weekly: bool) -> None:
+    """Insert or update notification preferences for a user."""
+    if not is_enabled():
+        return
+
+    client = await _get_client()
+    headers = _write_headers()
+    headers["Prefer"] = "resolution=merge-duplicates,return=minimal"
+
+    await client.post(
+        "/rest/v1/notification_preferences",
+        headers=headers,
+        json={
+            "user_id": user_id,
+            "email_badges": email_badges,
+            "email_weekly": email_weekly,
+        },
+    )
+
+
 async def get_user_from_token(authorization: str | None) -> str | None:
     """
     Extract and verify user_id from a Supabase JWT Bearer token.

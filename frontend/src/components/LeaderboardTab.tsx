@@ -191,7 +191,7 @@ export default function LeaderboardTab({
       {/* City search bar */}
       <div className="relative mb-8" ref={suggestionsRef}>
         <form onSubmit={handleSearchSubmit}>
-          <div className="flex items-center bg-white border border-sf-border rounded-sf-lg shadow-sf-sm overflow-hidden focus-within:border-sf-accent/50 focus-within:shadow-sf-md transition-all">
+          <div className="flex items-center bg-sf-card border border-sf-border rounded-sf-lg shadow-sf-sm overflow-hidden focus-within:border-sf-accent/50 focus-within:shadow-sf-md transition-all">
             <svg
               className="w-5 h-5 text-sf-text-light ml-4 flex-shrink-0"
               viewBox="0 0 24 24"
@@ -239,7 +239,7 @@ export default function LeaderboardTab({
 
         {/* Suggestions dropdown */}
         {showSuggestions && suggestions.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-sf-border rounded-sf-md shadow-sf-lg z-20 max-h-48 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-1 bg-sf-card border border-sf-border rounded-sf-md shadow-sf-lg z-20 max-h-48 overflow-y-auto">
             {suggestions.map((city) => (
               <button
                 key={city}
@@ -361,7 +361,7 @@ export default function LeaderboardTab({
           )}
 
           {/* Table — positions 4+ (or all if < 3 entries) */}
-          <div className="bg-white border border-sf-border rounded-sf-lg overflow-hidden shadow-sf-sm">
+          <div className="bg-sf-card border border-sf-border rounded-sf-lg overflow-hidden shadow-sf-sm">
             {/* Header */}
             <div className="grid grid-cols-[40px_1fr_80px_80px] sm:grid-cols-[50px_1fr_100px_100px] px-4 py-2.5 bg-sf-bg text-[11px] font-semibold text-sf-text-light uppercase tracking-wider border-b border-sf-border">
               <span>#</span>

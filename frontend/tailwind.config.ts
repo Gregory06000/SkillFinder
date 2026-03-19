@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
@@ -10,19 +11,19 @@ const config: Config = {
       },
       colors: {
         sf: {
-          bg: "#F6F3EE",
-          card: "#FFFFFF",
-          dark: "#1A1714",
-          accent: "#C45D3E",
-          "accent-light": "#E8805F",
-          "accent-pale": "#FDF0EC",
-          text: "#1A1714",
-          "text-secondary": "#6B6560",
-          "text-light": "#9C9690",
-          border: "#E5E0D8",
-          gold: "#D4A853",
-          "gold-light": "#FBF5E6",
-          success: "#3A7D5C",
+          bg: "var(--sf-bg)",
+          card: "var(--sf-card)",
+          dark: "var(--sf-dark)",
+          accent: "var(--sf-accent)",
+          "accent-light": "var(--sf-accent-light)",
+          "accent-pale": "var(--sf-accent-pale)",
+          text: "var(--sf-text)",
+          "text-secondary": "var(--sf-text-secondary)",
+          "text-light": "var(--sf-text-light)",
+          border: "var(--sf-border)",
+          gold: "var(--sf-gold)",
+          "gold-light": "var(--sf-gold-light)",
+          success: "var(--sf-success)",
         },
       },
       borderRadius: {

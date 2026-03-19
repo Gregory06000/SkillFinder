@@ -8,16 +8,28 @@ import { hasVoted as checkVoted } from "@/lib/gamification";
 import { useT } from "@/lib/i18n";
 import CommentsSection from "@/components/CommentsSection";
 
-function shareResult(result: BusinessResult) {
-  const text = `${result.name} - Score ${result.match_score.toFixed(1)}/5\n${result.address}`;
-  const url = result.maps_url || "";
+function buildShareUrl(result: BusinessResult, keyword?: string): string {
+  const base = typeof window !== "undefined" ? window.location.origin : "";
+  const params = new URLSearchParams();
+  params.set("name", result.name);
+  params.set("score", result.match_score.toFixed(1));
+  params.set("rating", result.global_rating.toFixed(1));
+  if (result.address) params.set("address", result.address);
+  if (keyword) params.set("keyword", keyword);
+  if (result.photo_name) params.set("photo", result.photo_name);
+  if (result.maps_url) params.set("maps", result.maps_url);
+  return `${base}/share?${params.toString()}`;
+}
+
+function shareResult(result: BusinessResult, keyword?: string): boolean {
+  const url = buildShareUrl(result, keyword);
+  const text = `${result.name} — Score ${result.match_score.toFixed(1)}/5`;
   if (navigator.share) {
     navigator.share({ title: result.name, text, url }).catch(() => {});
+    return false;
   } else {
-    navigator.clipboard.writeText(`${text}\n${url}`).then(() => {
-      // Brief feedback via a temporary element would be ideal
-      // but for simplicity we just copy
-    }).catch(() => {});
+    navigator.clipboard.writeText(url).catch(() => {});
+    return true;
   }
 }
 
@@ -107,6 +119,7 @@ function ResultCard({
   const { t } = useT();
   const cardRef = useRef<HTMLDivElement>(null);
   const [imgError, setImgError] = useState(false);
+  const [copied, setCopied] = useState(false);
   const hasPhoto = result.photo_name && !imgError;
 
   // isVoted prop (from server-synced React state) takes precedence over localStorage
@@ -153,7 +166,7 @@ function ResultCard({
       onClick={onClick}
       role="article"
       aria-label={result.name}
-      className={`group bg-white border rounded-sf-lg overflow-hidden
+      className={`group bg-sf-card border rounded-sf-lg overflow-hidden
                   transition-all duration-300 cursor-pointer relative
                   animate-fade-in-up
                   ${
@@ -342,7 +355,7 @@ function ResultCard({
 
         {/* AI Reasoning */}
         {showReasoning && result.reasoning && (
-          <div className="mt-3 bg-gray-50 rounded-sf-sm px-3 py-2 flex items-start gap-2">
+          <div className="mt-3 bg-sf-bg rounded-sf-sm px-3 py-2 flex items-start gap-2">
             <svg className="w-3.5 h-3.5 text-sf-text-light flex-shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10" />
               <path d="M12 16v-4M12 8h.01" />
@@ -396,7 +409,7 @@ function ResultCard({
                 href={result.maps_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full border border-sf-border bg-white
+                className="w-9 h-9 rounded-full border border-sf-border bg-sf-card
                            flex items-center justify-center text-sf-text-light
                            hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light
                            transition-all"
@@ -423,7 +436,7 @@ function ResultCard({
                 className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all
                            ${isFavorite
                              ? "border-red-300 bg-red-50 text-red-500"
-                             : "border-sf-border bg-white text-sf-text-light hover:bg-sf-bg hover:text-red-400 hover:border-red-200"
+                             : "border-sf-border bg-sf-card text-sf-text-light hover:bg-sf-bg hover:text-red-400 hover:border-red-200"
                            }`}
                 title={isFavorite ? t("card.removeFav") : t("card.addFav")}
               >
@@ -433,21 +446,34 @@ function ResultCard({
               </button>
             )}
             <button
-              onClick={() => shareResult(result)}
+              onClick={() => {
+                const wasCopied = shareResult(result, keyword);
+                if (wasCopied) {
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }
+              }}
               aria-label={t("card.share")}
-              className="w-9 h-9 rounded-full border border-sf-border bg-white
-                         flex items-center justify-center text-sf-text-light
-                         hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light
-                         transition-all"
-              title={t("card.share")}
+              className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all
+                         ${copied
+                           ? "border-sf-success bg-green-50 text-sf-success"
+                           : "border-sf-border bg-sf-card text-sf-text-light hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light"
+                         }`}
+              title={copied ? t("card.linkCopied") : t("card.share")}
             >
-              <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-              </svg>
+              {copied ? (
+                <svg className="w-[15px] h-[15px]" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              ) : (
+                <svg className="w-[15px] h-[15px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="18" cy="5" r="3" />
+                  <circle cx="6" cy="12" r="3" />
+                  <circle cx="18" cy="19" r="3" />
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                </svg>
+              )}
             </button>
             {onCompareToggle && (
               <button
@@ -459,7 +485,7 @@ function ResultCard({
                            ${
                              isCompareSelected
                                ? "border-sf-accent bg-sf-accent-pale text-sf-accent"
-                               : "border-sf-border bg-white text-sf-text-light hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light"
+                               : "border-sf-border bg-sf-card text-sf-text-light hover:bg-sf-bg hover:text-sf-text hover:border-sf-text-light"
                            }
                            disabled:opacity-30 disabled:cursor-not-allowed`}
                 title={

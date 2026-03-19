@@ -19,11 +19,12 @@ import { useVerification } from "@/lib/useVerification";
 import { useFavorites } from "@/lib/useFavorites";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
+import { useTheme } from "@/lib/useTheme";
 import { trackEvent } from "@/lib/analytics";
 
 function SkeletonCard() {
   return (
-    <div className="bg-white rounded-sf-lg border border-sf-border overflow-hidden animate-pulse">
+    <div className="bg-sf-card rounded-sf-lg border border-sf-border overflow-hidden animate-pulse">
       <div className="h-[140px] bg-sf-border/40" />
       <div className="p-5 space-y-3">
         <div className="flex justify-between">
@@ -66,6 +67,7 @@ function Home() {
   const compare = useCompare();
   const { user, signOut, getAccessToken } = useAuth();
   const { t, locale, setLocale } = useT();
+  const { theme, toggleTheme } = useTheme();
   const favs = useFavorites();
 
   const verification = useVerification({
@@ -109,7 +111,7 @@ function Home() {
         className="sticky top-0 z-50 border-b border-sf-border px-5 sm:px-10 h-16
                    flex items-center justify-between"
         style={{
-          background: "rgba(246,243,238,0.85)",
+          background: theme === "dark" ? "rgba(20,18,17,0.85)" : "rgba(246,243,238,0.85)",
           backdropFilter: "blur(20px) saturate(1.4)",
           WebkitBackdropFilter: "blur(20px) saturate(1.4)",
         }}
@@ -142,7 +144,7 @@ function Home() {
                         text-[13px] font-medium transition-all cursor-pointer
                         ${activeTab === "leaderboard"
                           ? "bg-sf-dark text-white border-sf-dark"
-                          : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                          : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                         }`}
           >
             <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
@@ -156,9 +158,27 @@ function Home() {
             aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
             className="hidden sm:flex items-center px-2.5 py-1.5 rounded-full border
                         text-[12px] font-semibold transition-all cursor-pointer
-                        bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                        bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
           >
             {locale === "fr" ? "EN" : "FR"}
+          </button>
+          {/* Dark mode toggle */}
+          <button
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? t("nav.lightMode") : t("nav.darkMode")}
+            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-full border
+                        transition-all cursor-pointer bg-sf-card text-sf-text-secondary
+                        border-sf-border hover:border-sf-text-light"
+          >
+            {theme === "dark" ? (
+              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+              </svg>
+            )}
           </button>
           {user ? (
             <button
@@ -183,7 +203,7 @@ function Home() {
             className="hidden sm:flex items-center gap-2.5 border border-sf-gold/25
                         rounded-full py-1 pl-1.5 pr-3.5 cursor-pointer transition-shadow
                         hover:shadow-sf-sm"
-            style={{ background: "#FBF5E6" }}
+            style={{ background: "var(--sf-gold-light)" }}
           >
             {rewards.avatarData.avatarPhoto ? (
               <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
@@ -213,7 +233,7 @@ function Home() {
             onClick={() => setActiveTab(activeTab === "leaderboard" ? "search" : "leaderboard")}
             aria-label={t("nav.leaderboard")}
             className={`sm:hidden flex items-center justify-center w-8 h-8 rounded-full border transition-colors
-              ${activeTab === "leaderboard" ? "bg-sf-dark text-white border-sf-dark" : "bg-white text-sf-text-secondary border-sf-border"}`}
+              ${activeTab === "leaderboard" ? "bg-sf-dark text-white border-sf-dark" : "bg-sf-card text-sf-text-secondary border-sf-border"}`}
           >
             <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
               <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
@@ -225,9 +245,26 @@ function Home() {
             onClick={() => setLocale(locale === "fr" ? "en" : "fr")}
             aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
             className="sm:hidden flex items-center px-2 py-1 rounded-full border text-[12px] font-semibold
-                       bg-white text-sf-text-secondary border-sf-border"
+                       bg-sf-card text-sf-text-secondary border-sf-border"
           >
             {locale === "fr" ? "EN" : "FR"}
+          </button>
+          {/* Mobile: Dark mode toggle */}
+          <button
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? t("nav.lightMode") : t("nav.darkMode")}
+            className="sm:hidden flex items-center justify-center w-8 h-8 rounded-full border
+                        bg-sf-card text-sf-text-secondary border-sf-border"
+          >
+            {theme === "dark" ? (
+              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+              </svg>
+            )}
           </button>
 
           {/* Mobile: Connexion / Déconnexion */}
@@ -325,7 +362,7 @@ function Home() {
                 <button
                   key={`hist-${i}`}
                   onClick={() => onSearch(h.service, h.keyword, h.location, h.radiusKm)}
-                  className="px-3 py-1.5 bg-white border border-sf-border rounded-full text-xs
+                  className="px-3 py-1.5 bg-sf-card border border-sf-border rounded-full text-xs
                              text-sf-text-secondary hover:border-sf-accent/40 hover:text-sf-accent
                              transition-all cursor-pointer"
                 >
@@ -362,7 +399,7 @@ function Home() {
             {favs.favorites.slice(0, 6).map((fav) => (
               <div
                 key={fav.name}
-                className="bg-white border border-sf-border rounded-sf-md p-3 flex items-center gap-3
+                className="bg-sf-card border border-sf-border rounded-sf-md p-3 flex items-center gap-3
                            hover:shadow-sf-sm transition-all group"
               >
                 <div className="flex-1 min-w-0">
@@ -501,7 +538,7 @@ function Home() {
                                    ${
                                      search.sortMode === opt.key
                                        ? "bg-sf-dark text-white border-sf-dark"
-                                       : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                                       : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                    }`}
                       >
                         {t(opt.labelKey)}
@@ -517,7 +554,7 @@ function Home() {
                                  ${
                                    rewards.showReasoning
                                      ? "bg-sf-dark text-white border-sf-dark"
-                                     : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                                     : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                  }`}
                       title={t("results.aiTitle")}
                     >
@@ -536,14 +573,14 @@ function Home() {
                     <button
                       onClick={() => setMobileView("list")}
                       className={`px-4 py-1.5 text-xs font-medium transition-all
-                                 ${mobileView === "list" ? "bg-sf-dark text-white" : "bg-white text-sf-text-secondary"}`}
+                                 ${mobileView === "list" ? "bg-sf-dark text-white" : "bg-sf-card text-sf-text-secondary"}`}
                     >
                       {t("results.list")}
                     </button>
                     <button
                       onClick={() => setMobileView("map")}
                       className={`px-4 py-1.5 text-xs font-medium transition-all
-                                 ${mobileView === "map" ? "bg-sf-dark text-white" : "bg-white text-sf-text-secondary"}`}
+                                 ${mobileView === "map" ? "bg-sf-dark text-white" : "bg-sf-card text-sf-text-secondary"}`}
                     >
                       {t("results.map")}
                     </button>
@@ -569,7 +606,7 @@ function Home() {
                   className={`px-2.5 py-1 rounded-full border text-[12px] font-medium transition-all cursor-pointer
                              ${search.filters.minRating === rating
                                ? "bg-sf-gold text-white border-sf-gold"
-                               : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                               : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                              }`}
                 >
                   {rating}+ &#9733;
@@ -589,7 +626,7 @@ function Home() {
                       className={`px-2.5 py-1 rounded-full border text-[12px] font-medium transition-all cursor-pointer
                                  ${search.filters.maxDistance === dist
                                    ? "bg-sf-accent text-white border-sf-accent"
-                                   : "bg-white text-sf-text-secondary border-sf-border hover:border-sf-text-light"
+                                   : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                  }`}
                     >
                       &lt; {dist} km
@@ -658,7 +695,7 @@ function Home() {
                 {search.canShowMore && (
                   <button
                     onClick={search.showMore}
-                    className="w-full py-3 bg-white border border-sf-border rounded-sf-lg text-sm
+                    className="w-full py-3 bg-sf-card border border-sf-border rounded-sf-lg text-sm
                                font-medium text-sf-text-secondary hover:border-sf-accent/40
                                hover:text-sf-accent transition-all cursor-pointer"
                   >

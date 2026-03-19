@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import type { RewardsData, UserRank } from "@/lib/gamification";
 import { TIERS, getUserRank, getLevel } from "@/lib/gamification";
+import { computeBadges } from "@/lib/badges";
+import { fetchNotificationPrefs, updateNotificationPrefs, type NotificationPrefs } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 
 interface ProfilePanelProps {
@@ -59,6 +62,17 @@ export default function ProfilePanel({
   const [profile, setProfile] = useState<ProfileData>(loadProfile);
   const [editingPseudo, setEditingPseudo] = useState(false);
   const [pseudoInput, setPseudoInput] = useState(rewards.pseudo);
+  const { user, getAccessToken } = useAuth();
+  const [notifPrefs, setNotifPrefs] = useState<NotificationPrefs>({ email_badges: true, email_weekly: true });
+
+  useEffect(() => {
+    if (user) {
+      getAccessToken().then((token) => {
+        if (token) fetchNotificationPrefs(token).then(setNotifPrefs);
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   // Close on click outside (skip the trigger button to avoid toggle race on mobile)
   useEffect(() => {
@@ -123,14 +137,14 @@ export default function ProfilePanel({
   return (
     <div
       ref={panelRef}
-      className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-[360px] bg-white border border-sf-border
+      className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] sm:w-[360px] bg-sf-card border border-sf-border
                  rounded-sf-lg shadow-sf-lg z-[200] overflow-hidden animate-fade-in-up"
       style={{ animationDuration: "0.2s" }}
     >
       {/* Header */}
       <div
         className="p-5 pb-4"
-        style={{ background: "linear-gradient(135deg, #FBF5E6, #FDF0EC)" }}
+        style={{ background: "linear-gradient(135deg, var(--sf-gold-light), var(--sf-accent-pale))" }}
       >
         <div className="flex items-center gap-3.5">
           {/* Avatar */}
@@ -187,7 +201,7 @@ export default function ProfilePanel({
                   onChange={(e) => setPseudoInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handlePseudoSave()}
                   aria-label="Pseudo"
-                  className="text-lg font-semibold text-sf-text bg-white/80 border border-sf-border
+                  className="text-lg font-semibold text-sf-text bg-sf-card/80 border border-sf-border
                              rounded-sf-sm px-2 py-0.5 outline-none focus:border-sf-accent w-full"
                   autoFocus
                 />
@@ -264,8 +278,50 @@ export default function ProfilePanel({
         </div>
       </div>
 
-      {/* Tiers progression */}
+      {/* Badges + Tiers */}
       <div className="p-5 pt-4 max-h-[400px] overflow-y-auto">
+        {/* Badges */}
+        {(() => {
+          const badges = computeBadges(rewards.points);
+          const unlocked = badges.filter((b) => b.unlocked).length;
+          return (
+            <div className="mb-5">
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-2.5">
+                {t("badge.title", { unlocked, total: badges.length })}
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {badges.map((badge) => (
+                  <div
+                    key={badge.id}
+                    className={`relative rounded-sf-sm p-2.5 text-center transition-all
+                               ${badge.unlocked
+                                 ? "bg-sf-accent-pale border border-sf-accent/20"
+                                 : "bg-sf-bg border border-sf-border opacity-50"
+                               }`}
+                    title={badge.unlocked ? t(badge.descKey) : t("badge.locked")}
+                  >
+                    <div className={`text-xl ${badge.unlocked ? "" : "grayscale"}`}>
+                      {badge.emoji}
+                    </div>
+                    <div className={`text-[10px] font-medium mt-1 leading-tight
+                                    ${badge.unlocked ? "text-sf-text" : "text-sf-text-light"}`}>
+                      {t(badge.titleKey)}
+                    </div>
+                    {!badge.unlocked && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <svg className="w-4 h-4 text-sf-text-light/40" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Tiers progression */}
         <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-3">
           {t("profile.tierProgress")}
         </div>
@@ -351,6 +407,41 @@ export default function ProfilePanel({
           })}
         </div>
       </div>
+
+      {/* Notification preferences */}
+      {user && (
+        <div className="px-5 py-3 border-t border-sf-border">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-2.5">
+            {t("profile.notifications")}
+          </div>
+          <div className="space-y-2">
+            {[
+              { key: "email_badges" as const, labelKey: "profile.notifBadges" },
+              { key: "email_weekly" as const, labelKey: "profile.notifWeekly" },
+            ].map(({ key, labelKey }) => (
+              <label key={key} className="flex items-center justify-between gap-2 cursor-pointer">
+                <span className="text-xs text-sf-text-secondary">{t(labelKey)}</span>
+                <button
+                  onClick={() => {
+                    const updated = { ...notifPrefs, [key]: !notifPrefs[key] };
+                    setNotifPrefs(updated);
+                    getAccessToken().then((token) => {
+                      if (token) updateNotificationPrefs(token, updated);
+                    });
+                  }}
+                  className={`relative w-9 h-5 rounded-full transition-colors
+                             ${notifPrefs[key] ? "bg-sf-accent" : "bg-sf-border"}`}
+                >
+                  <span
+                    className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform
+                               ${notifPrefs[key] ? "left-[18px]" : "left-0.5"}`}
+                  />
+                </button>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Footer stats */}
       <div className="px-5 py-3 border-t border-sf-border bg-sf-bg/50 flex items-center justify-between text-[11px] text-sf-text-light">

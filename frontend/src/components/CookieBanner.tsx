@@ -33,7 +33,7 @@ export default function CookieBanner() {
     <div
       role="dialog"
       aria-label={t("cookie.label")}
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg px-4 py-4"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-sf-card border-t border-gray-200 shadow-lg px-4 py-4"
     >
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <p className="text-sm text-gray-600 flex-1 leading-relaxed">
@@ -46,7 +46,7 @@ export default function CookieBanner() {
         <div className="flex shrink-0 gap-2">
           <button
             onClick={refuse}
-            className="bg-white border border-gray-300 hover:border-gray-400 text-gray-600 text-sm font-medium px-5 py-2 rounded-full transition-colors"
+            className="bg-sf-card border border-gray-300 hover:border-gray-400 text-gray-600 text-sm font-medium px-5 py-2 rounded-full transition-colors"
           >
             {t("cookie.refuse")}
           </button>

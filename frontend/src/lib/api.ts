@@ -302,6 +302,42 @@ export async function reportComment(commentId: string, token: string, reason = "
   }
 }
 
+export interface NotificationPrefs {
+  email_badges: boolean;
+  email_weekly: boolean;
+}
+
+export async function fetchNotificationPrefs(token: string): Promise<NotificationPrefs> {
+  try {
+    const res = await fetch(`${API_BASE}/api/notifications/preferences`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return { email_badges: true, email_weekly: true };
+    return res.json();
+  } catch {
+    return { email_badges: true, email_weekly: true };
+  }
+}
+
+export async function updateNotificationPrefs(
+  token: string,
+  prefs: NotificationPrefs,
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/notifications/preferences`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(prefs),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function deleteComment(commentId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {

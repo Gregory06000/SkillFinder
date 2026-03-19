@@ -66,7 +66,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div
         ref={modalRef}
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+        className="bg-sf-card rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
       >
         {/* Header gradient */}
         <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-amber-500 p-6 text-center text-white">
@@ -118,8 +118,8 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
                 <button
                   onClick={handleGoogleSignIn}
                   className="w-full flex items-center justify-center gap-3 px-4 py-3
-                             rounded-xl border border-gray-200 bg-white
-                             hover:bg-gray-50 transition-colors text-sm font-medium text-gray-700"
+                             rounded-xl border border-gray-200 bg-sf-card
+                             hover:bg-sf-bg transition-colors text-sm font-medium text-gray-700"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />

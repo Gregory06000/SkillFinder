@@ -34,7 +34,7 @@ export default function TierUpModal({ rank, onClose }: TierUpModalProps) {
       }}
     >
       <div
-        className={`bg-white rounded-sf-xl shadow-sf-lg p-8 max-w-sm w-full mx-4 text-center
+        className={`bg-sf-card rounded-sf-xl shadow-sf-lg p-8 max-w-sm w-full mx-4 text-center
                     transition-all duration-500
                     ${visible ? "scale-100 opacity-100 translate-y-0" : "scale-90 opacity-0 translate-y-4"}`}
         onClick={(e) => e.stopPropagation()}

@@ -2,9 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Light theme (default) ── */
+:root {
+  --sf-bg: #F6F3EE;
+  --sf-card: #FFFFFF;
+  --sf-dark: #1A1714;
+  --sf-accent: #C45D3E;
+  --sf-accent-light: #E8805F;
+  --sf-accent-pale: #FDF0EC;
+  --sf-text: #1A1714;
+  --sf-text-secondary: #6B6560;
+  --sf-text-light: #9C9690;
+  --sf-border: #E5E0D8;
+  --sf-gold: #D4A853;
+  --sf-gold-light: #FBF5E6;
+  --sf-success: #3A7D5C;
+}
+
+/* ── Dark theme ── */
+.dark {
+  --sf-bg: #141211;
+  --sf-card: #1E1C1A;
+  --sf-dark: #F6F3EE;
+  --sf-accent: #E8805F;
+  --sf-accent-light: #C45D3E;
+  --sf-accent-pale: #2A1F1C;
+  --sf-text: #E8E4DE;
+  --sf-text-secondary: #A09A94;
+  --sf-text-light: #6B6560;
+  --sf-border: #2E2B28;
+  --sf-gold: #D4A853;
+  --sf-gold-light: #2A2418;
+  --sf-success: #4CAF7C;
+}
+
 body {
-  background-color: #F6F3EE;
-  color: #1A1714;
+  background-color: var(--sf-bg);
+  color: var(--sf-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -17,9 +51,9 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E5E0D8;
+  background: var(--sf-border);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9C9690;
+  background: var(--sf-text-light);
 }

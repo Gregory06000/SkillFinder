@@ -131,102 +131,134 @@ Chaque utilisateur possède une mascotte SkillFinder personnalisable avec des it
 
 ---
 
-## 10. Partage par lien (sans système d'amis)
+## 10. ~~Partage par lien (sans système d'amis)~~ ✅ Implémenté — mars 2026
 
 **Description**
-Permettre de partager un commerce ou un résultat de recherche via un lien unique (type `skillfinder.fr/share/place_id?keyword=xxx`). Le lien affiche une page avec le score, les infos clés et une preview OpenGraph (titre, image, score) pour un rendu propre sur les réseaux sociaux et messageries.
+Permettre de partager un commerce ou un résultat de recherche via un lien unique. Le lien affiche une page avec le score, les infos clés et une preview OpenGraph (titre, image, score) pour un rendu propre sur les réseaux sociaux et messageries.
 
-**Avis**
-✅✅ Stratégiquement la fonctionnalité la plus importante à court terme. C'est du **marketing gratuit et viral** : un utilisateur trouve un bon artisan → partage le lien → son ami découvre SkillFinder. Aucune dépendance technique, pas besoin du système d'amis (#3). Faible complexité, fort effet levier sur la croissance organique. C'est aussi un accélérateur pour atteindre la masse critique d'utilisateurs nécessaire avant les fonctionnalités sociales (#3, #4, #9).
+**Ce qui a été fait**
+- Page `/share` avec métadonnées OpenGraph dynamiques (titre, description, image)
+- Bouton partage génère un lien SkillFinder (au lieu de Google Maps)
+- Web Share API sur mobile, copie dans le presse-papiers sur desktop
+- Feedback visuel "Lien copié !" avec icône check verte
+- Page de partage avec carte commerce, score, CTA "Rechercher sur SkillFinder"
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟢 Faible | ⭐⭐⭐⭐⭐ Très élevé (croissance organique) | 📆 Court terme |
+| 🟢 Faible | ⭐⭐⭐⭐⭐ Très élevé (croissance organique) | ✅ Livré |
 
 ---
 
-## 11. Historique de recherche
+## 11. ~~Historique de recherche~~ ✅ Implémenté — mars 2026
 
 **Description**
-Sauvegarder automatiquement les dernières recherches de l'utilisateur (service, ville, critère) dans le `localStorage` du navigateur. Afficher un historique cliquable sous le formulaire de recherche ou dans le profil, permettant de relancer une recherche passée en un clic.
+Sauvegarder automatiquement les dernières recherches de l'utilisateur dans le localStorage. Afficher un historique cliquable sous le formulaire de recherche.
 
-**Avis**
-✅ Micro-fonctionnalité à très fort rapport effort/impact. Zéro backend, zéro base de données — tout côté client. Améliore l'expérience au quotidien et encourage le retour sur le site. L'utilisateur qui revient sur SkillFinder retrouve immédiatement ses recherches précédentes sans avoir à retaper les paramètres.
+**Ce qui a été fait**
+- Historique des 10 dernières recherches dans localStorage (useSearch hook)
+- Boutons cliquables sous le formulaire pour relancer une recherche en un clic
+- Bouton "Effacer" pour vider l'historique
+- Dédoublonnage automatique des recherches identiques
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟢 Très faible | ⭐⭐⭐⭐ Élevé (rétention) | 📆 Court terme |
+| 🟢 Très faible | ⭐⭐⭐⭐ Élevé (rétention) | ✅ Livré |
 
 ---
 
-## 12. Mode carte (résultats sur Google Maps)
+## 12. ~~Mode carte (résultats sur Google Maps)~~ ✅ Implémenté — mars 2026
 
 **Description**
-Afficher les résultats de recherche sur une carte Google Maps interactive en plus de la liste actuelle. Chaque commerce apparaît comme un marqueur cliquable avec son score et ses infos principales. L'utilisateur peut basculer entre vue liste et vue carte.
+Afficher les résultats de recherche sur une carte Google Maps interactive. Chaque commerce apparaît comme un marqueur cliquable avec son score et ses infos principales.
 
-**Avis**
-✅✅ Fonctionnalité très naturelle pour un outil de recherche locale. Les données nécessaires (latitude, longitude) sont déjà présentes dans les résultats de la Places API. L'API Google Maps JS est déjà configurée (utilisée pour le geocoding). Fort impact visuel, aucune dépendance avec d'autres fonctionnalités. Seul point d'attention : le coût API Maps (chaque affichage consomme des requêtes Maps JS), à surveiller en cas de croissance.
+**Ce qui a été fait**
+- Composant ResultsMap avec @vis.gl/react-google-maps
+- Marqueurs colorés par score (vert ≥4, jaune ≥3, orange ≥2, rouge <2)
+- InfoWindow popup avec nom, adresse, score, note, lien Maps
+- Cercle de rayon de recherche (bleu transparent)
+- Auto-zoom pour inclure tous les marqueurs
+- Toggle Liste/Carte sur mobile, vue 2 colonnes sur desktop
+- Carte sticky en desktop, 400px sur mobile
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟡 Moyenne | ⭐⭐⭐⭐⭐ Très élevé | 📆 Court/Moyen terme |
+| 🟡 Moyenne | ⭐⭐⭐⭐⭐ Très élevé | ✅ Livré |
 
 ---
 
-## 13. Badges utilisateur
+## 13. ~~Badges utilisateur~~ ✅ Implémenté — mars 2026
 
 **Description**
-Attribuer des badges visuels aux utilisateurs en fonction de leur activité : "Premier commentaire", "10 vérifications", "Top 3 de ta ville", "Membre depuis 6 mois", etc. Les badges sont affichés sur le profil et à côté du pseudo dans les commentaires.
+Attribuer des badges visuels aux utilisateurs en fonction de leur activité. Les badges sont affichés dans le panneau de profil.
 
-**Avis**
-✅✅ Complément logique du système de points et du leaderboard existants. Les badges créent un cycle d'engagement vertueux : l'utilisateur veut le prochain badge → il vote/commente davantage → il gagne des points → il monte au leaderboard. Parfaitement synergique avec les idées prévues : la mascotte (#8) pourrait porter les badges, les micro-transactions (#9) pourraient inclure des cadres de badges premium, le système d'amis (#3) rendrait les badges visibles socialement. C'est le socle de la gamification — à implémenter avant ou en même temps que la mascotte.
+**Ce qui a été fait**
+- 9 badges : Premier vote, Explorateur, Éclaireur, Guide Certifié, Expert Local, Marathonien, Vétéran, Maître, Divinité
+- Conditions basées sur les points et le nombre de votes
+- Grille 3x3 dans le ProfilePanel avec emojis, noms et statut (débloqué/verrouillé)
+- Badges verrouillés grisés avec icône cadenas
+- Tooltip avec description de la condition de déblocage
+- Compteur "X/9 badges débloqués"
+- Traductions FR/EN
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟡 Moyenne | ⭐⭐⭐⭐ Élevé (engagement) | 📆 Moyen terme (avant #8) |
+| 🟡 Moyenne | ⭐⭐⭐⭐ Élevé (engagement) | ✅ Livré |
 
 ---
 
-## 14. Mode sombre
+## 14. ~~Mode sombre~~ ✅ Implémenté — mars 2026
 
 **Description**
-Proposer un thème sombre complet pour l'interface SkillFinder, activable manuellement ou automatiquement selon les préférences système de l'utilisateur. Le design system actuel (sf-cream, sf-accent terracotta) serait transposé en palette sombre cohérente.
+Proposer un thème sombre complet pour l'interface SkillFinder, activable manuellement ou automatiquement selon les préférences système.
 
-**Avis**
-✅ Fonctionnalité confort que les utilisateurs attendent de plus en plus, surtout sur mobile le soir. Avec Tailwind (déjà utilisé), le dark mode est relativement simple via le préfixe `dark:`. Aucune dépendance backend, aucun impact sur les autres fonctionnalités. Ne fait pas venir de nouveaux utilisateurs mais améliore le "polish" du produit. À faire quand il y a un creux dans le développement.
+**Ce qui a été fait**
+- Variables CSS pour toutes les couleurs sf-* (`:root` light, `.dark` dark)
+- Hook useTheme avec persistance localStorage + détection préférence système
+- Toggle soleil/lune dans la navbar (desktop + mobile)
+- Tous les composants migrés de `bg-white` → `bg-sf-card`, `bg-gray-50` → `bg-sf-bg`
+- Inline styles convertis en variables CSS (navbar, profil)
+- Palette sombre cohérente : fond #141211, cartes #1E1C1A, accent #E8805F
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟢 Faible | ⭐⭐⭐ Modéré (confort) | 📆 Moyen terme |
+| 🟢 Faible | ⭐⭐⭐ Modéré (confort) | ✅ Livré |
 
 ---
 
-## 15. Notifications email
+## 15. ~~Notifications email~~ ✅ Infrastructure prête — mars 2026
 
 **Description**
-Envoyer des emails aux utilisateurs pour des événements clés : réponse à un commentaire, nouveau concurrent d'un favori, badge débloqué, résumé hebdomadaire d'activité. Nécessite un service d'envoi (Resend, SendGrid) et une page de préférences de notification (opt-in RGPD).
+Envoyer des emails aux utilisateurs pour des événements clés : badge débloqué, résumé hebdomadaire. Service d'envoi via Resend, préférences opt-in RGPD.
 
-**Avis**
-✅ Prérequis technique pour l'idée #7 (suggestions intelligentes basées sur les favoris). Sans notifications, impossible d'alerter l'utilisateur qu'un meilleur commerce est apparu. C'est un gros chantier (service email, templates, gestion opt-in/opt-out, RGPD) mais c'est un investissement structurant. Commencer par l'email uniquement — les notifications push viendront naturellement avec l'app native (#6) ou une PWA plus mature.
+**Ce qui a été fait**
+- Backend : service `email.py` avec intégration Resend API (activé par `RESEND_API_KEY`)
+- Templates HTML : email de bienvenue, badge débloqué, résumé hebdomadaire
+- Endpoints : GET/POST `/notifications/preferences` (authentifié)
+- Table Supabase `notification_preferences` avec RLS (SQL fourni)
+- Frontend : toggles on/off dans le ProfilePanel (badges + résumé hebdo)
+- API functions : `fetchNotificationPrefs` / `updateNotificationPrefs`
+- Traductions FR/EN
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+**Pour activer** : configurer `RESEND_API_KEY` dans les variables d'environnement Render + exécuter le SQL dans Supabase.
+
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🔴 Élevée | ⭐⭐⭐⭐ Élevé | 📆 Moyen terme |
+| 🔴 Élevée | ⭐⭐⭐⭐ Élevé | ✅ Infrastructure prête (activer Resend) |
 
 ---
 
 ## Synthèse et ordre de priorité suggéré
 
-| # | Fonctionnalité | Priorité |
+| # | Fonctionnalité | Statut |
 |---|---|---|
 | 1 | ~~Recherche sans critère obligatoire~~ | ✅ Livré |
 | 5 | ~~Commentaires SkillFinder~~ | ✅ Livré |
-| 10 | Partage par lien | 📆 Court terme |
-| 11 | Historique de recherche | 📆 Court terme |
-| 12 | Mode carte (Google Maps) | 📆 Court/Moyen terme |
-| 13 | Badges utilisateur | 📆 Moyen terme (avant #8) |
-| 14 | Mode sombre | 📆 Moyen terme |
-| 15 | Notifications email | 📆 Moyen terme |
+| 10 | ~~Partage par lien~~ | ✅ Livré |
+| 11 | ~~Historique de recherche~~ | ✅ Livré |
+| 12 | ~~Mode carte (Google Maps)~~ | ✅ Livré |
+| 13 | ~~Badges utilisateur~~ | ✅ Livré |
+| 14 | ~~Mode sombre~~ | ✅ Livré |
+| 15 | ~~Notifications email~~ | ✅ Infrastructure prête |
 | 8 | Mascotte SkillFinder | 📆 Moyen terme |
 | 3 | Système d'amis | 📆 Long terme |
 | 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |

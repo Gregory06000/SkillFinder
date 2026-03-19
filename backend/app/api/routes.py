@@ -525,6 +525,52 @@ async def report_comment_endpoint(
     return {"success": True}
 
 
+@router.get("/notifications/preferences")
+@limiter.limit("20/minute")
+async def get_notification_prefs(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Get user's notification preferences."""
+    from app.services.supabase import get_user_from_token, get_notification_preferences
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    try:
+        prefs = await get_notification_preferences(user_id)
+        return prefs
+    except Exception as e:
+        logger.warning("get_notification_prefs failed: %s", e)
+        return {"email_badges": True, "email_weekly": True}
+
+
+@router.post("/notifications/preferences")
+@limiter.limit("10/minute")
+async def update_notification_prefs(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Update user's notification preferences."""
+    from app.services.supabase import get_user_from_token, upsert_notification_preferences
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    body = await request.json()
+    email_badges = body.get("email_badges", True)
+    email_weekly = body.get("email_weekly", True)
+
+    try:
+        await upsert_notification_preferences(user_id, email_badges, email_weekly)
+        return {"success": True}
+    except Exception as e:
+        logger.warning("update_notification_prefs failed: %s", e)
+        return {"success": False}
+
+
 @router.get("/categories")
 @limiter.limit("30/minute")
 async def categories(request: Request):

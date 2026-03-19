@@ -38,7 +38,7 @@ function AnalysisColumn({
 }) {
   return (
     <div className={`flex-1 p-4 rounded-xl border ${
-      isWinner ? "border-yellow-300 bg-yellow-50/50" : "border-gray-200 bg-white"
+      isWinner ? "border-yellow-300 bg-yellow-50/50" : "border-gray-200 bg-sf-card"
     }`}>
       {/* Header */}
       <div className="mb-4">
@@ -164,7 +164,7 @@ export default function ComparisonModal({
       onClick={onClose}
     >
       <div
-        className="bg-gray-50 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
+        className="bg-sf-bg rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

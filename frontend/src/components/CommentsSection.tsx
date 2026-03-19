@@ -215,7 +215,7 @@ export default function CommentsSection({
                   return (
                     <li
                       key={c.id}
-                      className={`rounded-sf-sm px-3 py-2 ${isMine ? "bg-sf-accent-pale border border-sf-accent/20" : "bg-gray-50"}`}
+                      className={`rounded-sf-sm px-3 py-2 ${isMine ? "bg-sf-accent-pale border border-sf-accent/20" : "bg-sf-bg"}`}
                     >
                       <div className="flex items-center justify-between mb-0.5">
                         <span className={`text-[11px] font-semibold ${isMine ? "text-sf-accent" : "text-sf-text"}`}>

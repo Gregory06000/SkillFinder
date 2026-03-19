@@ -33,6 +33,8 @@ const fr: Dict = {
   "nav.pts": "{pts} pts",
   "nav.ariaLabel": "Navigation principale",
   "nav.profileAria": "Profil de {pseudo}",
+  "nav.darkMode": "Mode sombre",
+  "nav.lightMode": "Mode clair",
 
   // ── Hero ──
   "hero.title1": "Trouvez le meilleur pour",
@@ -161,6 +163,9 @@ const fr: Dict = {
   "profile.colorLabel": "Couleur du profil",
   "profile.tierProgress": "Progression des paliers",
   "profile.levelRange": "Niv. {min}–{max}",
+  "profile.notifications": "Notifications email",
+  "profile.notifBadges": "Nouveau badge débloqué",
+  "profile.notifWeekly": "Résumé hebdomadaire",
   "profile.weekStats": "Cette semaine : +{pts} pts",
 
   // ── TierUp Modal ──
@@ -228,6 +233,35 @@ const fr: Dict = {
   "tier.9": "Architecte du Savoir",
   "tier.10": "Divinité Suprême",
 
+  // ── Badges ──
+  "badge.title": "Badges ({unlocked}/{total})",
+  "badge.locked": "Verrouillé",
+  "badge.firstVote": "Premier vote",
+  "badge.firstVoteDesc": "Effectuer son premier vote",
+  "badge.explorer": "Explorateur",
+  "badge.explorerDesc": "Atteindre 50 points",
+  "badge.scout": "Éclaireur",
+  "badge.scoutDesc": "Voter sur 10 commerces différents",
+  "badge.certified": "Guide Certifié",
+  "badge.certifiedDesc": "Atteindre le palier 3",
+  "badge.expert": "Expert Local",
+  "badge.expertDesc": "Atteindre le palier 5",
+  "badge.marathon": "Marathonien",
+  "badge.marathonDesc": "Voter sur 50 commerces différents",
+  "badge.veteran": "Vétéran",
+  "badge.veteranDesc": "Atteindre le palier 7",
+  "badge.master": "Maître",
+  "badge.masterDesc": "Atteindre le palier 9",
+  "badge.deity": "Divinité",
+  "badge.deityDesc": "Atteindre 1000 points",
+
+  // ── Share page ──
+  "share.badge": "Partagé via SkillFinder",
+  "share.cta": "Rechercher sur SkillFinder",
+  "share.maps": "Voir sur Google Maps",
+  "share.footer": "SkillFinder compare les professionnels près de chez vous grâce à l'IA.",
+  "card.linkCopied": "Lien copié !",
+
   // ── Cookie banner ──
   "cookie.label": "Bandeau cookies",
   "cookie.message": "Ce site utilise le stockage local de votre navigateur pour la gamification et Google Maps pour la cartographie.",
@@ -250,6 +284,8 @@ const en: Dict = {
   "nav.pts": "{pts} pts",
   "nav.ariaLabel": "Main navigation",
   "nav.profileAria": "{pseudo}'s profile",
+  "nav.darkMode": "Dark mode",
+  "nav.lightMode": "Light mode",
 
   // ── Hero ──
   "hero.title1": "Find the best for",
@@ -378,6 +414,9 @@ const en: Dict = {
   "profile.colorLabel": "Profile color",
   "profile.tierProgress": "Tier progression",
   "profile.levelRange": "Lvl. {min}–{max}",
+  "profile.notifications": "Email notifications",
+  "profile.notifBadges": "New badge unlocked",
+  "profile.notifWeekly": "Weekly summary",
   "profile.weekStats": "This week: +{pts} pts",
 
   // ── TierUp Modal ──
@@ -444,6 +483,35 @@ const en: Dict = {
   "tier.8": "District Oracle",
   "tier.9": "Knowledge Architect",
   "tier.10": "Supreme Deity",
+
+  // ── Badges ──
+  "badge.title": "Badges ({unlocked}/{total})",
+  "badge.locked": "Locked",
+  "badge.firstVote": "First Vote",
+  "badge.firstVoteDesc": "Cast your first vote",
+  "badge.explorer": "Explorer",
+  "badge.explorerDesc": "Reach 50 points",
+  "badge.scout": "Scout",
+  "badge.scoutDesc": "Vote on 10 different businesses",
+  "badge.certified": "Certified Guide",
+  "badge.certifiedDesc": "Reach tier 3",
+  "badge.expert": "Local Expert",
+  "badge.expertDesc": "Reach tier 5",
+  "badge.marathon": "Marathon Runner",
+  "badge.marathonDesc": "Vote on 50 different businesses",
+  "badge.veteran": "Veteran",
+  "badge.veteranDesc": "Reach tier 7",
+  "badge.master": "Master",
+  "badge.masterDesc": "Reach tier 9",
+  "badge.deity": "Deity",
+  "badge.deityDesc": "Reach 1000 points",
+
+  // ── Share page ──
+  "share.badge": "Shared via SkillFinder",
+  "share.cta": "Search on SkillFinder",
+  "share.maps": "View on Google Maps",
+  "share.footer": "SkillFinder compares professionals near you using AI.",
+  "card.linkCopied": "Link copied!",
 
   // ── Cookie banner ──
   "cookie.label": "Cookie notice",
