@@ -1,16 +1,12 @@
+"use client";
+
 import Link from "next/link";
-import Image from "next/image";
+import Mascot from "@/components/Mascot";
 
 export default function NotFound() {
   return (
     <main className="min-h-[70vh] flex flex-col items-center justify-center px-4 text-center">
-      <Image
-        src="/mascot-sad.svg"
-        alt="Findy triste"
-        width={150}
-        height={150}
-        className="mb-4"
-      />
+      <Mascot pose="sad" size={150} className="mb-4" />
       <p className="text-7xl font-bold text-sf-accent">404</p>
       <h1 className="mt-4 text-2xl font-semibold text-sf-text">
         Page introuvable
