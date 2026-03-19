@@ -80,27 +80,11 @@ export default function Mascot({
         </g>
       )}
 
-      {/* Right arm + magnifying glass (animated group) */}
-      {!isSad ? (
-        <g className="mascot-right-arm">
-          {/* Arm */}
-          <path d="M142 170 Q162 150 158 125" fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"/>
-          {/* Hand */}
-          <circle cx="158" cy="125" r="9" fill="#FDDCBD"/>
-          {/* Glass handle */}
-          <line x1="158" y1="125" x2="168" y2="100" stroke="#D4A853" strokeWidth="5" strokeLinecap="round"/>
-          {/* Glass ring */}
-          <circle cx="174" cy="88" r="20" fill="none" stroke="#D4A853" strokeWidth="4.5"/>
-          <circle cx="174" cy="88" r="20" fill="#E8F4FF" opacity="0.25"/>
-          {/* Glass shine */}
-          <path d="M165 80 Q168 76 173 74" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
-        </g>
-      ) : (
+      {/* Sad right arm (behind head, no animation) */}
+      {isSad && (
         <g>
-          {/* Sad arm right */}
           <path d="M142 170 Q158 195 152 220" fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"/>
           <circle cx="152" cy="220" r="9" fill="#FDDCBD"/>
-          {/* Magnifying glass on the ground */}
           <line x1="152" y1="220" x2="155" y2="235" stroke="#D4A853" strokeWidth="4" strokeLinecap="round" opacity="0.5"/>
           <circle cx="158" cy="245" r="12" fill="none" stroke="#D4A853" strokeWidth="3.5" opacity="0.4"/>
         </g>
@@ -179,20 +163,37 @@ export default function Mascot({
       {/* SF on hat band */}
       <text x="100" y="60" fontFamily="Arial,sans-serif" fontSize="8" fontWeight="bold" fill="#D4A853" textAnchor="middle">SF</text>
 
+      {/* ── Right arm + loupe (rendered LAST = on top of everything) ── */}
+      {!isSad && (
+        <g className="mascot-right-arm">
+          {/* Arm */}
+          <path d="M142 170 Q162 150 158 125" fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"/>
+          {/* Hand */}
+          <circle cx="158" cy="125" r="9" fill="#FDDCBD"/>
+          {/* Glass handle */}
+          <line x1="158" y1="125" x2="168" y2="100" stroke="#D4A853" strokeWidth="5" strokeLinecap="round"/>
+          {/* Glass ring */}
+          <circle cx="174" cy="88" r="20" fill="none" stroke="#D4A853" strokeWidth="4.5"/>
+          <circle cx="174" cy="88" r="20" fill="#E8F4FF" opacity="0.25"/>
+          {/* Glass shine */}
+          <path d="M165 80 Q168 76 173 74" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+        </g>
+      )}
+
       {/* ── Hover CSS: arm swings loupe in front of face, eyes look into it ── */}
       <style>{`
         .mascot-svg .mascot-right-arm {
           transform-origin: 142px 170px;
-          transition: transform 0.4s ease;
+          transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .mascot-svg:hover .mascot-right-arm {
-          transform: rotate(-35deg) translate(-20px, -15px);
+          transform: rotate(-55deg) translate(-10px, -5px);
         }
         .mascot-svg .mascot-pupils {
-          transition: transform 0.4s ease;
+          transition: transform 0.35s ease;
         }
         .mascot-svg:hover .mascot-pupils {
-          transform: translate(4px, -2px);
+          transform: translate(3px, 1px);
         }
       `}</style>
     </svg>
