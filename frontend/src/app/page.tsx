@@ -129,9 +129,7 @@ function Home() {
           }}
           className="flex items-center gap-2.5 no-underline"
         >
-          <div className="w-8 h-8 bg-sf-accent rounded-[10px] flex items-center justify-center text-white font-bold text-[15px]">
-            SF
-          </div>
+          <Mascot pose="default" size={36} />
           <span className="font-serif text-xl font-bold text-sf-text tracking-tight">
             SkillFinder
           </span>
@@ -324,18 +322,15 @@ function Home() {
       <>
       {/* ── HERO ── */}
       <section className="px-5 sm:px-10 pt-12 max-w-[1400px] mx-auto animate-fade-in-up">
-        <div className="mb-8 flex items-start gap-5">
-          <div className="flex-1">
-            <h1 className="font-serif text-3xl sm:text-[38px] font-bold tracking-tight leading-tight text-sf-text">
-              {t("hero.title1")}
-              <br />
-              {t("hero.title2")} <em className="text-sf-accent">{t("hero.title3")}</em>
-            </h1>
-            <p className="mt-2 text-base text-sf-text-secondary max-w-[500px]">
-              {t("hero.subtitle")}
-            </p>
-          </div>
-          <Mascot pose="wave" size={100} animate className="hidden sm:block flex-shrink-0 mt-1" />
+        <div className="mb-8">
+          <h1 className="font-serif text-3xl sm:text-[38px] font-bold tracking-tight leading-tight text-sf-text">
+            {t("hero.title1")}
+            <br />
+            {t("hero.title2")} <em className="text-sf-accent">{t("hero.title3")}</em>
+          </h1>
+          <p className="mt-2 text-base text-sf-text-secondary max-w-[500px]">
+            {t("hero.subtitle")}
+          </p>
         </div>
 
         <SearchBar

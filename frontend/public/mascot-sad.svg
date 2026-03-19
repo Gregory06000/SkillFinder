@@ -1,52 +1,52 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220">
-  <!-- Body -->
-  <ellipse cx="100" cy="130" rx="65" ry="60" fill="#C45D3E"/>
-  <ellipse cx="100" cy="140" rx="42" ry="38" fill="#E8805F" opacity="0.5"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <!-- Shadow -->
+  <ellipse cx="60" cy="114" rx="28" ry="5" fill="#1A1714" opacity="0.08"/>
 
-  <!-- Head (drooping slightly) -->
-  <g transform="rotate(3, 100, 68)">
-    <circle cx="100" cy="68" r="48" fill="#C45D3E"/>
-    <circle cx="100" cy="65" r="38" fill="#D4704E"/>
+  <!-- Body -->
+  <ellipse cx="60" cy="78" rx="32" ry="28" fill="#C45D3E"/>
+
+  <!-- Head (slightly drooping) -->
+  <g transform="rotate(3, 60, 44)">
+    <circle cx="60" cy="44" r="30" fill="#C45D3E"/>
+    <circle cx="60" cy="43" r="24" fill="#D9725A"/>
 
     <!-- Sad eyes -->
-    <ellipse cx="82" cy="62" rx="12" ry="13" fill="white"/>
-    <ellipse cx="118" cy="62" rx="12" ry="13" fill="white"/>
-    <circle cx="84" cy="64" r="6" fill="#1A1714"/>
-    <circle cx="120" cy="64" r="6" fill="#1A1714"/>
-    <circle cx="86" cy="61" r="2.5" fill="white"/>
-    <circle cx="122" cy="61" r="2.5" fill="white"/>
+    <ellipse cx="50" cy="42" rx="5.5" ry="6" fill="white"/>
+    <ellipse cx="70" cy="42" rx="5.5" ry="6" fill="white"/>
+    <circle cx="51" cy="43" r="3" fill="#1A1714"/>
+    <circle cx="71" cy="43" r="3" fill="#1A1714"/>
+    <circle cx="52" cy="41" r="1.2" fill="white"/>
+    <circle cx="72" cy="41" r="1.2" fill="white"/>
 
     <!-- Sad eyebrows -->
-    <path d="M72 52 Q80 48 92 54" fill="none" stroke="#1A1714" stroke-width="2.5" stroke-linecap="round"/>
-    <path d="M108 54 Q120 48 128 52" fill="none" stroke="#1A1714" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M44 36 Q48 33 55 37" fill="none" stroke="#1A1714" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M65 37 Q72 33 76 36" fill="none" stroke="#1A1714" stroke-width="1.8" stroke-linecap="round"/>
 
     <!-- Sad mouth -->
-    <path d="M84 82 Q100 74 116 82" fill="none" stroke="#1A1714" stroke-width="3" stroke-linecap="round"/>
+    <path d="M50 54 Q60 49 70 54" fill="none" stroke="#1A1714" stroke-width="2" stroke-linecap="round"/>
 
-    <!-- Blush -->
-    <ellipse cx="70" cy="76" rx="8" ry="5" fill="#E8805F" opacity="0.6"/>
-    <ellipse cx="130" cy="76" rx="8" ry="5" fill="#E8805F" opacity="0.6"/>
+    <!-- Cheeks -->
+    <circle cx="42" cy="49" r="4" fill="#E8805F" opacity="0.5"/>
+    <circle cx="78" cy="49" r="4" fill="#E8805F" opacity="0.5"/>
 
-    <!-- Hat (slightly askew) -->
-    <path d="M52 52 Q55 25 100 20 Q145 25 148 52" fill="#D4A853"/>
-    <ellipse cx="100" cy="52" rx="52" ry="8" fill="#D4A853"/>
-    <ellipse cx="100" cy="52" rx="52" ry="8" fill="#C49643" opacity="0.4"/>
-    <rect x="55" y="48" width="90" height="6" rx="3" fill="#1A1714" opacity="0.2"/>
+    <!-- Explorer hat (slightly askew) -->
+    <ellipse cx="60" cy="22" rx="28" ry="5" fill="#D4A853"/>
+    <path d="M34 22 Q36 6 60 2 Q84 6 86 22" fill="#D4A853"/>
+    <path d="M34 22 Q36 8 60 4 Q84 8 86 22" fill="#E5BE6A" opacity="0.5"/>
+    <rect x="37" y="19" width="46" height="4" rx="2" fill="#B8943E" opacity="0.3"/>
   </g>
 
-  <!-- Left arm hanging down -->
-  <path d="M38 125 Q25 145 30 165 Q32 170 36 167" fill="#C45D3E" stroke="#B04E33" stroke-width="1.5"/>
+  <!-- Left arm hanging -->
+  <path d="M30 72 Q24 85 28 96" fill="none" stroke="#C45D3E" stroke-width="7" stroke-linecap="round"/>
 
-  <!-- Right arm holding magnifying glass down -->
-  <path d="M162 125 Q175 145 170 165 Q168 170 164 167" fill="#C45D3E" stroke="#B04E33" stroke-width="1.5"/>
+  <!-- Right arm hanging with magnifying glass down -->
+  <path d="M90 72 Q96 85 92 96" fill="none" stroke="#C45D3E" stroke-width="7" stroke-linecap="round"/>
 
   <!-- Magnifying glass on the ground -->
-  <line x1="164" y1="167" x2="158" y2="180" stroke="#D4A853" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="152" cy="190" r="15" fill="none" stroke="#D4A853" stroke-width="4" opacity="0.6"/>
+  <line x1="92" y1="96" x2="96" y2="102" stroke="#D4A853" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="100" cy="108" r="8" fill="none" stroke="#D4A853" stroke-width="3" opacity="0.5"/>
 
   <!-- Feet -->
-  <ellipse cx="78" cy="188" rx="20" ry="10" fill="#B04E33"/>
-  <ellipse cx="122" cy="188" rx="20" ry="10" fill="#B04E33"/>
-
-  <text x="100" y="150" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle" opacity="0.7">SF</text>
+  <ellipse cx="48" cy="106" rx="10" ry="5" fill="#A84E35"/>
+  <ellipse cx="72" cy="106" rx="10" ry="5" fill="#A84E35"/>
 </svg>
