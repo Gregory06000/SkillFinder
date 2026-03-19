@@ -67,15 +67,6 @@ export default function Mascot({
       {!isSad && <circle cx="45" cy="210" r="9" fill="#FDDCBD"/>}
       {isSad && <circle cx="48" cy="220" r="9" fill="#FDDCBD"/>}
 
-      {/* Right arm - holds magnifying glass */}
-      <path
-        d={isSad ? "M142 170 Q158 195 152 220" : "M142 170 Q162 150 158 125"}
-        fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"
-      />
-      {/* Right hand */}
-      {!isSad && <circle cx="158" cy="125" r="9" fill="#FDDCBD"/>}
-      {isSad && <circle cx="152" cy="220" r="9" fill="#FDDCBD"/>}
-
       {/* ── Satchel strap ── */}
       {!isSad && (
         <path d="M120 155 Q135 165 140 180" fill="none" stroke="#6B4226" strokeWidth="4" strokeLinecap="round"/>
@@ -89,10 +80,16 @@ export default function Mascot({
         </g>
       )}
 
-      {/* ── Magnifying glass ── */}
+      {/* Right arm + magnifying glass (animated group) */}
       {!isSad ? (
-        <g className="mascot-glass">
+        <g className="mascot-right-arm">
+          {/* Arm */}
+          <path d="M142 170 Q162 150 158 125" fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"/>
+          {/* Hand */}
+          <circle cx="158" cy="125" r="9" fill="#FDDCBD"/>
+          {/* Glass handle */}
           <line x1="158" y1="125" x2="168" y2="100" stroke="#D4A853" strokeWidth="5" strokeLinecap="round"/>
+          {/* Glass ring */}
           <circle cx="174" cy="88" r="20" fill="none" stroke="#D4A853" strokeWidth="4.5"/>
           <circle cx="174" cy="88" r="20" fill="#E8F4FF" opacity="0.25"/>
           {/* Glass shine */}
@@ -100,6 +97,10 @@ export default function Mascot({
         </g>
       ) : (
         <g>
+          {/* Sad arm right */}
+          <path d="M142 170 Q158 195 152 220" fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"/>
+          <circle cx="152" cy="220" r="9" fill="#FDDCBD"/>
+          {/* Magnifying glass on the ground */}
           <line x1="152" y1="220" x2="155" y2="235" stroke="#D4A853" strokeWidth="4" strokeLinecap="round" opacity="0.5"/>
           <circle cx="158" cy="245" r="12" fill="none" stroke="#D4A853" strokeWidth="3.5" opacity="0.4"/>
         </g>
@@ -178,13 +179,20 @@ export default function Mascot({
       {/* SF on hat band */}
       <text x="100" y="60" fontFamily="Arial,sans-serif" fontSize="8" fontWeight="bold" fill="#D4A853" textAnchor="middle">SF</text>
 
-      {/* ── Hover CSS for eye animation ── */}
+      {/* ── Hover CSS: arm swings loupe in front of face, eyes look into it ── */}
       <style>{`
+        .mascot-svg .mascot-right-arm {
+          transform-origin: 142px 170px;
+          transition: transform 0.4s ease;
+        }
+        .mascot-svg:hover .mascot-right-arm {
+          transform: rotate(-35deg) translate(-20px, -15px);
+        }
         .mascot-svg .mascot-pupils {
-          transition: transform 0.3s ease;
+          transition: transform 0.4s ease;
         }
         .mascot-svg:hover .mascot-pupils {
-          transform: translate(6px, 2px);
+          transform: translate(4px, -2px);
         }
       `}</style>
     </svg>
