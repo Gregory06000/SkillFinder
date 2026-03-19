@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220">
+  <!-- Body -->
+  <ellipse cx="100" cy="130" rx="65" ry="60" fill="#C45D3E"/>
+  <ellipse cx="100" cy="140" rx="42" ry="38" fill="#E8805F" opacity="0.5"/>
+
+  <!-- Head -->
+  <circle cx="100" cy="68" r="48" fill="#C45D3E"/>
+  <circle cx="100" cy="65" r="38" fill="#D4704E"/>
+
+  <!-- Happy eyes -->
+  <ellipse cx="82" cy="60" rx="12" ry="13" fill="white"/>
+  <ellipse cx="118" cy="60" rx="12" ry="13" fill="white"/>
+  <circle cx="85" cy="59" r="6" fill="#1A1714"/>
+  <circle cx="121" cy="59" r="6" fill="#1A1714"/>
+  <circle cx="87" cy="56" r="2.5" fill="white"/>
+  <circle cx="123" cy="56" r="2.5" fill="white"/>
+
+  <!-- Big smile -->
+  <path d="M80 76 Q100 98 120 76" fill="none" stroke="#1A1714" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Blush -->
+  <ellipse cx="70" cy="76" rx="8" ry="5" fill="#E8805F" opacity="0.6"/>
+  <ellipse cx="130" cy="76" rx="8" ry="5" fill="#E8805F" opacity="0.6"/>
+
+  <!-- Hat -->
+  <path d="M52 52 Q55 25 100 20 Q145 25 148 52" fill="#D4A853"/>
+  <ellipse cx="100" cy="52" rx="52" ry="8" fill="#D4A853"/>
+  <ellipse cx="100" cy="52" rx="52" ry="8" fill="#C49643" opacity="0.4"/>
+  <rect x="55" y="48" width="90" height="6" rx="3" fill="#1A1714" opacity="0.2"/>
+
+  <!-- Left arm waving up -->
+  <path d="M38 120 Q15 95 20 70 Q22 60 28 65" fill="#C45D3E" stroke="#B04E33" stroke-width="1.5"/>
+  <!-- Hand/fingers -->
+  <circle cx="24" cy="63" r="8" fill="#C45D3E" stroke="#B04E33" stroke-width="1"/>
+
+  <!-- Right arm down with magnifying glass -->
+  <path d="M162 120 Q178 130 175 150 Q174 158 168 155" fill="#C45D3E" stroke="#B04E33" stroke-width="1.5"/>
+
+  <!-- Magnifying glass at side -->
+  <line x1="168" y1="155" x2="162" y2="170" stroke="#D4A853" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="155" cy="180" r="14" fill="none" stroke="#D4A853" stroke-width="4"/>
+  <circle cx="155" cy="180" r="9" fill="#E0F0FF" opacity="0.4"/>
+
+  <!-- Sparkle near waving hand -->
+  <g fill="#D4A853" opacity="0.8">
+    <polygon points="8,50 10,54 14,54 11,57 12,61 8,58 4,61 5,57 2,54 6,54"/>
+    <circle cx="35" cy="50" r="2" fill="#D4A853"/>
+    <circle cx="15" cy="72" r="1.5" fill="#D4A853"/>
+  </g>
+
+  <!-- Feet -->
+  <ellipse cx="78" cy="188" rx="20" ry="10" fill="#B04E33"/>
+  <ellipse cx="122" cy="188" rx="20" ry="10" fill="#B04E33"/>
+
+  <text x="100" y="150" font-family="Arial,sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle" opacity="0.7">SF</text>
+</svg>

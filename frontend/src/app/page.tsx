@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 import { useTheme } from "@/lib/useTheme";
 import { trackEvent } from "@/lib/analytics";
+import Mascot from "@/components/Mascot";
 
 function SkeletonCard() {
   return (
@@ -323,15 +324,18 @@ function Home() {
       <>
       {/* ── HERO ── */}
       <section className="px-5 sm:px-10 pt-12 max-w-[1400px] mx-auto animate-fade-in-up">
-        <div className="mb-8">
-          <h1 className="font-serif text-3xl sm:text-[38px] font-bold tracking-tight leading-tight text-sf-text">
-            {t("hero.title1")}
-            <br />
-            {t("hero.title2")} <em className="text-sf-accent">{t("hero.title3")}</em>
-          </h1>
-          <p className="mt-2 text-base text-sf-text-secondary max-w-[500px]">
-            {t("hero.subtitle")}
-          </p>
+        <div className="mb-8 flex items-start gap-5">
+          <div className="flex-1">
+            <h1 className="font-serif text-3xl sm:text-[38px] font-bold tracking-tight leading-tight text-sf-text">
+              {t("hero.title1")}
+              <br />
+              {t("hero.title2")} <em className="text-sf-accent">{t("hero.title3")}</em>
+            </h1>
+            <p className="mt-2 text-base text-sf-text-secondary max-w-[500px]">
+              {t("hero.subtitle")}
+            </p>
+          </div>
+          <Mascot pose="wave" size={100} animate className="hidden sm:block flex-shrink-0 mt-1" />
         </div>
 
         <SearchBar
@@ -452,26 +456,8 @@ function Home() {
 
         {search.isLoading && (
           <div className="space-y-4">
-            <div className="flex items-center gap-2 text-sm text-sf-text-secondary">
-              <svg
-                className="w-4 h-4 animate-spin"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
-              </svg>
+            <div className="flex items-center gap-3 text-sm text-sf-text-secondary">
+              <Mascot pose="search" size={48} animate />
               {search.lastSearch?.keyword ? t("results.loading") : t("results.loadingExplore")}
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -487,12 +473,7 @@ function Home() {
 
         {search.lastSearch && search.results.length === 0 && !search.isLoading && !search.error && (
           <div className="text-center py-16 animate-fade-in-up">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-sf-bg flex items-center justify-center">
-              <svg className="w-7 h-7 text-sf-text-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="11" cy="11" r="8" />
-                <path d="M21 21l-4.35-4.35" />
-              </svg>
-            </div>
+            <Mascot pose="sad" size={100} className="mx-auto mb-4" />
             <p className="text-sm font-semibold text-sf-text mb-1">
               {search.lastSearch.keyword ? (
                 <>{t("results.noResults")}{" "}<span className="text-sf-accent">{search.lastSearch.keyword}</span></>

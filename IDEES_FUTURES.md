@@ -95,17 +95,21 @@ Surveiller en arrière-plan les nouvelles entreprises référencées corresponda
 
 ---
 
-## 8. Mascotte SkillFinder
+## 8. ~~Mascotte SkillFinder~~ ✅ Implémenté — mars 2026
 
 **Description**
 Créer une mascotte officielle SkillFinder qui servirait d'identité visuelle au logo et à l'interface. Personnage emblématique de la marque, cohérent avec l'univers des services locaux.
 
-**Avis**
-✅ Une mascotte forte est un vecteur de mémorabilité puissant (Duolingo, Clippy, Michelin). Elle humanise la marque et crée un attachement émotionnel. À définir soigneusement pour qu'elle reflète les valeurs de SkillFinder : confiance, expertise locale, proximité. Peut être déclinée sur tous les supports (logo, emails, appli, réseaux sociaux).
+**Ce qui a été fait**
+- Mascotte "Findy" : personnage rond et sympathique avec béret d'explorateur doré et loupe, aux couleurs terracotta de la marque
+- 4 poses SVG : default (neutre), wave (accueil/hero), search (chargement), sad (404/aucun résultat)
+- Composant React `Mascot` réutilisable avec props : pose, size, className, animate (bounce lent)
+- Intégration : hero section (Findy fait coucou), chargement des résultats (Findy cherche), aucun résultat (Findy triste), page 404 (Findy triste)
+- Animation CSS `bounce-slow` pour les états actifs
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🟡 Moyenne (design) | ⭐⭐⭐⭐ Élevé (branding) | 📆 Moyen terme |
+| 🟡 Moyenne (design) | ⭐⭐⭐⭐ Élevé (branding) | ✅ Livré |
 
 ---
 
@@ -259,7 +263,7 @@ Envoyer des emails aux utilisateurs pour des événements clés : badge débloqu
 | 13 | ~~Badges utilisateur~~ | ✅ Livré |
 | 14 | ~~Mode sombre~~ | ✅ Livré |
 | 15 | ~~Notifications email~~ | ✅ Infrastructure prête |
-| 8 | Mascotte SkillFinder | 📆 Moyen terme |
+| 8 | ~~Mascotte SkillFinder~~ | ✅ Livré |
 | 3 | Système d'amis | 📆 Long terme |
 | 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |
 | 9 | Micro-transactions (personnalisation mascotte) | 📆 Long terme |
