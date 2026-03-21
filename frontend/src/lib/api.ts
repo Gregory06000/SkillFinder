@@ -322,6 +322,7 @@ export async function fetchNotificationPrefs(token: string): Promise<Notificatio
 export async function updateNotificationPrefs(
   token: string,
   prefs: NotificationPrefs,
+  locale: string = "fr",
 ): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/notifications/preferences`, {
@@ -330,7 +331,7 @@ export async function updateNotificationPrefs(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(prefs),
+      body: JSON.stringify({ ...prefs, locale }),
     });
     return res.ok;
   } catch {
@@ -591,6 +592,7 @@ export async function notifyBadge(
   pseudo: string,
   badgeName: string,
   badgeEmoji: string,
+  locale: string = "fr",
 ): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/notifications/badge`, {
@@ -599,7 +601,7 @@ export async function notifyBadge(
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ pseudo, badge_name: badgeName, badge_emoji: badgeEmoji }),
+      body: JSON.stringify({ pseudo, badge_name: badgeName, badge_emoji: badgeEmoji, locale }),
     });
     return res.ok;
   } catch {

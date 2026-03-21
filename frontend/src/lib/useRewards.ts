@@ -215,7 +215,8 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
           (b) => !oldBadgeIds.has(b.id),
         );
         for (const badge of newBadges) {
-          notifyBadge(token, newData.pseudo, badge.id, badge.emoji).catch(() => {});
+          const userLocale = localStorage.getItem("sf_locale") || "fr";
+          notifyBadge(token, newData.pseudo, badge.id, badge.emoji, userLocale).catch(() => {});
         }
       });
     }

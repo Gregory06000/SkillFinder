@@ -56,7 +56,7 @@ export default function ProfilePanel({
   favorites = [],
   onMascotChange,
 }: ProfilePanelProps) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const rank: UserRank = getUserRank(rewards.points);
   const level = getLevel(rewards.points);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -75,7 +75,11 @@ export default function ProfilePanel({
     if (user) {
       getAccessToken().then((token) => {
         if (token) {
-          fetchNotificationPrefs(token).then(setNotifPrefs);
+          fetchNotificationPrefs(token).then((prefs) => {
+            setNotifPrefs(prefs);
+            // Sync locale to server so emails use the right language
+            updateNotificationPrefs(token, prefs, locale);
+          });
           getSharingStatus(token).then(setSharingFavs);
           fetchMascotCustom(token).then((serverCustom) => {
             if (serverCustom) {
@@ -479,7 +483,7 @@ export default function ProfilePanel({
                     const updated = { ...notifPrefs, [key]: !notifPrefs[key] };
                     setNotifPrefs(updated);
                     getAccessToken().then((token) => {
-                      if (token) updateNotificationPrefs(token, updated);
+                      if (token) updateNotificationPrefs(token, updated, locale);
                     });
                   }}
                   className={`relative w-9 h-5 rounded-full transition-colors

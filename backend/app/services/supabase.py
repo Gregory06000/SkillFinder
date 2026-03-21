@@ -845,7 +845,7 @@ async def get_notification_preferences(user_id: str) -> dict:
     resp = await client.get(
         "/rest/v1/notification_preferences",
         params={
-            "select": "email_badges,email_weekly",
+            "select": "email_badges,email_weekly,locale",
             "user_id": f"eq.{user_id}",
             "limit": "1",
         },
@@ -854,10 +854,10 @@ async def get_notification_preferences(user_id: str) -> dict:
         rows = resp.json()
         if rows:
             return rows[0]
-    return {"email_badges": True, "email_weekly": True}
+    return {"email_badges": True, "email_weekly": True, "locale": "fr"}
 
 
-async def upsert_notification_preferences(user_id: str, email_badges: bool, email_weekly: bool) -> None:
+async def upsert_notification_preferences(user_id: str, email_badges: bool, email_weekly: bool, locale: str = "fr") -> None:
     """Insert or update notification preferences for a user."""
     if not is_enabled():
         return
@@ -873,6 +873,7 @@ async def upsert_notification_preferences(user_id: str, email_badges: bool, emai
             "user_id": user_id,
             "email_badges": email_badges,
             "email_weekly": email_weekly,
+            "locale": locale,
         },
     )
 

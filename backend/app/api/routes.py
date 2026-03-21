@@ -416,7 +416,9 @@ async def update_leaderboard(
                 email = await get_user_email(user_id)
                 if email:
                     from app.services.email import build_welcome_email, send_email as send_notif
-                    subj, html = build_welcome_email(pseudo)
+                    from app.services.supabase import get_notification_preferences
+                    prefs = await get_notification_preferences(user_id)
+                    subj, html = build_welcome_email(pseudo, locale=prefs.get("locale", "fr"))
                     await send_notif(email, subj, html)
         except Exception as e:
             logger.debug("Welcome email skipped: %s", e)
@@ -586,9 +588,10 @@ async def update_notification_prefs(
     body = await request.json()
     email_badges = body.get("email_badges", True)
     email_weekly = body.get("email_weekly", True)
+    locale = body.get("locale", "fr")
 
     try:
-        await upsert_notification_preferences(user_id, email_badges, email_weekly)
+        await upsert_notification_preferences(user_id, email_badges, email_weekly, locale=locale)
         return {"success": True}
     except Exception as e:
         logger.warning("update_notification_prefs failed: %s", e)
@@ -940,7 +943,8 @@ async def notify_badge(request: Request, authorization: str | None = Header(defa
         if not email:
             return {"sent": False}
 
-        subj, html = build_badge_email(pseudo, badge_name, badge_emoji)
+        locale = body.get("locale", prefs.get("locale", "fr"))
+        subj, html = build_badge_email(pseudo, badge_name, badge_emoji, locale=locale)
         ok = await send_notif(email, subj, html)
         return {"sent": ok}
     except Exception as e:
@@ -993,11 +997,13 @@ async def send_weekly_summary(request: Request):
                 skipped += 1
                 continue
 
+            user_locale = prefs.get("locale", "fr")
             subj, html = build_weekly_summary(
                 pseudo=u.get("pseudo", ""),
                 weekly_points=u.get("weekly_points", 0),
                 rank_position=i + 1,
                 city=u.get("city", ""),
+                locale=user_locale,
             )
             ok = await send_notif(email, subj, html)
             if ok:
