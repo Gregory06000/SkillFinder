@@ -45,8 +45,8 @@ export function useSuggestions(
     for (const result of results) {
       // Skip if already a favorite
       if (isFavorite(result.name)) continue;
-      // Only suggest if result beats the best favorite
-      if (result.match_score > bestFavScore + 2) {
+      // Only suggest if result scores higher than the best favorite
+      if (result.match_score > bestFavScore) {
         suggestions.push({
           result,
           beatsName: bestFav.name,
