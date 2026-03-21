@@ -107,7 +107,7 @@ class CommentsResponse(BaseModel):
 
 
 class CommentRequest(BaseModel):
-    place_id: str = Field(..., min_length=1, max_length=500, pattern=r"^[a-zA-Z0-9_\-]+$")
+    place_id: str = Field(..., min_length=1, max_length=500)
     keyword: str = Field(..., min_length=1, max_length=100)
     content: str = Field(..., min_length=1, max_length=280)
 
@@ -120,7 +120,7 @@ class ReportRequest(BaseModel):
 # --- Community verification ---
 
 class VerifyRequest(BaseModel):
-    place_id: str = Field(..., min_length=1, max_length=500, pattern=r"^[a-zA-Z0-9_\-]+$")
+    place_id: str = Field(..., min_length=1, max_length=500)
     vote: Literal["yes", "no"]
 
 class VerifyResponse(BaseModel):
