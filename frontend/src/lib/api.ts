@@ -567,6 +567,25 @@ export async function fetchMascotCustom(
   }
 }
 
+export async function saveAvatarColor(
+  token: string,
+  avatarColor: string,
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/mascot/custom`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ avatar_color: avatarColor }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function deleteComment(commentId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {

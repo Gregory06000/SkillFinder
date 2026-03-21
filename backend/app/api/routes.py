@@ -307,7 +307,7 @@ async def get_my_votes(
 @limiter.limit("30/minute")
 async def leaderboard(request: Request, city: str = Query("", max_length=100), limit: int = Query(50, ge=1, le=100)):
     """Get weekly top N leaderboard for a city."""
-    from app.services.supabase import is_enabled as supabase_enabled, get_leaderboard, get_mascot_customs_batch
+    from app.services.supabase import is_enabled as supabase_enabled, get_leaderboard, get_profile_customs_batch
 
     if not supabase_enabled() or not city:
         return {"entries": []}
@@ -316,14 +316,18 @@ async def leaderboard(request: Request, city: str = Query("", max_length=100), l
 
     try:
         entries = await get_leaderboard(city, limit=safe_limit)
-        # Enrich with mascot customization
+        # Enrich with mascot customization + avatar color
         user_ids = [e["user_id"] for e in entries if e.get("user_id")]
         if user_ids:
-            mascots = await get_mascot_customs_batch(user_ids)
+            profiles = await get_profile_customs_batch(user_ids)
             for e in entries:
                 uid = e.get("user_id")
-                if uid and uid in mascots:
-                    e["mascot_custom"] = mascots[uid]
+                if uid and uid in profiles:
+                    p = profiles[uid]
+                    if "mascot_custom" in p:
+                        e["mascot_custom"] = p["mascot_custom"]
+                    if "avatar_color" in p:
+                        e["avatar_color"] = p["avatar_color"]
         return {"entries": entries}
     except Exception as e:
         logger.warning("Leaderboard fetch failed for city=%r: %s", city, e)
@@ -829,7 +833,7 @@ async def get_friends_favorites_endpoint(
 @limiter.limit("20/minute")
 async def save_mascot(request: Request, authorization: str | None = Header(default=None)):
     """Save mascot customization."""
-    from app.services.supabase import is_enabled as supabase_enabled, get_user_from_token, save_mascot_custom
+    from app.services.supabase import is_enabled as supabase_enabled, get_user_from_token, save_mascot_custom, save_avatar_color
 
     if not supabase_enabled():
         raise HTTPException(status_code=503, detail="Service indisponible.")
@@ -839,14 +843,21 @@ async def save_mascot(request: Request, authorization: str | None = Header(defau
         raise HTTPException(status_code=401, detail="Authentification requise.")
 
     body = await request.json()
-    mascot_custom = body.get("mascot_custom")
-    if not isinstance(mascot_custom, dict):
-        raise HTTPException(status_code=422, detail="mascot_custom doit etre un objet JSON.")
-
     raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
 
+    mascot_custom = body.get("mascot_custom")
+    avatar_color = body.get("avatar_color")
+
+    if mascot_custom is None and avatar_color is None:
+        raise HTTPException(status_code=422, detail="mascot_custom ou avatar_color requis.")
+
     try:
-        ok = await save_mascot_custom(user_id, mascot_custom, user_token=raw_token)
+        ok = True
+        if isinstance(mascot_custom, dict):
+            ok = await save_mascot_custom(user_id, mascot_custom, user_token=raw_token)
+        if isinstance(avatar_color, str) and len(avatar_color) <= 20:
+            ok2 = await save_avatar_color(user_id, avatar_color, user_token=raw_token)
+            ok = ok and ok2
         return {"success": ok}
     except Exception as e:
         logger.warning("save_mascot_custom failed: %s", e)

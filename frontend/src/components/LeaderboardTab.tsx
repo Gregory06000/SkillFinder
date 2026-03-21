@@ -6,6 +6,7 @@ import { useT } from "@/lib/i18n";
 import Mascot from "./Mascot";
 import type { MascotCustomization } from "@/lib/mascotItems";
 import { loadMascotCustomization, DEFAULT_CUSTOMIZATION } from "@/lib/mascotItems";
+import { getAvatarData } from "./ProfilePanel";
 
 interface LeaderboardEntry {
   pseudo: string;
@@ -14,6 +15,7 @@ interface LeaderboardEntry {
   city: string;
   userId?: string;
   mascotCustom?: MascotCustomization;
+  avatarColor?: string;
 }
 
 interface LeaderboardTabProps {
@@ -117,6 +119,7 @@ export default function LeaderboardTab({
             city: e.city as string,
             userId: (e.user_id as string) || undefined,
             mascotCustom: (e.mascot_custom as MascotCustomization) || undefined,
+            avatarColor: (e.avatar_color as string) || undefined,
           })
         );
         setEntries(mapped);
@@ -165,6 +168,7 @@ export default function LeaderboardTab({
       totalPoints: userTotalPoints,
       city: selectedCity,
       userId: userId,
+      avatarColor: getAvatarData().avatarColor,
     });
   }
 
@@ -403,7 +407,7 @@ export default function LeaderboardTab({
                       <div className="flex items-center gap-2 min-w-0">
                         <div
                           className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                          style={{ background: isUser ? "#C45D3E" : "#9CA3AF" }}
+                          style={{ background: isUser ? getAvatarData().avatarColor : (entry.avatarColor || "#9CA3AF") }}
                         >
                           {entry.pseudo.charAt(0).toUpperCase()}
                         </div>

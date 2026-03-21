@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import type { RewardsData, UserRank } from "@/lib/gamification";
 import { TIERS, getUserRank, getLevel } from "@/lib/gamification";
 import { computeBadges } from "@/lib/badges";
-import { fetchNotificationPrefs, updateNotificationPrefs, getSharingStatus, toggleSharingFavorites, syncFavorites, saveMascotCustom, fetchMascotCustom, type NotificationPrefs } from "@/lib/api";
+import { fetchNotificationPrefs, updateNotificationPrefs, getSharingStatus, toggleSharingFavorites, syncFavorites, saveMascotCustom, fetchMascotCustom, saveAvatarColor, type NotificationPrefs } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 import FriendsPanel from "./FriendsPanel";
@@ -115,6 +115,10 @@ export default function ProfilePanel({
     const updated = { ...profile, avatarColor: color };
     setProfile(updated);
     saveProfile(updated);
+    // Sync to server
+    getAccessToken?.().then((token) => {
+      if (token) saveAvatarColor(token, color);
+    });
   }
 
   function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {

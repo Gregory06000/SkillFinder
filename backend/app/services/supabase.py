@@ -1368,6 +1368,26 @@ async def save_mascot_custom(user_id: str, mascot_custom: dict, user_token: str 
     return resp.status_code in (200, 204)
 
 
+async def save_avatar_color(user_id: str, avatar_color: str, user_token: str | None = None) -> bool:
+    """Save avatar color to user_profiles."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers: dict[str, str] = {"Content-Type": "application/json", "Prefer": "return=minimal"}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        headers["Authorization"] = f"Bearer {user_token}"
+
+    resp = await client.patch(
+        "/rest/v1/user_profiles",
+        params={"user_id": f"eq.{user_id}"},
+        headers=headers,
+        json={"avatar_color": avatar_color},
+    )
+    return resp.status_code in (200, 204)
+
+
 async def get_mascot_custom(user_id: str) -> dict | None:
     """Get mascot customization for a user."""
     if not is_enabled():
@@ -1393,8 +1413,11 @@ async def get_mascot_custom(user_id: str) -> dict | None:
     return None
 
 
-async def get_mascot_customs_batch(user_ids: list[str]) -> dict[str, dict]:
-    """Get mascot customizations for multiple users. Returns {user_id: custom_dict}."""
+async def get_profile_customs_batch(user_ids: list[str]) -> dict[str, dict]:
+    """Get mascot customizations and avatar colors for multiple users.
+
+    Returns {user_id: {"mascot_custom": ..., "avatar_color": ...}}.
+    """
     if not is_enabled() or not user_ids:
         return {}
     client = await _get_client()
@@ -1406,12 +1429,29 @@ async def get_mascot_customs_batch(user_ids: list[str]) -> dict[str, dict]:
     resp = await client.get(
         "/rest/v1/user_profiles",
         params={
-            "select": "user_id,mascot_custom",
+            "select": "user_id,mascot_custom,avatar_color",
             "user_id": f"in.({ids_filter})",
         },
         headers=headers,
     )
     if resp.status_code == 200:
         rows = resp.json()
-        return {r["user_id"]: r["mascot_custom"] for r in rows if r.get("mascot_custom")}
+        result: dict[str, dict] = {}
+        for r in rows:
+            uid = r["user_id"]
+            data: dict = {}
+            if r.get("mascot_custom"):
+                data["mascot_custom"] = r["mascot_custom"]
+            if r.get("avatar_color"):
+                data["avatar_color"] = r["avatar_color"]
+            if data:
+                result[uid] = data
+        return result
     return {}
+
+
+# Keep old name as alias for backward compat
+async def get_mascot_customs_batch(user_ids: list[str]) -> dict[str, dict]:
+    """Get mascot customizations for multiple users. Returns {user_id: custom_dict}."""
+    profiles = await get_profile_customs_batch(user_ids)
+    return {uid: data["mascot_custom"] for uid, data in profiles.items() if "mascot_custom" in data}
