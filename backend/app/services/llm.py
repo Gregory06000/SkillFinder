@@ -33,6 +33,23 @@ def _get_gemini_client() -> httpx.AsyncClient:
     return _gemini_client
 
 
+# Locale → language name mapping for multilingual prompts
+_LOCALE_NAMES: dict[str, str] = {
+    "fr": "French",
+    "en": "English",
+    "es": "Spanish",
+    "de": "German",
+    "pt": "Portuguese",
+    "it": "Italian",
+    "nl": "Dutch",
+}
+
+
+def _lang(locale: str) -> str:
+    """Return the full language name for a locale code."""
+    return _LOCALE_NAMES.get(locale, "French")
+
+
 _INJECTION_PATTERNS = [
     re.compile(r"(?i)ignore\s+(all\s+)?previous\s+instructions"),
     re.compile(r"(?i)ignore\s+the\s+above"),
@@ -92,35 +109,37 @@ def _parse_gemini_json(text: str) -> dict | list | None:
 # Synonym expansion — enrich keyword with related terms
 # ---------------------------------------------------------------------------
 
-async def generate_synonyms(service: str, keyword: str) -> list[str]:
+async def generate_synonyms(service: str, keyword: str, locale: str = "fr") -> list[str]:
     """
     Ask Gemini for 5-10 synonyms / related terms that a reviewer might use
     when talking about the concept behind *keyword* in the context of *service*.
 
-    Returns a list of lowercase French terms.  Fast call (~100 tokens out).
+    Returns a list of lowercase terms in the target language.  Fast call (~100 tokens out).
     """
     api_key = _get_api_key()
     service = _sanitize(service)
     keyword = _sanitize(keyword)
+    lang = _lang(locale)
 
-    prompt = f"""Tu es un expert linguistique français spécialisé dans les avis clients.
+    prompt = f"""You are a linguistic expert specializing in customer reviews.
 
-Contexte : un utilisateur cherche « {keyword} » dans la catégorie « {service} ».
+Context: a user searches for "{keyword}" in the "{service}" category.
 
-Donne-moi 5 à 10 mots ou expressions courtes qu'un CLIENT utiliserait dans un AVIS GOOGLE
-pour parler de cette même chose, même indirectement.
+Give me 5 to 10 short words or expressions that a CUSTOMER would use in a GOOGLE REVIEW
+to talk about the same thing, even indirectly.
 
-Règles :
-- Inclus des synonymes directs, des variantes orthographiques, des termes familiers
-- Inclus des descriptions physiques que quelqu'un utiliserait dans un avis
-- PAS de répétition du mot original « {keyword} »
-- PAS de phrases longues, juste des mots ou groupes de 2-3 mots
-- Réponds UNIQUEMENT en JSON : {{"synonyms": ["mot1", "mot2", ...]}}
+Rules:
+- Include direct synonyms, spelling variants, colloquial terms
+- Include physical descriptions someone would use in a review
+- DO NOT repeat the original word "{keyword}"
+- NO long sentences, just words or 2-3 word groups
+- Include terms in BOTH the local language ({lang}) AND common international terms
+- Respond ONLY in JSON: {{"synonyms": ["word1", "word2", ...]}}
 
-Exemples :
-- « Permanente » (Coiffeur) → boucles, frisé, ondulation, bouclé, ondulé, mise en pli, curly
-- « Pâte fine » (Pizzeria) → fine, croustillante, craquante, légère, napolitaine, thin crust
-- « Baguette trop cuite » (Boulangerie) → bien cuite, dorée, croûte sombre, croustillante, croquante"""
+Examples:
+- "Permanente" (Hairdresser) → boucles, frisé, ondulation, bouclé, curly, waves
+- "Thin crust" (Pizzeria) → fine, croustillante, crispy, light, napolitaine, thin crust
+- "Overcooked baguette" (Bakery) → well done, golden crust, crunchy, crusty, dark crust"""
 
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
@@ -171,71 +190,71 @@ def _build_scoring_prompt(
             f"\nSynonymes possibles du critère : {', '.join(synonyms)}"
         )
 
+    lang = _lang(locale)
+
     biz_sections = []
     for i, biz in enumerate(businesses):
         reviews = biz.get("reviews", [])[:5]
         if not reviews:
-            review_lines = "  (aucun avis)"
+            review_lines = "  (no reviews)"
         else:
             review_lines = "\n".join(
                 f'  {j + 1}. "{r}"' for j, r in enumerate(reviews)
             )
         biz_sections.append(
-            f'[Établissement {i}] "{biz["name"]}"\nAvis :\n{review_lines}'
+            f'[Business {i}] "{biz["name"]}"\nReviews:\n{review_lines}'
         )
 
     businesses_text = "\n\n".join(biz_sections)
     count = len(businesses)
 
-    return f"""Tu es un expert en analyse d'avis clients pour un moteur de recherche local.
-Tu dois comprendre le DÉSIR RÉEL de l'utilisateur, pas juste chercher des mots-clés.
+    return f"""You are an expert in customer review analysis for a local search engine.
+You must understand the user's REAL DESIRE, not just search for keywords.
 
-## Recherche de l'utilisateur
-- Service : « {service} »
-- Critère spécifique : « {keyword} »{synonym_hint}
+## User search
+- Service: "{service}"
+- Specific criteria: "{keyword}"{synonym_hint}
 
-## Comment comprendre le désir
-Ne cherche PAS les mots exacts. Comprends l'INTENTION derrière la recherche.
-Exemples :
-- « baguette trop cuite » → l'utilisateur veut : bien cuit, croûte sombre, dorée, croustillante
-- « pizza pâte fine » → il veut : fine, croustillante, légère, napolitaine
-- « coiffeur couleur naturelle » → il veut : naturel, subtil, lumineux, balayage réussi
+## Understanding the desire
+Do NOT search for exact words. Understand the INTENTION behind the search.
+Examples:
+- "overcooked baguette" → the user wants: well done, dark crust, golden, crispy
+- "thin crust pizza" → they want: thin, crispy, light, neapolitan
+- "natural hair color" → they want: natural, subtle, luminous, successful balayage
 
-## Règles de notation (CRITIQUES)
-1. Note de 0.0 à 5.0 la pertinence des avis par rapport au DÉSIR de l'utilisateur
-2. Extrais jusqu'à 2 phrases EXACTES des avis qui justifient ta note
-3. Si AUCUNE phrase ne correspond vraiment à l'intention → note DOIT être 0.0 et evidence DOIT être []
-4. Le sentiment négatif sur le SERVICE (lent, impoli) N'AFFECTE PAS la note du PRODUIT/COMPÉTENCE
-5. Un mot « négatif » décrivant une caractéristique physique VOULUE est POSITIF
-   Ex: « trop cuit » est positif si l'utilisateur cherche « baguette trop cuite »
-6. Les phrases qui correspondent à l'AMBIANCE / VIBE de la recherche obtiennent un bonus
-7. Il vaut mieux donner 0 que de donner un faux positif — QUALITÉ avant quantité
+## Scoring rules (CRITICAL)
+1. Score from 0.0 to 5.0 the relevance of reviews to the user's DESIRE
+2. Extract up to 2 EXACT sentences from reviews that justify your score
+3. If NO sentence truly matches the intention → score MUST be 0.0 and evidence MUST be []
+4. Negative sentiment about SERVICE (slow, rude) does NOT affect the PRODUCT/SKILL score
+5. A "negative" word describing a WANTED physical characteristic is POSITIVE
+   Ex: "overcooked" is positive if the user searches for "overcooked baguette"
+6. Sentences matching the AMBIANCE / VIBE of the search get a bonus
+7. It is better to give 0 than to give a false positive — QUALITY over quantity
 
-## Établissements à analyser
+## Businesses to analyze
 
 {businesses_text}
 
-## Format de réponse (JSON strict)
+## Response format (strict JSON)
 {{
   "businesses": [
     {{
       "index": 0,
       "relevance_score": 4.2,
       "mentions": 3,
-      "evidence": ["phrase exacte 1 tirée des avis", "phrase exacte 2 tirée des avis"],
-      "reasoning": "Explication courte de pourquoi ce score a été attribué"
+      "evidence": ["exact sentence 1 from reviews", "exact sentence 2 from reviews"],
+      "reasoning": "Short explanation of why this score was given"
     }}
   ]
 }}
 
-IMPORTANT :
-- evidence = CITATIONS EXACTES des avis, pas des paraphrases.
-- reasoning = 1 phrase expliquant le lien sémantique entre le désir de l'utilisateur et les avis.
-  {"Example: 'Reviews mention gentle and calm approach, matching the search for a gentle dentist.'" if locale == "en" else "Exemple : « L'avis mentionne 'croûte bien dorée' qui correspond au désir 'baguette trop cuite'. »"}
-  {"If score = 0: reasoning = 'No reviews match the searched criteria.'" if locale == "en" else 'Si score = 0 : reasoning = "Aucun avis ne correspond au critère recherché."'}
-- Si aucune correspondance réelle → relevance_score = 0.0, evidence = [], reasoning explique pourquoi.
-- Inclus les {count} établissements dans ta réponse (index 0 à {count - 1}).
-- **MANDATORY**: The "reasoning" field MUST be written in {"ENGLISH" if locale == "en" else "FRENCH"}. {"Do NOT write reasoning in French." if locale == "en" else ""}"""
+IMPORTANT:
+- evidence = EXACT QUOTES from reviews, not paraphrases.
+- reasoning = 1 sentence explaining the semantic link between the user's desire and the reviews.
+- If no real match → relevance_score = 0.0, evidence = [], reasoning explains why.
+- Include all {count} businesses in your response (index 0 to {count - 1}).
+- **MANDATORY**: The "reasoning" field MUST be written in {lang}. Do NOT write reasoning in any other language."""
 
 
 async def score_reviews_batch(
@@ -301,46 +320,47 @@ def _build_prompt(
     keyword = _sanitize(keyword)
     biz1_name = _sanitize(biz1_name)
     biz2_name = _sanitize(biz2_name)
+    lang = _lang(locale)
 
-    reviews_1 = "\n".join(f'- "{r}"' for r in biz1_reviews[:10]) or "- (aucun avis)"
-    reviews_2 = "\n".join(f'- "{r}"' for r in biz2_reviews[:10]) or "- (aucun avis)"
+    reviews_1 = "\n".join(f'- "{r}"' for r in biz1_reviews[:10]) or "- (no reviews)"
+    reviews_2 = "\n".join(f'- "{r}"' for r in biz2_reviews[:10]) or "- (no reviews)"
 
-    return f"""Tu es un expert en analyse comparative de commerces locaux.
-Analyse les avis clients de ces deux établissements pour le critère « {keyword} ».
+    return f"""You are an expert in comparative analysis of local businesses.
+Analyze the customer reviews of these two businesses for the criteria "{keyword}".
 
-### Établissement A : {biz1_name}
-Avis :
+### Business A: {biz1_name}
+Reviews:
 {reviews_1}
 
-### Établissement B : {biz2_name}
-Avis :
+### Business B: {biz2_name}
+Reviews:
 {reviews_2}
 
-Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
+Respond ONLY in valid JSON with this exact structure:
 {{
   "business_1": {{
-    "strengths": ["point fort 1", "point fort 2"],
-    "weaknesses": ["point faible 1"],
-    "price_range": "€" ou "€€" ou "€€€" ou null,
-    "vibe": "description courte de l'ambiance",
-    "service_speed": "rapide" ou "moyen" ou "lent" ou null
+    "strengths": ["strength 1", "strength 2"],
+    "weaknesses": ["weakness 1"],
+    "price_range": "€" or "€€" or "€€€" or null,
+    "vibe": "short atmosphere description",
+    "service_speed": "fast" or "medium" or "slow" or null
   }},
   "business_2": {{
-    "strengths": ["point fort 1", "point fort 2"],
-    "weaknesses": ["point faible 1"],
-    "price_range": "€" ou "€€" ou "€€€" ou null,
-    "vibe": "description courte de l'ambiance",
-    "service_speed": "rapide" ou "moyen" ou "lent" ou null
+    "strengths": ["strength 1", "strength 2"],
+    "weaknesses": ["weakness 1"],
+    "price_range": "€" or "€€" or "€€€" or null,
+    "vibe": "short atmosphere description",
+    "service_speed": "fast" or "medium" or "slow" or null
   }},
-  "verdict": "Résumé en une phrase de qui est le meilleur pour '{keyword}' et pourquoi"
+  "verdict": "One sentence summary of who is the best for '{keyword}' and why"
 }}
 
-Règles :
-- Base ton analyse UNIQUEMENT sur les avis fournis.
-- **MANDATORY**: ALL text fields (strengths, weaknesses, vibe, service_speed, verdict) MUST be written in {"ENGLISH" if locale == "en" else "FRENCH"}. {"Do NOT write any field in French." if locale == "en" else ""}
-- Si une information n'est pas mentionnée dans les avis, mets null.
-- 2 à 4 points forts/faibles maximum par établissement.
-- Sois concis et factuel."""
+Rules:
+- Base your analysis ONLY on the provided reviews.
+- **MANDATORY**: ALL text fields (strengths, weaknesses, vibe, service_speed, verdict) MUST be written in {lang}. Do NOT write in any other language.
+- If information is not mentioned in reviews, use null.
+- 2 to 4 strengths/weaknesses maximum per business.
+- Be concise and factual."""
 
 
 async def compare_businesses(

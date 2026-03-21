@@ -83,7 +83,7 @@ async def search(request: Request, req: SearchRequest):
         try:
             from app.services.llm import generate_synonyms
 
-            ai_synonyms = await generate_synonyms(req.service, req.keyword)
+            ai_synonyms = await generate_synonyms(req.service, req.keyword, req.locale)
             existing = {s.lower() for s in synonyms}
             for s in ai_synonyms:
                 if s.lower() not in existing:
@@ -381,7 +381,7 @@ async def update_leaderboard(
     authorization: str | None = Header(default=None),
 ):
     """Upsert a user's leaderboard entry for the current week."""
-    from app.services.supabase import is_enabled as supabase_enabled, upsert_leaderboard, get_user_from_token
+    from app.services.supabase import is_enabled as supabase_enabled, upsert_leaderboard, get_user_from_token, is_first_leaderboard_entry, get_user_email
 
     user_id = await get_user_from_token(authorization)
     if not user_id:
@@ -409,6 +409,18 @@ async def update_leaderboard(
 
     try:
         await upsert_leaderboard(pseudo, city, safe_weekly, safe_total, user_id=user_id, user_token=raw_token)
+
+        # Send welcome email on first entry (fire-and-forget)
+        try:
+            if await is_first_leaderboard_entry(user_id):
+                email = await get_user_email(user_id)
+                if email:
+                    from app.services.email import build_welcome_email, send_email as send_notif
+                    subj, html = build_welcome_email(pseudo)
+                    await send_notif(email, subj, html)
+        except Exception as e:
+            logger.debug("Welcome email skipped: %s", e)
+
         return {"success": True}
     except Exception as e:
         logger.warning("Leaderboard upsert failed for pseudo=%r city=%r: %s", pseudo, city, e)
@@ -892,3 +904,108 @@ async def categories(request: Request):
         "categories": get_all_categories(),
         "google_enabled": _is_google_enabled(),
     }
+
+
+# ── Email Notifications ──────────────────────────────
+
+
+@router.post("/notifications/badge")
+@limiter.limit("10/minute")
+async def notify_badge(request: Request, authorization: str | None = Header(default=None)):
+    """Send badge unlock email to current user (called by frontend on badge unlock)."""
+    from app.services.supabase import get_user_from_token, get_user_email, get_notification_preferences
+    from app.services.email import is_enabled as email_enabled, build_badge_email, send_email as send_notif
+
+    if not email_enabled():
+        return {"sent": False}
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        return {"sent": False}
+
+    body = await request.json()
+    badge_name = body.get("badge_name", "")
+    badge_emoji = body.get("badge_emoji", "")
+    pseudo = body.get("pseudo", "")
+
+    if not badge_name or not pseudo:
+        return {"sent": False}
+
+    try:
+        prefs = await get_notification_preferences(user_id)
+        if not prefs.get("email_badges", True):
+            return {"sent": False}
+
+        email = await get_user_email(user_id)
+        if not email:
+            return {"sent": False}
+
+        subj, html = build_badge_email(pseudo, badge_name, badge_emoji)
+        ok = await send_notif(email, subj, html)
+        return {"sent": ok}
+    except Exception as e:
+        logger.warning("Badge notification failed: %s", e)
+        return {"sent": False}
+
+
+@router.post("/notifications/weekly-summary")
+@limiter.limit("2/minute")
+async def send_weekly_summary(request: Request):
+    """Send weekly summary emails to all active users.
+
+    Protected by CRON_SECRET header — meant to be called by an external scheduler.
+    """
+    import os
+    from app.services.supabase import get_weekly_active_users, get_user_email, get_notification_preferences
+    from app.services.email import is_enabled as email_enabled, build_weekly_summary, send_email as send_notif
+
+    cron_secret = os.environ.get("CRON_SECRET", "")
+    auth = request.headers.get("x-cron-secret", "")
+    if not cron_secret or auth != cron_secret:
+        raise HTTPException(status_code=403, detail="Acces interdit.")
+
+    if not email_enabled():
+        return {"sent": 0, "skipped": 0}
+
+    try:
+        users = await get_weekly_active_users()
+    except Exception as e:
+        logger.warning("weekly-summary: failed to fetch users: %s", e)
+        return {"sent": 0, "skipped": 0, "error": "fetch_failed"}
+
+    sent = 0
+    skipped = 0
+
+    for i, u in enumerate(users):
+        user_id = u.get("user_id")
+        if not user_id:
+            skipped += 1
+            continue
+
+        try:
+            prefs = await get_notification_preferences(user_id)
+            if not prefs.get("email_weekly", True):
+                skipped += 1
+                continue
+
+            email = await get_user_email(user_id)
+            if not email:
+                skipped += 1
+                continue
+
+            subj, html = build_weekly_summary(
+                pseudo=u.get("pseudo", ""),
+                weekly_points=u.get("weekly_points", 0),
+                rank_position=i + 1,
+                city=u.get("city", ""),
+            )
+            ok = await send_notif(email, subj, html)
+            if ok:
+                sent += 1
+            else:
+                skipped += 1
+        except Exception as e:
+            logger.warning("weekly-summary: failed for user %s: %s", user_id, e)
+            skipped += 1
+
+    return {"sent": sent, "skipped": skipped}

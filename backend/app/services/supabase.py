@@ -701,7 +701,7 @@ async def get_comments(place_id: str, keyword: str, limit: int = 5, offset: int 
             "select": "id,user_id,pseudo,content,created_at",
             "place_id": f"eq.{place_id}",
             "keyword": f"eq.{keyword.strip().lower()}",
-            "report_count": "lt.5",
+            "report_count": "lt.3",
             "order": "created_at.desc",
             "limit": str(limit + 1),
             "offset": str(offset),
@@ -1343,6 +1343,70 @@ async def get_user_from_token(authorization: str | None) -> str | None:
         logger.warning("Supabase Auth API call failed: %s", e)
 
     return None
+
+
+async def get_user_email(user_id: str) -> str | None:
+    """Fetch user email from Supabase Auth admin API (requires service role key)."""
+    if not is_enabled() or not _SERVICE_ROLE_KEY:
+        return None
+    try:
+        client = await _get_client()
+        resp = await client.get(
+            f"/auth/v1/admin/users/{user_id}",
+            headers={"Authorization": f"Bearer {_SERVICE_ROLE_KEY}", "apikey": _SUPABASE_KEY},
+        )
+        if resp.status_code == 200:
+            return resp.json().get("email")
+    except Exception as e:
+        logger.warning("get_user_email failed for %s: %s", user_id, e)
+    return None
+
+
+async def is_first_leaderboard_entry(user_id: str) -> bool:
+    """Check if this is the user's first ever leaderboard entry (for welcome email)."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "id",
+            "user_id": f"eq.{user_id}",
+            "limit": "2",
+        },
+        headers=headers,
+    )
+    if resp.status_code == 200:
+        return len(resp.json()) <= 1  # 1 means the one we just created
+    return False
+
+
+async def get_weekly_active_users() -> list[dict]:
+    """Get all users with weekly_points > 0 this week for weekly summary emails."""
+    if not is_enabled():
+        return []
+    client = await _get_client()
+    week = _current_week_start()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "user_id,pseudo,weekly_points,total_points,city",
+            "week_start": f"eq.{week}",
+            "weekly_points": "gt.0",
+            "order": "weekly_points.desc",
+            "limit": "500",
+        },
+        headers=headers,
+    )
+    if resp.status_code == 200:
+        return resp.json()
+    return []
 
 
 # ── Mascot Customization ──────────────────────────────

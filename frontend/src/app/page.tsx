@@ -231,7 +231,7 @@ function Home() {
           >
             {rewards.avatarData.avatarPhoto ? (
               <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
-                <img src={rewards.avatarData.avatarPhoto} alt="" className="w-full h-full object-cover" />
+                <img src={rewards.avatarData.avatarPhoto} alt="Avatar" className="w-full h-full object-cover" />
               </div>
             ) : (
               <div
@@ -311,7 +311,7 @@ function Home() {
           >
             {rewards.avatarData.avatarPhoto ? (
               <div className="w-8 h-8 rounded-full overflow-hidden border border-sf-gold/25">
-                <img src={rewards.avatarData.avatarPhoto} alt="" className="w-full h-full object-cover" />
+                <img src={rewards.avatarData.avatarPhoto} alt="Avatar" className="w-full h-full object-cover" />
               </div>
             ) : (
               <div

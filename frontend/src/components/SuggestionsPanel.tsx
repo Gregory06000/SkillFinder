@@ -46,7 +46,7 @@ export default function SuggestionsPanel({ suggestions, onAddFavorite, onCompare
                   <div className="w-10 h-10 rounded-sf-sm overflow-hidden flex-shrink-0">
                     <img
                       src={getPhotoUrl(suggestion.result.photo_name)}
-                      alt=""
+                      alt={suggestion.result.name}
                       className="w-full h-full object-cover"
                       loading="lazy"
                     />

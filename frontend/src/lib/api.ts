@@ -586,6 +586,27 @@ export async function saveAvatarColor(
   }
 }
 
+export async function notifyBadge(
+  token: string,
+  pseudo: string,
+  badgeName: string,
+  badgeEmoji: string,
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/notifications/badge`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ pseudo, badge_name: badgeName, badge_emoji: badgeEmoji }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function deleteComment(commentId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {

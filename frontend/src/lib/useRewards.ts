@@ -11,7 +11,8 @@ import {
   type RewardsData,
 } from "@/lib/gamification";
 import { getAvatarData } from "@/components/ProfilePanel";
-import { reverseGeocode, updateLeaderboard, fetchUserProfile } from "@/lib/api";
+import { reverseGeocode, updateLeaderboard, fetchUserProfile, notifyBadge } from "@/lib/api";
+import { getUnlockedBadges } from "@/lib/badges";
 import { useAuth } from "@/lib/AuthContext";
 
 const AI_REASONING_KEY = "sf_show_reasoning";
@@ -175,6 +176,7 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
 
   function awardVotePoints(onMilestone?: () => void) {
     const oldPalier = getUserRank(rewards.points).palier;
+    const oldBadgeIds = new Set(getUnlockedBadges(rewards.points).map((b) => b.id));
     const { newData, increment, hitMilestone } = earnPoints(rewards);
     const newPalier = getUserRank(newData.points).palier;
     setRewards(newData);
@@ -207,6 +209,13 @@ export function useRewards(searchCenter: { lat: number; lng: number } | null) {
               token,
             ).catch(() => {});
           }
+        }
+        // Notify for newly unlocked badges
+        const newBadges = getUnlockedBadges(newData.points).filter(
+          (b) => !oldBadgeIds.has(b.id),
+        );
+        for (const badge of newBadges) {
+          notifyBadge(token, newData.pseudo, badge.id, badge.emoji).catch(() => {});
         }
       });
     }
