@@ -587,7 +587,8 @@ async def get_friend_code_endpoint(
     if not user_id:
         raise HTTPException(status_code=401, detail="Authentification requise.")
 
-    code = await get_or_create_friend_code(user_id)
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+    code = await get_or_create_friend_code(user_id, user_token=raw_token)
     if not code:
         raise HTTPException(status_code=500, detail="Erreur lors de la generation du code.")
     return {"friend_code": code}

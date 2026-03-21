@@ -449,15 +449,19 @@ def _generate_friend_code() -> str:
     return f"SF-{code}"
 
 
-async def get_or_create_friend_code(user_id: str) -> str | None:
+async def get_or_create_friend_code(user_id: str, user_token: str | None = None) -> str | None:
     """Get user's friend code, creating one if it doesn't exist."""
     if not is_enabled():
         return None
 
     client = await _get_client()
-    headers: dict[str, str] = {}
+
+    # Build auth headers — prefer service role, fallback to user token
+    auth_headers: dict[str, str] = {}
     if _SERVICE_ROLE_KEY:
-        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+        auth_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        auth_headers["Authorization"] = f"Bearer {user_token}"
 
     # Check if user already has a profile with friend_code
     resp = await client.get(
@@ -467,7 +471,7 @@ async def get_or_create_friend_code(user_id: str) -> str | None:
             "user_id": f"eq.{user_id}",
             "limit": "1",
         },
-        headers=headers,
+        headers=auth_headers,
     )
     if resp.status_code == 200:
         rows = resp.json()
@@ -476,8 +480,14 @@ async def get_or_create_friend_code(user_id: str) -> str | None:
 
     # Create a new profile with a unique friend code
     # Retry a few times in case of collision
-    write_headers = _write_headers()
-    write_headers["Prefer"] = "return=representation"
+    write_headers: dict[str, str] = {
+        "Content-Type": "application/json",
+        "Prefer": "return=representation",
+    }
+    if _SERVICE_ROLE_KEY:
+        write_headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        write_headers["Authorization"] = f"Bearer {user_token}"
 
     for _ in range(5):
         code = _generate_friend_code()
@@ -489,6 +499,7 @@ async def get_or_create_friend_code(user_id: str) -> str | None:
                 "friend_code": code,
             },
         )
+        logger.info("create friend_code for %s: status=%s body=%s", user_id, create_resp.status_code, create_resp.text[:200])
         if create_resp.status_code in (200, 201):
             rows = create_resp.json()
             if rows:
@@ -496,7 +507,6 @@ async def get_or_create_friend_code(user_id: str) -> str | None:
             return code
         if create_resp.status_code == 409:
             # Conflict - either user already exists or code collision
-            # Try fetching again
             retry_resp = await client.get(
                 "/rest/v1/user_profiles",
                 params={
@@ -504,13 +514,12 @@ async def get_or_create_friend_code(user_id: str) -> str | None:
                     "user_id": f"eq.{user_id}",
                     "limit": "1",
                 },
-                headers=headers,
+                headers=auth_headers,
             )
             if retry_resp.status_code == 200:
                 rows = retry_resp.json()
                 if rows and rows[0].get("friend_code"):
                     return rows[0]["friend_code"]
-            # Code collision, retry with new code
             continue
 
     logger.warning("Failed to generate unique friend code for user %s", user_id)
