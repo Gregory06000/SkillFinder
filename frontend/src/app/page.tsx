@@ -22,6 +22,7 @@ import { useT } from "@/lib/i18n";
 import { useTheme } from "@/lib/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import Mascot from "@/components/Mascot";
+import { loadMascotCustomization } from "@/lib/mascotItems";
 import { fetchFriendsFavorites, syncFavorites, getSharingStatus, type FriendFavorites } from "@/lib/api";
 
 function SkeletonCard() {
@@ -72,6 +73,7 @@ function Home() {
   const { theme, toggleTheme } = useTheme();
   const favs = useFavorites();
   const [friendFavs, setFriendFavs] = useState<FriendFavorites[]>([]);
+  const [mascotCustom, setMascotCustom] = useState(() => loadMascotCustomization());
 
   // Load friend favorites on login
   useEffect(() => {
@@ -151,7 +153,7 @@ function Home() {
           }}
           className="flex items-center gap-2.5 no-underline"
         >
-          <Mascot pose="default" size={44} />
+          <Mascot pose="default" size={44} customization={mascotCustom} />
           <span className="font-serif text-2xl font-bold text-sf-text tracking-tight">
             Skill<span className="text-sf-accent">Finder</span>
           </span>
@@ -335,6 +337,7 @@ function Home() {
               onClose={rewards.handleProfileClose}
               onPseudoChange={rewards.handlePseudoChange}
               favorites={favs.favorites}
+              onMascotChange={setMascotCustom}
             />
           )}
         </div>

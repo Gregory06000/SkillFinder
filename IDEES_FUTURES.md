@@ -122,7 +122,7 @@ Créer une mascotte officielle SkillFinder qui servirait d'identité visuelle au
 
 ---
 
-## 9. Micro-transactions — Personnalisation de mascotte
+## 9. ~~Micro-transactions — Personnalisation de mascotte~~ ✅ Implémenté — mars 2026
 
 **Description**
 Chaque utilisateur possède une mascotte SkillFinder personnalisable avec des items cosmétiques. Deux types d'items :
@@ -275,6 +275,6 @@ Envoyer des emails aux utilisateurs pour des événements clés : badge débloqu
 | 8 | ~~Mascotte SkillFinder~~ | ✅ Livré |
 | 3 | ~~Système d'amis~~ | ✅ Livré |
 | 4 | ~~Partage des favoris aux amis~~ ✅ | 📆 Long terme (après #3) |
-| 9 | Micro-transactions (personnalisation mascotte) | 📆 Long terme |
+| 9 | ~~Micro-transactions (personnalisation mascotte)~~ ✅ | 📆 Long terme |
 | 7 | Suggestions intelligentes (favoris) | 📆 Long terme |
 | 6 | Application mobile native | 📆 Long terme |
