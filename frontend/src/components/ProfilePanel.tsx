@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import type { RewardsData, UserRank } from "@/lib/gamification";
 import { TIERS, getUserRank, getLevel } from "@/lib/gamification";
 import { computeBadges } from "@/lib/badges";
-import { fetchNotificationPrefs, updateNotificationPrefs, type NotificationPrefs } from "@/lib/api";
+import { fetchNotificationPrefs, updateNotificationPrefs, getSharingStatus, toggleSharingFavorites, syncFavorites, type NotificationPrefs } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 import FriendsPanel from "./FriendsPanel";
@@ -13,6 +13,7 @@ interface ProfilePanelProps {
   rewards: RewardsData;
   onClose: () => void;
   onPseudoChange: (pseudo: string) => void;
+  favorites?: unknown[];
 }
 
 const AVATAR_COLORS = [
@@ -53,6 +54,7 @@ export default function ProfilePanel({
   rewards,
   onClose,
   onPseudoChange,
+  favorites = [],
 }: ProfilePanelProps) {
   const { t } = useT();
   const rank: UserRank = getUserRank(rewards.points);
@@ -65,11 +67,15 @@ export default function ProfilePanel({
   const [pseudoInput, setPseudoInput] = useState(rewards.pseudo);
   const { user, getAccessToken } = useAuth();
   const [notifPrefs, setNotifPrefs] = useState<NotificationPrefs>({ email_badges: true, email_weekly: true });
+  const [sharingFavs, setSharingFavs] = useState(false);
 
   useEffect(() => {
     if (user) {
       getAccessToken().then((token) => {
-        if (token) fetchNotificationPrefs(token).then(setNotifPrefs);
+        if (token) {
+          fetchNotificationPrefs(token).then(setNotifPrefs);
+          getSharingStatus(token).then(setSharingFavs);
+        }
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -416,9 +422,44 @@ export default function ProfilePanel({
         </div>
       </div>
 
-      {/* Notification preferences */}
+      {/* Sharing & Notification preferences */}
       {user && (
         <div className="px-5 py-3 border-t border-sf-border">
+          {/* Favorites sharing */}
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-2.5">
+            {t("profile.sharing")}
+          </div>
+          <div className="mb-4">
+            <label className="flex items-center justify-between gap-2 cursor-pointer">
+              <span className="text-xs text-sf-text-secondary">{t("profile.shareFavorites")}</span>
+              <button
+                onClick={() => {
+                  const newVal = !sharingFavs;
+                  setSharingFavs(newVal);
+                  getAccessToken().then((token) => {
+                    if (token) {
+                      toggleSharingFavorites(token, newVal);
+                      if (newVal && favorites.length > 0) {
+                        syncFavorites(token, favorites);
+                      }
+                    }
+                  });
+                }}
+                className={`relative w-9 h-5 rounded-full transition-colors
+                           ${sharingFavs ? "bg-sf-accent" : "bg-sf-border"}`}
+              >
+                <span
+                  className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm transition-transform
+                             ${sharingFavs ? "left-[18px]" : "left-0.5"}`}
+                />
+              </button>
+            </label>
+            {sharingFavs && (
+              <p className="text-[10px] text-sf-text-light mt-1">{t("profile.shareFavoritesHint")}</p>
+            )}
+          </div>
+
+          {/* Notifications */}
           <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-2.5">
             {t("profile.notifications")}
           </div>

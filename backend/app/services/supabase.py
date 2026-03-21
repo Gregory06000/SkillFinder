@@ -1092,6 +1092,202 @@ async def get_pending_requests(user_id: str) -> list[dict]:
     return results
 
 
+# ── Shared Favorites ──────────────────────────────
+
+
+async def set_sharing_favorites(user_id: str, sharing: bool, user_token: str | None = None) -> bool:
+    """Toggle sharing_favorites flag on user_profiles."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers: dict[str, str] = {"Content-Type": "application/json", "Prefer": "return=minimal"}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        headers["Authorization"] = f"Bearer {user_token}"
+
+    resp = await client.patch(
+        "/rest/v1/user_profiles",
+        params={"user_id": f"eq.{user_id}"},
+        headers=headers,
+        json={"sharing_favorites": sharing},
+    )
+    return resp.status_code in (200, 204)
+
+
+async def get_sharing_favorites(user_id: str) -> bool:
+    """Check if user is sharing their favorites."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    resp = await client.get(
+        "/rest/v1/user_profiles",
+        params={
+            "select": "sharing_favorites",
+            "user_id": f"eq.{user_id}",
+            "limit": "1",
+        },
+        headers=headers,
+    )
+    if resp.status_code == 200:
+        rows = resp.json()
+        if rows:
+            return bool(rows[0].get("sharing_favorites", False))
+    return False
+
+
+async def sync_favorites(user_id: str, favorites: list[dict], user_token: str | None = None) -> bool:
+    """Sync user's favorites to shared_favorites table (replace all)."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers: dict[str, str] = {"Content-Type": "application/json"}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        headers["Authorization"] = f"Bearer {user_token}"
+
+    # Delete existing favorites
+    del_resp = await client.delete(
+        "/rest/v1/shared_favorites",
+        params={"user_id": f"eq.{user_id}"},
+        headers={**headers, "Prefer": "return=minimal"},
+    )
+    if del_resp.status_code not in (200, 204):
+        logger.warning("sync_favorites delete failed: %s", del_resp.text)
+
+    # Insert new favorites
+    if not favorites:
+        return True
+
+    rows = [
+        {
+            "user_id": user_id,
+            "name": f["name"][:200],
+            "address": f.get("address", "")[:300],
+            "match_score": f.get("matchScore", 0),
+            "global_rating": f.get("globalRating", 0),
+            "photo_name": f.get("photoName", "")[:500],
+            "maps_url": f.get("mapsUrl", "")[:500],
+            "added_at": f.get("addedAt", 0),
+        }
+        for f in favorites[:50]
+    ]
+
+    insert_resp = await client.post(
+        "/rest/v1/shared_favorites",
+        headers={**headers, "Prefer": "return=minimal"},
+        json=rows,
+    )
+    return insert_resp.status_code in (200, 201)
+
+
+async def get_friends_favorites(user_id: str) -> list[dict]:
+    """Get favorites from friends who are sharing. Returns grouped by friend."""
+    if not is_enabled():
+        return []
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    # Get accepted friends
+    friends_resp = await client.get(
+        "/rest/v1/friendships",
+        params={
+            "select": "requester_id,addressee_id",
+            "status": "eq.accepted",
+            "or": f"(requester_id.eq.{user_id},addressee_id.eq.{user_id})",
+        },
+        headers=headers,
+    )
+    if friends_resp.status_code != 200:
+        return []
+
+    friend_ids: list[str] = []
+    for f in friends_resp.json():
+        fid = f["addressee_id"] if f["requester_id"] == user_id else f["requester_id"]
+        friend_ids.append(fid)
+
+    if not friend_ids:
+        return []
+
+    # Get which friends are sharing
+    ids_filter = ",".join(friend_ids)
+    sharing_resp = await client.get(
+        "/rest/v1/user_profiles",
+        params={
+            "select": "user_id",
+            "user_id": f"in.({ids_filter})",
+            "sharing_favorites": "eq.true",
+        },
+        headers=headers,
+    )
+    if sharing_resp.status_code != 200:
+        return []
+
+    sharing_ids = [r["user_id"] for r in sharing_resp.json()]
+    if not sharing_ids:
+        return []
+
+    # Get their favorites
+    sharing_filter = ",".join(sharing_ids)
+    favs_resp = await client.get(
+        "/rest/v1/shared_favorites",
+        params={
+            "select": "user_id,name,address,match_score,global_rating,photo_name,maps_url,added_at",
+            "user_id": f"in.({sharing_filter})",
+            "order": "added_at.desc",
+            "limit": "100",
+        },
+        headers=headers,
+    )
+    if favs_resp.status_code != 200:
+        return []
+
+    # Get pseudos for sharing friends
+    lb_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "user_id,pseudo",
+            "user_id": f"in.({sharing_filter})",
+            "order": "updated_at.desc",
+        },
+        headers=headers,
+    )
+    pseudos: dict[str, str] = {}
+    if lb_resp.status_code == 200:
+        for row in lb_resp.json():
+            uid = row["user_id"]
+            if uid not in pseudos:
+                pseudos[uid] = row["pseudo"]
+
+    # Group by friend
+    grouped: dict[str, dict] = {}
+    for fav in favs_resp.json():
+        uid = fav["user_id"]
+        if uid not in grouped:
+            grouped[uid] = {
+                "user_id": uid,
+                "pseudo": pseudos.get(uid, "?"),
+                "favorites": [],
+            }
+        grouped[uid]["favorites"].append({
+            "name": fav["name"],
+            "address": fav["address"],
+            "matchScore": fav["match_score"],
+            "globalRating": fav["global_rating"],
+            "photoName": fav["photo_name"],
+            "mapsUrl": fav["maps_url"],
+        })
+
+    return list(grouped.values())
+
+
 async def get_user_from_token(authorization: str | None) -> str | None:
     """
     Extract and verify user_id from a Supabase JWT Bearer token.

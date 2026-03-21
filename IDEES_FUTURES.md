@@ -44,7 +44,7 @@ Pouvoir chercher d'autres utilisateurs SkillFinder et les ajouter en amis, créa
 
 ---
 
-## 4. Partage de la liste de favoris aux amis
+## 4. ~~Partage de la liste de favoris aux amis~~ ✅ Implémenté — mars 2026
 
 **Description**
 Donner la possibilité de rendre sa liste de favoris visible, en totalité ou en partie, à certains amis sélectionnés.
@@ -274,7 +274,7 @@ Envoyer des emails aux utilisateurs pour des événements clés : badge débloqu
 | 15 | ~~Notifications email~~ | ✅ Infrastructure prête |
 | 8 | ~~Mascotte SkillFinder~~ | ✅ Livré |
 | 3 | ~~Système d'amis~~ | ✅ Livré |
-| 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |
+| 4 | ~~Partage des favoris aux amis~~ ✅ | 📆 Long terme (après #3) |
 | 9 | Micro-transactions (personnalisation mascotte) | 📆 Long terme |
 | 7 | Suggestions intelligentes (favoris) | 📆 Long terme |
 | 6 | Application mobile native | 📆 Long terme |

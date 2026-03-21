@@ -729,6 +729,94 @@ async def remove_friend_endpoint(
     return {"success": True}
 
 
+# ── Shared Favorites ──────────────────────────────
+
+
+@router.get("/favorites/sharing")
+@limiter.limit("30/minute")
+async def get_sharing_status(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Check if the user is sharing favorites."""
+    from app.services.supabase import get_user_from_token, get_sharing_favorites
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    sharing = await get_sharing_favorites(user_id)
+    return {"sharing": sharing}
+
+
+@router.post("/favorites/sharing")
+@limiter.limit("10/minute")
+async def toggle_sharing(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Toggle favorites sharing on/off."""
+    from app.services.supabase import get_user_from_token, set_sharing_favorites
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+    body = await request.json()
+    sharing = bool(body.get("sharing", False))
+
+    success = await set_sharing_favorites(user_id, sharing, user_token=raw_token)
+    if not success:
+        raise HTTPException(status_code=500, detail="Erreur.")
+    return {"success": True, "sharing": sharing}
+
+
+@router.post("/favorites/sync")
+@limiter.limit("10/minute")
+async def sync_favorites_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Sync user's favorites to server for sharing with friends."""
+    from app.services.supabase import get_user_from_token, sync_favorites
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+    body = await request.json()
+    favorites = body.get("favorites", [])
+
+    if not isinstance(favorites, list) or len(favorites) > 50:
+        raise HTTPException(status_code=400, detail="Maximum 50 favoris.")
+
+    success = await sync_favorites(user_id, favorites, user_token=raw_token)
+    return {"success": success}
+
+
+@router.get("/favorites/friends")
+@limiter.limit("20/minute")
+async def get_friends_favorites_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Get favorites from friends who are sharing."""
+    from app.services.supabase import get_user_from_token, get_friends_favorites
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    try:
+        data = await get_friends_favorites(user_id)
+        return {"friends": data}
+    except Exception as e:
+        logger.warning("get_friends_favorites failed: %s", e)
+        return {"friends": []}
+
+
 @router.get("/categories")
 @limiter.limit("30/minute")
 async def categories(request: Request):

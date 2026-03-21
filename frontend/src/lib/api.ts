@@ -456,6 +456,81 @@ export async function removeFriend(friendshipId: string, token: string): Promise
   }
 }
 
+// ── Shared Favorites ──
+
+export interface FriendFavorite {
+  name: string;
+  address: string;
+  matchScore: number;
+  globalRating: number;
+  photoName: string;
+  mapsUrl: string;
+}
+
+export interface FriendFavorites {
+  user_id: string;
+  pseudo: string;
+  favorites: FriendFavorite[];
+}
+
+export async function getSharingStatus(token: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/favorites/sharing`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    return data.sharing || false;
+  } catch {
+    return false;
+  }
+}
+
+export async function toggleSharingFavorites(token: string, sharing: boolean): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/favorites/sharing`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ sharing }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function syncFavorites(token: string, favorites: unknown[]): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/favorites/sync`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ favorites }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function fetchFriendsFavorites(token: string): Promise<FriendFavorites[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/favorites/friends`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.friends || [];
+  } catch {
+    return [];
+  }
+}
+
 export async function deleteComment(commentId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {

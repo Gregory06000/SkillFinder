@@ -63,6 +63,7 @@ const fr: Dict = {
   "fav.title": "Mes favoris ({count})",
   "fav.clearAll": "Tout supprimer",
   "fav.remove": "Supprimer des favoris",
+  "fav.friendTitle": "Favoris de {name} ({count})",
 
   // ── Results ──
   "results.count": "{count} résultat{plural}",
@@ -167,6 +168,9 @@ const fr: Dict = {
   "profile.notifBadges": "Nouveau badge débloqué",
   "profile.notifWeekly": "Résumé hebdomadaire",
   "profile.weekStats": "Cette semaine : +{pts} pts",
+  "profile.sharing": "Partage",
+  "profile.shareFavorites": "Partager mes favoris avec mes amis",
+  "profile.shareFavoritesHint": "Vos amis pourront voir votre liste de favoris",
 
   // ── TierUp Modal ──
   "tierUp.title": "Nouveau palier !",
@@ -333,6 +337,7 @@ const en: Dict = {
   "fav.title": "My favorites ({count})",
   "fav.clearAll": "Remove all",
   "fav.remove": "Remove from favorites",
+  "fav.friendTitle": "{name}'s favorites ({count})",
 
   // ── Results ──
   "results.count": "{count} result{plural}",
@@ -437,6 +442,9 @@ const en: Dict = {
   "profile.notifBadges": "New badge unlocked",
   "profile.notifWeekly": "Weekly summary",
   "profile.weekStats": "This week: +{pts} pts",
+  "profile.sharing": "Sharing",
+  "profile.shareFavorites": "Share my favorites with friends",
+  "profile.shareFavoritesHint": "Your friends will be able to see your favorites list",
 
   // ── TierUp Modal ──
   "tierUp.title": "New tier!",

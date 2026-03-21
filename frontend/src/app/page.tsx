@@ -22,6 +22,7 @@ import { useT } from "@/lib/i18n";
 import { useTheme } from "@/lib/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import Mascot from "@/components/Mascot";
+import { fetchFriendsFavorites, syncFavorites, getSharingStatus, type FriendFavorites } from "@/lib/api";
 
 function SkeletonCard() {
   return (
@@ -70,6 +71,27 @@ function Home() {
   const { t, locale, setLocale } = useT();
   const { theme, toggleTheme } = useTheme();
   const favs = useFavorites();
+  const [friendFavs, setFriendFavs] = useState<FriendFavorites[]>([]);
+
+  // Load friend favorites on login
+  useEffect(() => {
+    if (!user) { setFriendFavs([]); return; }
+    getAccessToken().then((token) => {
+      if (token) fetchFriendsFavorites(token).then(setFriendFavs);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  // Auto-sync favorites to server when they change (if sharing enabled)
+  useEffect(() => {
+    if (!user) return;
+    getAccessToken().then(async (token) => {
+      if (!token) return;
+      const sharing = await getSharingStatus(token);
+      if (sharing) syncFavorites(token, favs.favorites);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [favs.favorites, user]);
 
   const verification = useVerification({
     setResults: search.setResults,
@@ -312,6 +334,7 @@ function Home() {
               rewards={rewards.rewards}
               onClose={rewards.handleProfileClose}
               onPseudoChange={rewards.handlePseudoChange}
+              favorites={favs.favorites}
             />
           )}
         </div>
@@ -438,6 +461,55 @@ function Home() {
               </div>
             ))}
           </div>
+        </section>
+      )}
+
+      {/* ── FRIEND FAVORITES (when no search results) ── */}
+      {!search.hasResults && !search.isLoading && friendFavs.length > 0 && (
+        <section className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-4 pb-2">
+          {friendFavs.map((friend) => (
+            <div key={friend.user_id} className="mb-4">
+              <div className="flex items-center gap-2 mb-2.5">
+                <div className="w-6 h-6 rounded-full bg-sf-accent flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0">
+                  {friend.pseudo.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-xs font-medium text-sf-text-light uppercase tracking-wider">
+                  {t("fav.friendTitle", { name: friend.pseudo, count: friend.favorites.length })}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {friend.favorites.slice(0, 6).map((fav) => (
+                  <div
+                    key={fav.name}
+                    className="bg-sf-card border border-sf-border rounded-sf-md p-3 flex items-center gap-3
+                               hover:shadow-sf-sm transition-all"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-sf-text truncate">{fav.name}</p>
+                      <p className="text-[11px] text-sf-text-secondary truncate">{fav.address}</p>
+                      <div className="flex items-center gap-2 mt-1 text-[11px] text-sf-text-light">
+                        <span>{fav.globalRating.toFixed(1)} &#9733;</span>
+                        {fav.matchScore > 0 && <span>&middot; Score {fav.matchScore.toFixed(1)}</span>}
+                      </div>
+                    </div>
+                    {fav.mapsUrl && (
+                      <a
+                        href={fav.mapsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-7 h-7 rounded-full border border-sf-border flex items-center justify-center
+                                   text-sf-text-light hover:text-sf-accent hover:border-sf-accent/40 transition-all flex-shrink-0"
+                      >
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </section>
       )}
 
