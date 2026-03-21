@@ -307,7 +307,7 @@ async def get_my_votes(
 @limiter.limit("30/minute")
 async def leaderboard(request: Request, city: str = Query("", max_length=100), limit: int = Query(50, ge=1, le=100)):
     """Get weekly top N leaderboard for a city."""
-    from app.services.supabase import is_enabled as supabase_enabled, get_leaderboard
+    from app.services.supabase import is_enabled as supabase_enabled, get_leaderboard, get_mascot_customs_batch
 
     if not supabase_enabled() or not city:
         return {"entries": []}
@@ -316,6 +316,14 @@ async def leaderboard(request: Request, city: str = Query("", max_length=100), l
 
     try:
         entries = await get_leaderboard(city, limit=safe_limit)
+        # Enrich with mascot customization
+        user_ids = [e["user_id"] for e in entries if e.get("user_id")]
+        if user_ids:
+            mascots = await get_mascot_customs_batch(user_ids)
+            for e in entries:
+                uid = e.get("user_id")
+                if uid and uid in mascots:
+                    e["mascot_custom"] = mascots[uid]
         return {"entries": entries}
     except Exception as e:
         logger.warning("Leaderboard fetch failed for city=%r: %s", city, e)
@@ -815,6 +823,55 @@ async def get_friends_favorites_endpoint(
     except Exception as e:
         logger.warning("get_friends_favorites failed: %s", e)
         return {"friends": []}
+
+
+@router.post("/mascot/custom")
+@limiter.limit("20/minute")
+async def save_mascot(request: Request, authorization: str | None = Header(default=None)):
+    """Save mascot customization."""
+    from app.services.supabase import is_enabled as supabase_enabled, get_user_from_token, save_mascot_custom
+
+    if not supabase_enabled():
+        raise HTTPException(status_code=503, detail="Service indisponible.")
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    body = await request.json()
+    mascot_custom = body.get("mascot_custom")
+    if not isinstance(mascot_custom, dict):
+        raise HTTPException(status_code=422, detail="mascot_custom doit etre un objet JSON.")
+
+    raw_token = authorization[7:] if authorization and authorization.startswith("Bearer ") else None
+
+    try:
+        ok = await save_mascot_custom(user_id, mascot_custom, user_token=raw_token)
+        return {"success": ok}
+    except Exception as e:
+        logger.warning("save_mascot_custom failed: %s", e)
+        return {"success": False}
+
+
+@router.get("/mascot/custom")
+@limiter.limit("30/minute")
+async def get_mascot(request: Request, authorization: str | None = Header(default=None)):
+    """Get mascot customization for current user."""
+    from app.services.supabase import is_enabled as supabase_enabled, get_user_from_token, get_mascot_custom
+
+    if not supabase_enabled():
+        return {"mascot_custom": None}
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        return {"mascot_custom": None}
+
+    try:
+        custom = await get_mascot_custom(user_id)
+        return {"mascot_custom": custom}
+    except Exception as e:
+        logger.warning("get_mascot_custom failed: %s", e)
+        return {"mascot_custom": None}
 
 
 @router.get("/categories")

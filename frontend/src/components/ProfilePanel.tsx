@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import type { RewardsData, UserRank } from "@/lib/gamification";
 import { TIERS, getUserRank, getLevel } from "@/lib/gamification";
 import { computeBadges } from "@/lib/badges";
-import { fetchNotificationPrefs, updateNotificationPrefs, getSharingStatus, toggleSharingFavorites, syncFavorites, type NotificationPrefs } from "@/lib/api";
+import { fetchNotificationPrefs, updateNotificationPrefs, getSharingStatus, toggleSharingFavorites, syncFavorites, saveMascotCustom, fetchMascotCustom, type NotificationPrefs } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 import FriendsPanel from "./FriendsPanel";
@@ -77,6 +77,14 @@ export default function ProfilePanel({
         if (token) {
           fetchNotificationPrefs(token).then(setNotifPrefs);
           getSharingStatus(token).then(setSharingFavs);
+          fetchMascotCustom(token).then((serverCustom) => {
+            if (serverCustom) {
+              const merged = { ...mascotCustom, ...serverCustom } as MascotCustomization;
+              setMascotCustom(merged);
+              saveMascotCustomization(merged);
+              onMascotChange?.(merged);
+            }
+          });
         }
       });
     }
@@ -143,6 +151,11 @@ export default function ProfilePanel({
     setMascotCustom(custom);
     saveMascotCustomization(custom);
     onMascotChange?.(custom);
+    if (user) {
+      getAccessToken().then((token) => {
+        if (token) saveMascotCustom(token, custom);
+      });
+    }
   }
 
   const allTiers = TIERS;

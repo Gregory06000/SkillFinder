@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { getUserRank } from "@/lib/gamification";
 import { useT } from "@/lib/i18n";
 import Mascot from "./Mascot";
+import type { MascotCustomization } from "@/lib/mascotItems";
 import { loadMascotCustomization, DEFAULT_CUSTOMIZATION } from "@/lib/mascotItems";
 
 interface LeaderboardEntry {
@@ -12,6 +13,7 @@ interface LeaderboardEntry {
   totalPoints: number;
   city: string;
   userId?: string;
+  mascotCustom?: MascotCustomization;
 }
 
 interface LeaderboardTabProps {
@@ -114,6 +116,7 @@ export default function LeaderboardTab({
             totalPoints: (e.total_points ?? e.totalPoints ?? 0) as number,
             city: e.city as string,
             userId: (e.user_id as string) || undefined,
+            mascotCustom: (e.mascot_custom as MascotCustomization) || undefined,
           })
         );
         setEntries(mapped);
@@ -437,7 +440,7 @@ export default function LeaderboardTab({
                         <div className="flex-shrink-0">
                           <Mascot
                             size={80}
-                            customization={isUser ? loadMascotCustomization() : DEFAULT_CUSTOMIZATION}
+                            customization={isUser ? loadMascotCustomization() : (entry.mascotCustom || DEFAULT_CUSTOMIZATION)}
                           />
                         </div>
                         <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-sf-text-secondary pt-1">

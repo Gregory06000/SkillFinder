@@ -1343,3 +1343,75 @@ async def get_user_from_token(authorization: str | None) -> str | None:
         logger.warning("Supabase Auth API call failed: %s", e)
 
     return None
+
+
+# ── Mascot Customization ──────────────────────────────
+
+
+async def save_mascot_custom(user_id: str, mascot_custom: dict, user_token: str | None = None) -> bool:
+    """Save mascot customization to user_profiles."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers: dict[str, str] = {"Content-Type": "application/json", "Prefer": "return=minimal"}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+    elif user_token:
+        headers["Authorization"] = f"Bearer {user_token}"
+
+    resp = await client.patch(
+        "/rest/v1/user_profiles",
+        params={"user_id": f"eq.{user_id}"},
+        headers=headers,
+        json={"mascot_custom": mascot_custom},
+    )
+    return resp.status_code in (200, 204)
+
+
+async def get_mascot_custom(user_id: str) -> dict | None:
+    """Get mascot customization for a user."""
+    if not is_enabled():
+        return None
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    resp = await client.get(
+        "/rest/v1/user_profiles",
+        params={
+            "select": "mascot_custom",
+            "user_id": f"eq.{user_id}",
+            "limit": "1",
+        },
+        headers=headers,
+    )
+    if resp.status_code == 200:
+        rows = resp.json()
+        if rows and rows[0].get("mascot_custom"):
+            return rows[0]["mascot_custom"]
+    return None
+
+
+async def get_mascot_customs_batch(user_ids: list[str]) -> dict[str, dict]:
+    """Get mascot customizations for multiple users. Returns {user_id: custom_dict}."""
+    if not is_enabled() or not user_ids:
+        return {}
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    ids_filter = ",".join(user_ids)
+    resp = await client.get(
+        "/rest/v1/user_profiles",
+        params={
+            "select": "user_id,mascot_custom",
+            "user_id": f"in.({ids_filter})",
+        },
+        headers=headers,
+    )
+    if resp.status_code == 200:
+        rows = resp.json()
+        return {r["user_id"]: r["mascot_custom"] for r in rows if r.get("mascot_custom")}
+    return {}

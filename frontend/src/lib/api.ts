@@ -531,6 +531,42 @@ export async function fetchFriendsFavorites(token: string): Promise<FriendFavori
   }
 }
 
+// ── Mascot Customization ──
+
+export async function saveMascotCustom(
+  token: string,
+  mascotCustom: { hat: string; scarf: string; accessory: string; boots: string },
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/mascot/custom`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ mascot_custom: mascotCustom }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function fetchMascotCustom(
+  token: string,
+): Promise<Record<string, string> | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/mascot/custom`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.mascot_custom || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function deleteComment(commentId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {
