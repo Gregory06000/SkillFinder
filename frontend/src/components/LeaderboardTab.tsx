@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getUserRank } from "@/lib/gamification";
 import { useT } from "@/lib/i18n";
+import Mascot from "./Mascot";
+import { loadMascotCustomization, DEFAULT_CUSTOMIZATION } from "@/lib/mascotItems";
 
 interface LeaderboardEntry {
   pseudo: string;
@@ -431,15 +433,23 @@ export default function LeaderboardTab({
 
                     {/* Expanded details */}
                     {isExpanded && (
-                      <div className="px-4 pb-3 pl-16 sm:pl-20 grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-sf-text-secondary border-l-4 border-transparent">
-                        <span>{t("lb.level")}</span>
-                        <span className="font-medium text-sf-text">{rank.level}</span>
-                        <span>{t("lb.tierLabel")}</span>
-                        <span className="font-medium text-sf-text">{rank.palier}</span>
-                        <span>{t("lb.titleLabel")}</span>
-                        <span className="font-medium text-sf-text">{t(rank.titleKey)}</span>
-                        <span>{t("lb.totalPoints")}</span>
-                        <span className="font-medium text-sf-text">{entry.totalPoints}</span>
+                      <div className="px-4 pb-3 pl-16 sm:pl-20 flex items-start gap-4 border-l-4 border-transparent">
+                        <div className="flex-shrink-0">
+                          <Mascot
+                            size={80}
+                            customization={isUser ? loadMascotCustomization() : DEFAULT_CUSTOMIZATION}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-sf-text-secondary pt-1">
+                          <span>{t("lb.level")}</span>
+                          <span className="font-medium text-sf-text">{rank.level}</span>
+                          <span>{t("lb.tierLabel")}</span>
+                          <span className="font-medium text-sf-text">{rank.palier}</span>
+                          <span>{t("lb.titleLabel")}</span>
+                          <span className="font-medium text-sf-text">{t(rank.titleKey)}</span>
+                          <span>{t("lb.totalPoints")}</span>
+                          <span className="font-medium text-sf-text">{entry.totalPoints}</span>
+                        </div>
                       </div>
                     )}
                   </div>
