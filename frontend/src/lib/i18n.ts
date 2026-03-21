@@ -207,6 +207,7 @@ const fr: Dict = {
   "suggest.title": "Meilleures alternatives trouvees !",
   "suggest.beats": "+{diff} pts de plus que {name}",
   "suggest.addFav": "Ajouter aux favoris",
+  "suggest.compare": "Comparer avec le favori",
   "suggest.dismiss": "Ignorer",
 
   // ── TierUp Modal ──
@@ -518,6 +519,7 @@ const en: Dict = {
   "suggest.title": "Better alternatives found!",
   "suggest.beats": "+{diff} pts more than {name}",
   "suggest.addFav": "Add to favorites",
+  "suggest.compare": "Compare with favorite",
   "suggest.dismiss": "Dismiss",
 
   // ── TierUp Modal ──

@@ -581,6 +581,17 @@ function Home() {
                 location: search.lastSearch?.location || "",
               })
             }
+            onCompare={(s) => {
+              const favBiz = search.results.find((r) => r.name === s.beatsName);
+              if (favBiz) {
+                compare.compareDirect(
+                  search.lastSearch?.keyword || "",
+                  favBiz,
+                  s.result,
+                  locale,
+                );
+              }
+            }}
           />
         )}
 

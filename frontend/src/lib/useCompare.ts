@@ -59,6 +59,29 @@ export function useCompare() {
     setCompareError(null);
   }
 
+  async function compareDirect(
+    keyword: string,
+    biz1: BusinessResult,
+    biz2: BusinessResult,
+    locale: string = "fr",
+  ) {
+    setShowCompare(true);
+    setCompareLoading(true);
+    setCompareData(null);
+    setCompareError(null);
+
+    try {
+      const data = await compareBusinesses(keyword, biz1, biz2, locale);
+      setCompareData(data);
+    } catch (err) {
+      setCompareError(
+        err instanceof Error ? err.message : "Erreur lors de la comparaison",
+      );
+    } finally {
+      setCompareLoading(false);
+    }
+  }
+
   function resetCompare() {
     setCompareSet(new Set());
   }
@@ -71,6 +94,7 @@ export function useCompare() {
     compareError,
     handleCompareToggle,
     handleCompare,
+    compareDirect,
     handleCloseCompare,
     resetCompare,
   };

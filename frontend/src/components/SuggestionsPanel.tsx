@@ -8,9 +8,10 @@ import { useT } from "@/lib/i18n";
 interface SuggestionsPanelProps {
   suggestions: Suggestion[];
   onAddFavorite: (suggestion: Suggestion) => void;
+  onCompare: (suggestion: Suggestion) => void;
 }
 
-export default function SuggestionsPanel({ suggestions, onAddFavorite }: SuggestionsPanelProps) {
+export default function SuggestionsPanel({ suggestions, onAddFavorite, onCompare }: SuggestionsPanelProps) {
   const { t } = useT();
   const [dismissed, setDismissed] = useState<Set<string>>(new Set());
 
@@ -72,7 +73,18 @@ export default function SuggestionsPanel({ suggestions, onAddFavorite }: Suggest
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col gap-1 flex-shrink-0">
+                <div className="flex gap-1 flex-shrink-0">
+                  {/* Compare button */}
+                  <button
+                    onClick={() => onCompare(suggestion)}
+                    className="p-1.5 rounded-sf-sm bg-sf-gold text-white hover:bg-sf-gold/80 transition-colors"
+                    title={t("suggest.compare")}
+                  >
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                  {/* Add to favorites */}
                   <button
                     onClick={() => onAddFavorite(suggestion)}
                     className="p-1.5 rounded-sf-sm bg-sf-accent text-white hover:bg-sf-accent-light transition-colors"
@@ -82,6 +94,7 @@ export default function SuggestionsPanel({ suggestions, onAddFavorite }: Suggest
                       <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                     </svg>
                   </button>
+                  {/* Dismiss */}
                   <button
                     onClick={() => setDismissed((prev) => new Set([...prev, suggestion.result.name]))}
                     className="p-1.5 rounded-sf-sm text-sf-text-light hover:text-sf-text hover:bg-sf-bg transition-colors"
