@@ -26,6 +26,7 @@ import { loadMascotCustomization } from "@/lib/mascotItems";
 import { fetchFriendsFavorites, syncFavorites, getSharingStatus, type FriendFavorites } from "@/lib/api";
 import { useSuggestions } from "@/lib/useSuggestions";
 import SuggestionsPanel from "@/components/SuggestionsPanel";
+import LanguageSelector from "@/components/LanguageSelector";
 
 function SkeletonCard() {
   return (
@@ -71,7 +72,7 @@ function Home() {
   const rewards = useRewards(search.searchCenter);
   const compare = useCompare();
   const { user, signOut, getAccessToken } = useAuth();
-  const { t, locale, setLocale } = useT();
+  const { t, locale } = useT();
   const { theme, toggleTheme } = useTheme();
   const favs = useFavorites();
   const suggestions = useSuggestions(
@@ -183,16 +184,8 @@ function Home() {
             </svg>
             {t("nav.leaderboard")}
           </button>
-          {/* Language toggle */}
-          <button
-            onClick={() => setLocale(locale === "fr" ? "en" : "fr")}
-            aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
-            className="hidden sm:flex items-center px-2.5 py-1.5 rounded-full border
-                        text-[12px] font-semibold transition-all cursor-pointer
-                        bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
-          >
-            {locale === "fr" ? "EN" : "FR"}
-          </button>
+          {/* Language selector */}
+          <LanguageSelector className="hidden sm:block" />
           {/* Dark mode toggle */}
           <button
             onClick={toggleTheme}
@@ -271,15 +264,8 @@ function Home() {
             </svg>
           </button>
 
-          {/* Mobile: Language toggle */}
-          <button
-            onClick={() => setLocale(locale === "fr" ? "en" : "fr")}
-            aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
-            className="sm:hidden flex items-center px-2 py-1 rounded-full border text-[12px] font-semibold
-                       bg-sf-card text-sf-text-secondary border-sf-border"
-          >
-            {locale === "fr" ? "EN" : "FR"}
-          </button>
+          {/* Mobile: Language selector */}
+          <LanguageSelector className="sm:hidden" />
           {/* Mobile: Dark mode toggle */}
           <button
             onClick={toggleTheme}
