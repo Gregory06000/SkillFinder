@@ -131,7 +131,7 @@ function Home() {
         >
           <Mascot pose="default" size={44} />
           <span className="font-serif text-2xl font-bold text-sf-text tracking-tight">
-            SkillFinder
+            Skill<span className="text-sf-accent">Finder</span>
           </span>
         </a>
         <div className="relative flex items-center gap-3 sm:gap-6">
@@ -142,7 +142,7 @@ function Home() {
             className={`hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border
                         text-[13px] font-medium transition-all cursor-pointer
                         ${activeTab === "leaderboard"
-                          ? "bg-sf-dark text-white border-sf-dark"
+                          ? "bg-sf-accent text-white border-sf-accent"
                           : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                         }`}
           >
@@ -232,7 +232,7 @@ function Home() {
             onClick={() => setActiveTab(activeTab === "leaderboard" ? "search" : "leaderboard")}
             aria-label={t("nav.leaderboard")}
             className={`sm:hidden flex items-center justify-center w-8 h-8 rounded-full border transition-colors
-              ${activeTab === "leaderboard" ? "bg-sf-dark text-white border-sf-dark" : "bg-sf-card text-sf-text-secondary border-sf-border"}`}
+              ${activeTab === "leaderboard" ? "bg-sf-accent text-white border-sf-accent" : "bg-sf-card text-sf-text-secondary border-sf-border"}`}
           >
             <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
               <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM14 11a1 1 0 011 1v1h1a1 1 0 110 2h-1v1a1 1 0 11-2 0v-1h-1a1 1 0 110-2h1v-1a1 1 0 011-1z" />
@@ -513,7 +513,7 @@ function Home() {
                                    transition-all cursor-pointer
                                    ${
                                      search.sortMode === opt.key
-                                       ? "bg-sf-dark text-white border-sf-dark"
+                                       ? "bg-sf-accent text-white border-sf-accent"
                                        : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                    }`}
                       >
@@ -529,7 +529,7 @@ function Home() {
                                  transition-all cursor-pointer inline-flex items-center gap-1.5
                                  ${
                                    rewards.showReasoning
-                                     ? "bg-sf-dark text-white border-sf-dark"
+                                     ? "bg-sf-accent text-white border-sf-accent"
                                      : "bg-sf-card text-sf-text-secondary border-sf-border hover:border-sf-text-light"
                                  }`}
                       title={t("results.aiTitle")}
@@ -549,14 +549,14 @@ function Home() {
                     <button
                       onClick={() => setMobileView("list")}
                       className={`px-4 py-1.5 text-xs font-medium transition-all
-                                 ${mobileView === "list" ? "bg-sf-dark text-white" : "bg-sf-card text-sf-text-secondary"}`}
+                                 ${mobileView === "list" ? "bg-sf-accent text-white" : "bg-sf-card text-sf-text-secondary"}`}
                     >
                       {t("results.list")}
                     </button>
                     <button
                       onClick={() => setMobileView("map")}
                       className={`px-4 py-1.5 text-xs font-medium transition-all
-                                 ${mobileView === "map" ? "bg-sf-dark text-white" : "bg-sf-card text-sf-text-secondary"}`}
+                                 ${mobileView === "map" ? "bg-sf-accent text-white" : "bg-sf-card text-sf-text-secondary"}`}
                     >
                       {t("results.map")}
                     </button>
