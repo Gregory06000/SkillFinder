@@ -726,6 +726,254 @@ async def upsert_notification_preferences(user_id: str, email_badges: bool, emai
     )
 
 
+# ── Friends ──────────────────────────────
+
+
+async def search_users(query: str, current_user_id: str, limit: int = 10) -> list[dict]:
+    """Search users by pseudo in the leaderboard table."""
+    if not is_enabled() or not query:
+        return []
+    import re
+    safe_query = re.sub(r"[^a-zA-ZÀ-ÿ0-9\s\-'_]", "", query.strip())
+    if not safe_query:
+        return []
+
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "pseudo,user_id,total_points,city",
+            "pseudo": f"ilike.*{safe_query}*",
+            "user_id": f"neq.{current_user_id}",
+            "order": "total_points.desc",
+            "limit": str(limit),
+        },
+        headers=headers,
+    )
+    if resp.status_code != 200:
+        return []
+    # Deduplicate by user_id (keep highest points entry)
+    seen: set[str] = set()
+    results: list[dict] = []
+    for row in resp.json():
+        uid = row.get("user_id")
+        if uid and uid not in seen:
+            seen.add(uid)
+            results.append({
+                "user_id": uid,
+                "pseudo": row["pseudo"],
+                "total_points": row["total_points"],
+                "city": row.get("city", ""),
+            })
+    return results
+
+
+async def send_friend_request(requester_id: str, addressee_id: str) -> dict:
+    """Send a friend request. Returns status info."""
+    if not is_enabled():
+        return {"success": False, "reason": "disabled"}
+    client = await _get_client()
+    headers = _write_headers()
+    headers["Prefer"] = "return=representation"
+
+    resp = await client.post(
+        "/rest/v1/friendships",
+        headers=headers,
+        json={
+            "requester_id": requester_id,
+            "addressee_id": addressee_id,
+            "status": "pending",
+        },
+    )
+    if resp.status_code == 409:
+        return {"success": False, "reason": "already_exists"}
+    if resp.status_code not in (200, 201):
+        logger.warning("send_friend_request failed: %s %s", resp.status_code, resp.text)
+        return {"success": False, "reason": "error"}
+    return {"success": True}
+
+
+async def respond_friend_request(friendship_id: str, addressee_id: str, accept: bool) -> bool:
+    """Accept or reject a friend request."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers = _write_headers()
+    headers["Prefer"] = "return=minimal"
+
+    new_status = "accepted" if accept else "rejected"
+    resp = await client.patch(
+        "/rest/v1/friendships",
+        params={
+            "id": f"eq.{friendship_id}",
+            "addressee_id": f"eq.{addressee_id}",
+            "status": "eq.pending",
+        },
+        headers=headers,
+        json={"status": new_status},
+    )
+    return resp.status_code in (200, 204)
+
+
+async def remove_friend(friendship_id: str, user_id: str) -> bool:
+    """Remove a friendship (either side can remove)."""
+    if not is_enabled():
+        return False
+    client = await _get_client()
+    headers = _write_headers()
+    headers["Prefer"] = "return=representation"
+
+    # First check the friendship belongs to this user
+    get_resp = await client.get(
+        "/rest/v1/friendships",
+        params={
+            "id": f"eq.{friendship_id}",
+            "or": f"(requester_id.eq.{user_id},addressee_id.eq.{user_id})",
+            "select": "id",
+        },
+        headers=headers,
+    )
+    if get_resp.status_code != 200 or not get_resp.json():
+        return False
+
+    del_resp = await client.delete(
+        "/rest/v1/friendships",
+        params={"id": f"eq.{friendship_id}"},
+        headers=headers,
+    )
+    return del_resp.status_code in (200, 204)
+
+
+async def get_friends(user_id: str) -> list[dict]:
+    """Get accepted friends for a user. Returns list with friend info."""
+    if not is_enabled():
+        return []
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    resp = await client.get(
+        "/rest/v1/friendships",
+        params={
+            "select": "id,requester_id,addressee_id",
+            "status": "eq.accepted",
+            "or": f"(requester_id.eq.{user_id},addressee_id.eq.{user_id})",
+            "order": "updated_at.desc",
+        },
+        headers=headers,
+    )
+    if resp.status_code != 200:
+        return []
+
+    friendships = resp.json()
+    if not friendships:
+        return []
+
+    # Collect friend user_ids
+    friend_ids: list[str] = []
+    friendship_map: dict[str, str] = {}  # friend_user_id -> friendship_id
+    for f in friendships:
+        friend_id = f["addressee_id"] if f["requester_id"] == user_id else f["requester_id"]
+        friend_ids.append(friend_id)
+        friendship_map[friend_id] = f["id"]
+
+    # Fetch profiles from leaderboard
+    if not friend_ids:
+        return []
+    ids_filter = ",".join(friend_ids)
+    profiles_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "user_id,pseudo,total_points,city",
+            "user_id": f"in.({ids_filter})",
+            "order": "updated_at.desc",
+        },
+        headers=headers,
+    )
+    profiles: dict[str, dict] = {}
+    if profiles_resp.status_code == 200:
+        for row in profiles_resp.json():
+            uid = row["user_id"]
+            if uid not in profiles:
+                profiles[uid] = row
+
+    results: list[dict] = []
+    for fid in friend_ids:
+        p = profiles.get(fid, {})
+        results.append({
+            "friendship_id": friendship_map[fid],
+            "user_id": fid,
+            "pseudo": p.get("pseudo", "?"),
+            "total_points": p.get("total_points", 0),
+            "city": p.get("city", ""),
+        })
+    return results
+
+
+async def get_pending_requests(user_id: str) -> list[dict]:
+    """Get pending friend requests addressed to this user."""
+    if not is_enabled():
+        return []
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    resp = await client.get(
+        "/rest/v1/friendships",
+        params={
+            "select": "id,requester_id,created_at",
+            "addressee_id": f"eq.{user_id}",
+            "status": "eq.pending",
+            "order": "created_at.desc",
+        },
+        headers=headers,
+    )
+    if resp.status_code != 200:
+        return []
+
+    requests = resp.json()
+    if not requests:
+        return []
+
+    # Fetch requester profiles
+    requester_ids = [r["requester_id"] for r in requests]
+    ids_filter = ",".join(requester_ids)
+    profiles_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "user_id,pseudo,total_points,city",
+            "user_id": f"in.({ids_filter})",
+            "order": "updated_at.desc",
+        },
+        headers=headers,
+    )
+    profiles: dict[str, dict] = {}
+    if profiles_resp.status_code == 200:
+        for row in profiles_resp.json():
+            uid = row["user_id"]
+            if uid not in profiles:
+                profiles[uid] = row
+
+    results: list[dict] = []
+    for req in requests:
+        p = profiles.get(req["requester_id"], {})
+        results.append({
+            "friendship_id": req["id"],
+            "user_id": req["requester_id"],
+            "pseudo": p.get("pseudo", "?"),
+            "total_points": p.get("total_points", 0),
+            "city": p.get("city", ""),
+            "created_at": req["created_at"],
+        })
+    return results
+
+
 async def get_user_from_token(authorization: str | None) -> str | None:
     """
     Extract and verify user_id from a Supabase JWT Bearer token.

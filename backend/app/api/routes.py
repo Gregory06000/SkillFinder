@@ -571,6 +571,144 @@ async def update_notification_prefs(
         return {"success": False}
 
 
+# ── Friends ──────────────────────────────
+
+
+@router.get("/friends/search")
+@limiter.limit("20/minute")
+async def search_users_endpoint(
+    request: Request,
+    q: str = Query("", min_length=2, max_length=50),
+    authorization: str | None = Header(default=None),
+):
+    """Search users by pseudo to add as friends."""
+    from app.services.supabase import get_user_from_token, search_users
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    try:
+        users = await search_users(q, user_id)
+        return {"users": users}
+    except Exception as e:
+        logger.warning("search_users failed: %s", e)
+        return {"users": []}
+
+
+@router.post("/friends/request")
+@limiter.limit("10/minute")
+async def send_friend_request_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Send a friend request to another user."""
+    from app.models.schemas import FriendRequestBody
+    from app.services.supabase import get_user_from_token, send_friend_request
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    body = await request.json()
+    req = FriendRequestBody(**body)
+
+    if req.addressee_id == user_id:
+        raise HTTPException(status_code=400, detail="Impossible de s'ajouter soi-meme.")
+
+    result = await send_friend_request(user_id, req.addressee_id)
+    if not result["success"]:
+        if result.get("reason") == "already_exists":
+            raise HTTPException(status_code=409, detail="Demande deja envoyee ou deja amis.")
+        raise HTTPException(status_code=500, detail="Erreur lors de l'envoi de la demande.")
+    return {"success": True}
+
+
+@router.post("/friends/respond")
+@limiter.limit("20/minute")
+async def respond_friend_request_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Accept or reject a friend request."""
+    from app.models.schemas import FriendRespondBody
+    from app.services.supabase import get_user_from_token, respond_friend_request
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    body = await request.json()
+    req = FriendRespondBody(**body)
+
+    success = await respond_friend_request(req.friendship_id, user_id, req.accept)
+    if not success:
+        raise HTTPException(status_code=404, detail="Demande introuvable ou deja traitee.")
+    return {"success": True}
+
+
+@router.get("/friends")
+@limiter.limit("30/minute")
+async def get_friends_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Get the authenticated user's friends list."""
+    from app.services.supabase import get_user_from_token, get_friends
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    try:
+        friends = await get_friends(user_id)
+        return {"friends": friends}
+    except Exception as e:
+        logger.warning("get_friends failed: %s", e)
+        return {"friends": []}
+
+
+@router.get("/friends/pending")
+@limiter.limit("30/minute")
+async def get_pending_requests_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Get pending friend requests for the authenticated user."""
+    from app.services.supabase import get_user_from_token, get_pending_requests
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    try:
+        requests_list = await get_pending_requests(user_id)
+        return {"requests": requests_list}
+    except Exception as e:
+        logger.warning("get_pending_requests failed: %s", e)
+        return {"requests": []}
+
+
+@router.delete("/friends/{friendship_id}")
+@limiter.limit("10/minute")
+async def remove_friend_endpoint(
+    request: Request,
+    friendship_id: str,
+    authorization: str | None = Header(default=None),
+):
+    """Remove a friend."""
+    from app.services.supabase import get_user_from_token, remove_friend
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    success = await remove_friend(friendship_id, user_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Amitie introuvable.")
+    return {"success": True}
+
+
 @router.get("/categories")
 @limiter.limit("30/minute")
 async def categories(request: Request):

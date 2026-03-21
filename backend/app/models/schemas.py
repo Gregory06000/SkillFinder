@@ -126,3 +126,13 @@ class VerifyRequest(BaseModel):
 class VerifyResponse(BaseModel):
     success: bool
     message: str
+
+
+# --- Friends ---
+
+class FriendRequestBody(BaseModel):
+    addressee_id: str = Field(..., min_length=1, max_length=100)
+
+class FriendRespondBody(BaseModel):
+    friendship_id: str = Field(..., min_length=1, max_length=100)
+    accept: bool

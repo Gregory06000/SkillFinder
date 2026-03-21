@@ -7,6 +7,7 @@ import { computeBadges } from "@/lib/badges";
 import { fetchNotificationPrefs, updateNotificationPrefs, type NotificationPrefs } from "@/lib/api";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
+import FriendsPanel from "./FriendsPanel";
 
 interface ProfilePanelProps {
   rewards: RewardsData;
@@ -320,6 +321,13 @@ export default function ProfilePanel({
             </div>
           );
         })()}
+
+        {/* Friends */}
+        {user && (
+          <div className="mb-5">
+            <FriendsPanel />
+          </div>
+        )}
 
         {/* Tiers progression */}
         <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-3">

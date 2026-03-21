@@ -338,6 +338,111 @@ export async function updateNotificationPrefs(
   }
 }
 
+// ── Friends ──
+
+export interface FriendUser {
+  user_id: string;
+  pseudo: string;
+  total_points: number;
+  city: string;
+}
+
+export interface Friend extends FriendUser {
+  friendship_id: string;
+}
+
+export interface PendingRequest extends Friend {
+  created_at: string;
+}
+
+export async function searchUsers(query: string, token: string): Promise<FriendUser[]> {
+  try {
+    const params = new URLSearchParams({ q: query });
+    const res = await fetch(`${API_BASE}/api/friends/search?${params}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.users || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function sendFriendRequest(addresseeId: string, token: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/friends/request`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ addressee_id: addresseeId }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function respondFriendRequest(
+  friendshipId: string,
+  accept: boolean,
+  token: string,
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/friends/respond`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ friendship_id: friendshipId, accept }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+export async function fetchFriends(token: string): Promise<Friend[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/friends`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.friends || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchPendingRequests(token: string): Promise<PendingRequest[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/friends/pending`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.requests || [];
+  } catch {
+    return [];
+  }
+}
+
+export async function removeFriend(friendshipId: string, token: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/api/friends/${encodeURIComponent(friendshipId)}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function deleteComment(commentId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/comments/${encodeURIComponent(commentId)}`, {

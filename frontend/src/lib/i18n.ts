@@ -262,6 +262,22 @@ const fr: Dict = {
   "share.footer": "SkillFinder compare les professionnels près de chez vous grâce à l'IA.",
   "card.linkCopied": "Lien copié !",
 
+  // ── Friends ──
+  "friends.title": "Amis ({count})",
+  "friends.add": "Ajouter",
+  "friends.close": "Fermer",
+  "friends.pending": "{count} demande{plural} en attente",
+  "friends.accept": "Accepter",
+  "friends.reject": "Refuser",
+  "friends.remove": "Supprimer",
+  "friends.searchPlaceholder": "Rechercher un utilisateur...",
+  "friends.searching": "Recherche...",
+  "friends.noResults": "Aucun utilisateur trouve.",
+  "friends.alreadyFriend": "Deja ami",
+  "friends.requestSent": "Demande envoyee",
+  "friends.addBtn": "Ajouter",
+  "friends.empty": "Pas encore d'amis. Cherchez des utilisateurs pour en ajouter !",
+
   // ── Cookie banner ──
   "cookie.label": "Bandeau cookies",
   "cookie.message": "Ce site utilise le stockage local de votre navigateur pour la gamification et Google Maps pour la cartographie.",
@@ -512,6 +528,22 @@ const en: Dict = {
   "share.maps": "View on Google Maps",
   "share.footer": "SkillFinder compares professionals near you using AI.",
   "card.linkCopied": "Link copied!",
+
+  // ── Friends ──
+  "friends.title": "Friends ({count})",
+  "friends.add": "Add",
+  "friends.close": "Close",
+  "friends.pending": "{count} pending request{plural}",
+  "friends.accept": "Accept",
+  "friends.reject": "Decline",
+  "friends.remove": "Remove",
+  "friends.searchPlaceholder": "Search for a user...",
+  "friends.searching": "Searching...",
+  "friends.noResults": "No users found.",
+  "friends.alreadyFriend": "Already friends",
+  "friends.requestSent": "Request sent",
+  "friends.addBtn": "Add",
+  "friends.empty": "No friends yet. Search for users to add!",
 
   // ── Cookie banner ──
   "cookie.label": "Cookie notice",

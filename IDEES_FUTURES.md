@@ -21,17 +21,26 @@ Permettre de lancer une recherche en renseignant uniquement le service et la vil
 
 ---
 
-## 3. Système d'amis entre utilisateurs
+## 3. ~~Système d'amis entre utilisateurs~~ ✅ Implémenté — mars 2026
 
 **Description**
 Pouvoir chercher d'autres utilisateurs SkillFinder et les ajouter en amis, créant ainsi un réseau social minimal autour des recommandations locales.
 
-**Avis**
-⚠️ Fonctionnalité structurante mais à fort risque de complexité. Elle nécessite une table `friendships` en base, une interface de recherche d'utilisateurs, un système de demande/acceptation, des notifications, et des règles de confidentialité. Le vrai danger est de créer une couche sociale qui ne sert à rien si la base d'utilisateurs est trop petite au départ. À réserver pour une phase de croissance plus avancée, après avoir validé l'usage des favoris et de la vérification communautaire.
+**Ce qui a été fait**
+- Backend : table `friendships` avec RLS (requester/addressee), table `user_profiles` pour données publiques
+- Supabase : fonctions `search_users`, `send_friend_request`, `respond_friend_request`, `get_friends`, `get_pending_requests`, `remove_friend`
+- API : 6 endpoints (`GET /friends/search`, `POST /friends/request`, `POST /friends/respond`, `GET /friends`, `GET /friends/pending`, `DELETE /friends/:id`)
+- Frontend : composant `FriendsPanel` intégré dans le ProfilePanel (recherche, demandes en attente, liste d'amis, ajout/suppression)
+- Recherche d'utilisateurs par pseudo avec debounce 400ms
+- Système demande/acceptation/refus avec feedback visuel
+- Traductions FR/EN complètes
+- SQL fourni dans `backend/sql/friendships.sql`
 
-| Complexité | Impact utilisateur | Priorité suggérée |
+**Pour activer** : exécuter `backend/sql/friendships.sql` dans Supabase SQL Editor.
+
+| Complexité | Impact utilisateur | Statut |
 |---|---|---|
-| 🔴 Élevée | ⭐⭐⭐ Modéré (conditionné à la masse critique d'utilisateurs) | 📆 Long terme |
+| 🔴 Élevée | ⭐⭐⭐ Modéré | ✅ Livré |
 
 ---
 
@@ -264,7 +273,7 @@ Envoyer des emails aux utilisateurs pour des événements clés : badge débloqu
 | 14 | ~~Mode sombre~~ | ✅ Livré |
 | 15 | ~~Notifications email~~ | ✅ Infrastructure prête |
 | 8 | ~~Mascotte SkillFinder~~ | ✅ Livré |
-| 3 | Système d'amis | 📆 Long terme |
+| 3 | ~~Système d'amis~~ | ✅ Livré |
 | 4 | Partage des favoris aux amis | 📆 Long terme (après #3) |
 | 9 | Micro-transactions (personnalisation mascotte) | 📆 Long terme |
 | 7 | Suggestions intelligentes (favoris) | 📆 Long terme |
