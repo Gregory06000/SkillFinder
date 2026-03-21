@@ -203,6 +203,12 @@ const fr: Dict = {
   "mascot.item.bootsGold": "Dorees",
   "mascot.item.bootsRed": "Rouges",
 
+  // ── Smart Suggestions ──
+  "suggest.title": "Meilleures alternatives trouvees !",
+  "suggest.beats": "+{diff} pts de plus que {name}",
+  "suggest.addFav": "Ajouter aux favoris",
+  "suggest.dismiss": "Ignorer",
+
   // ── TierUp Modal ──
   "tierUp.title": "Nouveau palier !",
   "tierUp.tierLevel": "Palier {palier} · Niveau {level}",
@@ -507,6 +513,12 @@ const en: Dict = {
   "mascot.item.bootsBlack": "Black",
   "mascot.item.bootsGold": "Gold",
   "mascot.item.bootsRed": "Red",
+
+  // ── Smart Suggestions ──
+  "suggest.title": "Better alternatives found!",
+  "suggest.beats": "+{diff} pts more than {name}",
+  "suggest.addFav": "Add to favorites",
+  "suggest.dismiss": "Dismiss",
 
   // ── TierUp Modal ──
   "tierUp.title": "New tier!",

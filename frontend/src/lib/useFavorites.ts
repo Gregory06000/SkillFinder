@@ -13,6 +13,8 @@ export interface FavoriteItem {
   photoName: string;
   mapsUrl: string;
   addedAt: number;
+  keyword?: string;
+  location?: string;
 }
 
 function loadFavorites(): FavoriteItem[] {

@@ -90,7 +90,7 @@ Développer SkillFinder comme une application mobile native ou hybride (React Na
 
 ---
 
-## 7. Suggestions intelligentes basées sur les favoris
+## 7. ~~Suggestions intelligentes basées sur les favoris~~ ✅ Implémenté — mars 2026
 
 **Description**
 Surveiller en arrière-plan les nouvelles entreprises référencées correspondant au profil des favoris d'un utilisateur. Si une nouvelle entreprise obtient un score supérieur à un favori existant sur le même critère et la même zone géographique, notifier l'utilisateur (email ou notification push).
@@ -276,5 +276,5 @@ Envoyer des emails aux utilisateurs pour des événements clés : badge débloqu
 | 3 | ~~Système d'amis~~ | ✅ Livré |
 | 4 | ~~Partage des favoris aux amis~~ ✅ | 📆 Long terme (après #3) |
 | 9 | ~~Micro-transactions (personnalisation mascotte)~~ ✅ | 📆 Long terme |
-| 7 | Suggestions intelligentes (favoris) | 📆 Long terme |
+| 7 | ~~Suggestions intelligentes (favoris)~~ ✅ | 📆 Long terme |
 | 6 | Application mobile native | 📆 Long terme |

@@ -24,6 +24,8 @@ import { trackEvent } from "@/lib/analytics";
 import Mascot from "@/components/Mascot";
 import { loadMascotCustomization } from "@/lib/mascotItems";
 import { fetchFriendsFavorites, syncFavorites, getSharingStatus, type FriendFavorites } from "@/lib/api";
+import { useSuggestions } from "@/lib/useSuggestions";
+import SuggestionsPanel from "@/components/SuggestionsPanel";
 
 function SkeletonCard() {
   return (
@@ -72,6 +74,12 @@ function Home() {
   const { t, locale, setLocale } = useT();
   const { theme, toggleTheme } = useTheme();
   const favs = useFavorites();
+  const suggestions = useSuggestions(
+    search.results,
+    favs.favorites,
+    search.lastSearch?.keyword,
+    favs.isFavorite,
+  );
   const [friendFavs, setFriendFavs] = useState<FriendFavorites[]>([]);
   const [mascotCustom, setMascotCustom] = useState(() => loadMascotCustomization());
 
@@ -557,6 +565,25 @@ function Home() {
           </div>
         )}
 
+        {/* Smart suggestions */}
+        {search.hasResults && suggestions.length > 0 && (
+          <SuggestionsPanel
+            suggestions={suggestions}
+            onAddFavorite={(s) =>
+              favs.toggleFavorite({
+                name: s.result.name,
+                address: s.result.address,
+                matchScore: s.result.match_score,
+                globalRating: s.result.global_rating,
+                photoName: s.result.photo_name,
+                mapsUrl: s.result.maps_url,
+                keyword: search.lastSearch?.keyword || "",
+                location: search.lastSearch?.location || "",
+              })
+            }
+          />
+        )}
+
         {search.hasResults && (
           <>
             {/* Results header */}
@@ -732,6 +759,8 @@ function Home() {
                         globalRating: result.global_rating,
                         photoName: result.photo_name,
                         mapsUrl: result.maps_url,
+                        keyword: search.lastSearch?.keyword || "",
+                        location: search.lastSearch?.location || "",
                       })
                     }
                     keyword={search.lastSearch?.keyword || ""}
