@@ -1,0 +1,22 @@
+name: Weekly Summary Emails
+
+on:
+  schedule:
+    # Every Monday at 08:00 UTC (10:00 Paris time)
+    - cron: "0 8 * * 1"
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  send-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call weekly summary endpoint
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X POST "${{ secrets.BACKEND_URL }}/api/notifications/weekly-summary" \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}")
+          echo "HTTP status: $response"
+          if [ "$response" != "200" ]; then
+            echo "::error::Weekly summary failed with status $response"
+            exit 1
+          fi
