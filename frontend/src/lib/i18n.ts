@@ -264,19 +264,22 @@ const fr: Dict = {
 
   // ── Friends ──
   "friends.title": "Amis ({count})",
+  "friends.myCode": "Mon code ami",
+  "friends.copy": "Copier",
+  "friends.copied": "Copie !",
   "friends.add": "Ajouter",
   "friends.close": "Fermer",
+  "friends.codePlaceholder": "Ex: SF-A7K9X2",
+  "friends.search": "Chercher",
+  "friends.codeNotFound": "Aucun utilisateur avec ce code.",
   "friends.pending": "{count} demande{plural} en attente",
   "friends.accept": "Accepter",
   "friends.reject": "Refuser",
   "friends.remove": "Supprimer",
-  "friends.searchPlaceholder": "Rechercher un utilisateur...",
-  "friends.searching": "Recherche...",
-  "friends.noResults": "Aucun utilisateur trouve.",
   "friends.alreadyFriend": "Deja ami",
   "friends.requestSent": "Demande envoyee",
   "friends.addBtn": "Ajouter",
-  "friends.empty": "Pas encore d'amis. Cherchez des utilisateurs pour en ajouter !",
+  "friends.empty": "Pas encore d'amis. Partagez votre code pour en ajouter !",
 
   // ── Cookie banner ──
   "cookie.label": "Bandeau cookies",
@@ -531,19 +534,22 @@ const en: Dict = {
 
   // ── Friends ──
   "friends.title": "Friends ({count})",
+  "friends.myCode": "My friend code",
+  "friends.copy": "Copy",
+  "friends.copied": "Copied!",
   "friends.add": "Add",
   "friends.close": "Close",
+  "friends.codePlaceholder": "e.g. SF-A7K9X2",
+  "friends.search": "Search",
+  "friends.codeNotFound": "No user found with this code.",
   "friends.pending": "{count} pending request{plural}",
   "friends.accept": "Accept",
   "friends.reject": "Decline",
   "friends.remove": "Remove",
-  "friends.searchPlaceholder": "Search for a user...",
-  "friends.searching": "Searching...",
-  "friends.noResults": "No users found.",
   "friends.alreadyFriend": "Already friends",
   "friends.requestSent": "Request sent",
   "friends.addBtn": "Add",
-  "friends.empty": "No friends yet. Search for users to add!",
+  "friends.empty": "No friends yet. Share your code to add friends!",
 
   // ── Cookie banner ──
   "cookie.label": "Cookie notice",

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 import {
+  fetchFriendCode,
   searchUsers,
   sendFriendRequest,
   respondFriendRequest,
@@ -22,14 +23,16 @@ export default function FriendsPanel() {
 
   const [friends, setFriends] = useState<Friend[]>([]);
   const [pending, setPending] = useState<PendingRequest[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<FriendUser[]>([]);
+  const [friendCode, setFriendCode] = useState<string | null>(null);
+  const [codeCopied, setCodeCopied] = useState(false);
+  const [codeInput, setCodeInput] = useState("");
+  const [searchResult, setSearchResult] = useState<FriendUser | null>(null);
+  const [searchError, setSearchError] = useState("");
   const [searching, setSearching] = useState(false);
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
   const [showSearch, setShowSearch] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-  // Load friends and pending requests
+  // Load friends, pending requests, and friend code
   useEffect(() => {
     if (!user) return;
     loadData();
@@ -39,35 +42,45 @@ export default function FriendsPanel() {
   async function loadData() {
     const token = await getAccessToken();
     if (!token) return;
-    const [f, p] = await Promise.all([
+    const [f, p, code] = await Promise.all([
       fetchFriends(token),
       fetchPendingRequests(token),
+      fetchFriendCode(token),
     ]);
     setFriends(f);
     setPending(p);
+    setFriendCode(code);
   }
 
-  // Search with debounce
-  useEffect(() => {
-    if (!searchQuery.trim() || searchQuery.length < 2) {
-      setSearchResults([]);
+  async function handleCopyCode() {
+    if (!friendCode) return;
+    await navigator.clipboard.writeText(friendCode);
+    setCodeCopied(true);
+    setTimeout(() => setCodeCopied(false), 2000);
+  }
+
+  async function handleSearchByCode() {
+    const code = codeInput.trim().toUpperCase();
+    if (code.length < 2) return;
+
+    setSearching(true);
+    setSearchError("");
+    setSearchResult(null);
+
+    const token = await getAccessToken();
+    if (!token) {
+      setSearching(false);
       return;
     }
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(async () => {
-      setSearching(true);
-      const token = await getAccessToken();
-      if (token) {
-        const results = await searchUsers(searchQuery, token);
-        setSearchResults(results);
-      }
-      setSearching(false);
-    }, 400);
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
+
+    const results = await searchUsers(code, token);
+    if (results.length > 0) {
+      setSearchResult(results[0]);
+    } else {
+      setSearchError(t("friends.codeNotFound"));
+    }
+    setSearching(false);
+  }
 
   async function handleSendRequest(userId: string) {
     const token = await getAccessToken();
@@ -101,13 +114,44 @@ export default function FriendsPanel() {
 
   return (
     <div>
+      {/* My friend code */}
+      {friendCode && (
+        <div className="mb-3 p-2.5 rounded-sf-sm bg-sf-bg border border-sf-border">
+          <div className="text-[10px] text-sf-text-light mb-1">{t("friends.myCode")}</div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-mono font-bold text-sf-accent tracking-wider">{friendCode}</span>
+            <button
+              onClick={handleCopyCode}
+              className="text-[10px] text-sf-text-light hover:text-sf-accent transition-colors flex items-center gap-1"
+            >
+              {codeCopied ? (
+                <>
+                  <svg className="w-3.5 h-3.5 text-sf-success" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  {t("friends.copied")}
+                </>
+              ) : (
+                <>
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                  </svg>
+                  {t("friends.copy")}
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header with friend count + add button */}
       <div className="flex items-center justify-between mb-2.5">
         <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light">
           {t("friends.title", { count: friends.length })}
         </div>
         <button
-          onClick={() => setShowSearch(!showSearch)}
+          onClick={() => { setShowSearch(!showSearch); setSearchResult(null); setSearchError(""); setCodeInput(""); }}
           className="text-xs text-sf-accent hover:text-sf-accent-light transition-colors flex items-center gap-1"
         >
           <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
@@ -125,7 +169,7 @@ export default function FriendsPanel() {
       {pending.length > 0 && (
         <div className="mb-3">
           <div className="text-[10px] font-medium text-sf-gold mb-1.5">
-            {t("friends.pending", { count: pending.length })}
+            {t("friends.pending", { count: pending.length, plural: pending.length > 1 ? "s" : "" })}
           </div>
           <div className="space-y-1.5">
             {pending.map((req) => (
@@ -172,61 +216,61 @@ export default function FriendsPanel() {
         </div>
       )}
 
-      {/* Search box */}
+      {/* Add friend by code */}
       {showSearch && (
         <div className="mb-3">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t("friends.searchPlaceholder")}
-            className="w-full text-xs bg-sf-bg border border-sf-border rounded-sf-sm px-3 py-2
-                       outline-none focus:border-sf-accent text-sf-text placeholder:text-sf-text-light"
-            autoFocus
-          />
-          {searching && (
-            <div className="text-[10px] text-sf-text-light mt-1">{t("friends.searching")}</div>
+          <div className="flex gap-1.5">
+            <input
+              type="text"
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+              onKeyDown={(e) => e.key === "Enter" && handleSearchByCode()}
+              placeholder={t("friends.codePlaceholder")}
+              className="flex-1 text-xs font-mono bg-sf-bg border border-sf-border rounded-sf-sm px-3 py-2
+                         outline-none focus:border-sf-accent text-sf-text placeholder:text-sf-text-light tracking-wider"
+              autoFocus
+              maxLength={9}
+            />
+            <button
+              onClick={handleSearchByCode}
+              disabled={codeInput.trim().length < 2 || searching}
+              className="px-3 py-2 text-xs font-medium bg-sf-accent text-white rounded-sf-sm
+                         hover:bg-sf-accent-light transition-colors disabled:opacity-50"
+            >
+              {searching ? "..." : t("friends.search")}
+            </button>
+          </div>
+
+          {searchError && (
+            <div className="text-[10px] text-red-500 mt-1.5">{searchError}</div>
           )}
-          {searchResults.length > 0 && (
-            <div className="mt-1.5 space-y-1">
-              {searchResults.map((u) => {
-                const alreadyFriend = friends.some((f) => f.user_id === u.user_id);
-                const alreadySent = sentIds.has(u.user_id);
-                return (
-                  <div
-                    key={u.user_id}
-                    className="flex items-center justify-between p-2 rounded-sf-sm bg-sf-bg border border-sf-border"
-                  >
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="w-7 h-7 rounded-full bg-sf-accent-light flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
-                        {u.pseudo.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-xs font-semibold text-sf-text truncate">{u.pseudo}</div>
-                        <div className="text-[10px] text-sf-text-light">
-                          {u.city ? `${u.city} - ` : ""}{u.total_points} pts
-                        </div>
-                      </div>
-                    </div>
-                    {alreadyFriend ? (
-                      <span className="text-[10px] text-sf-success font-medium">{t("friends.alreadyFriend")}</span>
-                    ) : alreadySent ? (
-                      <span className="text-[10px] text-sf-text-light">{t("friends.requestSent")}</span>
-                    ) : (
-                      <button
-                        onClick={() => handleSendRequest(u.user_id)}
-                        className="text-[10px] text-sf-accent hover:text-sf-accent-light font-medium transition-colors"
-                      >
-                        {t("friends.addBtn")}
-                      </button>
-                    )}
+
+          {searchResult && (
+            <div className="mt-1.5 flex items-center justify-between p-2 rounded-sf-sm bg-sf-bg border border-sf-border">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="w-7 h-7 rounded-full bg-sf-accent-light flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+                  {searchResult.pseudo.charAt(0).toUpperCase()}
+                </div>
+                <div className="min-w-0">
+                  <div className="text-xs font-semibold text-sf-text truncate">{searchResult.pseudo}</div>
+                  <div className="text-[10px] text-sf-text-light">
+                    {searchResult.city ? `${searchResult.city} - ` : ""}{searchResult.total_points} pts
                   </div>
-                );
-              })}
+                </div>
+              </div>
+              {friends.some((f) => f.user_id === searchResult.user_id) ? (
+                <span className="text-[10px] text-sf-success font-medium">{t("friends.alreadyFriend")}</span>
+              ) : sentIds.has(searchResult.user_id) ? (
+                <span className="text-[10px] text-sf-text-light">{t("friends.requestSent")}</span>
+              ) : (
+                <button
+                  onClick={() => handleSendRequest(searchResult.user_id)}
+                  className="text-[10px] text-sf-accent hover:text-sf-accent-light font-medium transition-colors"
+                >
+                  {t("friends.addBtn")}
+                </button>
+              )}
             </div>
-          )}
-          {searchQuery.length >= 2 && !searching && searchResults.length === 0 && (
-            <div className="text-[10px] text-sf-text-light mt-1.5">{t("friends.noResults")}</div>
           )}
         </div>
       )}

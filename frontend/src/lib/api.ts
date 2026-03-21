@@ -355,6 +355,19 @@ export interface PendingRequest extends Friend {
   created_at: string;
 }
 
+export async function fetchFriendCode(token: string): Promise<string | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/friends/code`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.friend_code || null;
+  } catch {
+    return null;
+  }
+}
+
 export async function searchUsers(query: string, token: string): Promise<FriendUser[]> {
   try {
     const params = new URLSearchParams({ q: query });

@@ -437,6 +437,148 @@ async def get_user_profile(user_id: str) -> dict | None:
     }
 
 
+# ── Friend codes ──────────────────────────────
+
+
+def _generate_friend_code() -> str:
+    """Generate a unique friend code like SF-A7K9X2."""
+    import secrets
+    import string
+    chars = string.ascii_uppercase + string.digits
+    code = "".join(secrets.choice(chars) for _ in range(6))
+    return f"SF-{code}"
+
+
+async def get_or_create_friend_code(user_id: str) -> str | None:
+    """Get user's friend code, creating one if it doesn't exist."""
+    if not is_enabled():
+        return None
+
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    # Check if user already has a profile with friend_code
+    resp = await client.get(
+        "/rest/v1/user_profiles",
+        params={
+            "select": "friend_code",
+            "user_id": f"eq.{user_id}",
+            "limit": "1",
+        },
+        headers=headers,
+    )
+    if resp.status_code == 200:
+        rows = resp.json()
+        if rows and rows[0].get("friend_code"):
+            return rows[0]["friend_code"]
+
+    # Create a new profile with a unique friend code
+    # Retry a few times in case of collision
+    write_headers = _write_headers()
+    write_headers["Prefer"] = "return=representation"
+
+    for _ in range(5):
+        code = _generate_friend_code()
+        create_resp = await client.post(
+            "/rest/v1/user_profiles",
+            headers=write_headers,
+            json={
+                "user_id": user_id,
+                "friend_code": code,
+            },
+        )
+        if create_resp.status_code in (200, 201):
+            rows = create_resp.json()
+            if rows:
+                return rows[0].get("friend_code", code)
+            return code
+        if create_resp.status_code == 409:
+            # Conflict - either user already exists or code collision
+            # Try fetching again
+            retry_resp = await client.get(
+                "/rest/v1/user_profiles",
+                params={
+                    "select": "friend_code",
+                    "user_id": f"eq.{user_id}",
+                    "limit": "1",
+                },
+                headers=headers,
+            )
+            if retry_resp.status_code == 200:
+                rows = retry_resp.json()
+                if rows and rows[0].get("friend_code"):
+                    return rows[0]["friend_code"]
+            # Code collision, retry with new code
+            continue
+
+    logger.warning("Failed to generate unique friend code for user %s", user_id)
+    return None
+
+
+async def find_user_by_friend_code(code: str, current_user_id: str) -> dict | None:
+    """Find a user by their friend code. Returns profile info or None."""
+    if not is_enabled() or not code:
+        return None
+
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    # Normalize code
+    code = code.strip().upper()
+
+    resp = await client.get(
+        "/rest/v1/user_profiles",
+        params={
+            "select": "user_id,friend_code",
+            "friend_code": f"eq.{code}",
+            "limit": "1",
+        },
+        headers=headers,
+    )
+    if resp.status_code != 200:
+        return None
+    rows = resp.json()
+    if not rows:
+        return None
+
+    found_user_id = rows[0]["user_id"]
+    if found_user_id == current_user_id:
+        return None  # Can't add yourself
+
+    # Get their leaderboard profile
+    lb_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "pseudo,total_points,city",
+            "user_id": f"eq.{found_user_id}",
+            "order": "updated_at.desc",
+            "limit": "1",
+        },
+        headers=headers,
+    )
+    pseudo = "?"
+    total_points = 0
+    city = ""
+    if lb_resp.status_code == 200:
+        lb_rows = lb_resp.json()
+        if lb_rows:
+            pseudo = lb_rows[0].get("pseudo", "?")
+            total_points = lb_rows[0].get("total_points", 0)
+            city = lb_rows[0].get("city", "")
+
+    return {
+        "user_id": found_user_id,
+        "pseudo": pseudo,
+        "total_points": total_points,
+        "city": city,
+        "friend_code": code,
+    }
+
+
 # ── Authentication ──────────────────────────────
 
 
@@ -730,46 +872,13 @@ async def upsert_notification_preferences(user_id: str, email_badges: bool, emai
 
 
 async def search_users(query: str, current_user_id: str, limit: int = 10) -> list[dict]:
-    """Search users by pseudo in the leaderboard table."""
+    """Search users by friend code. Returns a single match or empty list."""
     if not is_enabled() or not query:
         return []
-    import re
-    safe_query = re.sub(r"[^a-zA-ZÀ-ÿ0-9\s\-'_]", "", query.strip())
-    if not safe_query:
-        return []
-
-    client = await _get_client()
-    headers: dict[str, str] = {}
-    if _SERVICE_ROLE_KEY:
-        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
-
-    resp = await client.get(
-        "/rest/v1/leaderboard",
-        params={
-            "select": "pseudo,user_id,total_points,city",
-            "pseudo": f"ilike.*{safe_query}*",
-            "user_id": f"neq.{current_user_id}",
-            "order": "total_points.desc",
-            "limit": str(limit),
-        },
-        headers=headers,
-    )
-    if resp.status_code != 200:
-        return []
-    # Deduplicate by user_id (keep highest points entry)
-    seen: set[str] = set()
-    results: list[dict] = []
-    for row in resp.json():
-        uid = row.get("user_id")
-        if uid and uid not in seen:
-            seen.add(uid)
-            results.append({
-                "user_id": uid,
-                "pseudo": row["pseudo"],
-                "total_points": row["total_points"],
-                "city": row.get("city", ""),
-            })
-    return results
+    result = await find_user_by_friend_code(query, current_user_id)
+    if result:
+        return [result]
+    return []
 
 
 async def send_friend_request(requester_id: str, addressee_id: str) -> dict:

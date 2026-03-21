@@ -63,8 +63,16 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   pseudo TEXT NOT NULL DEFAULT '',
   avatar_url TEXT DEFAULT '',
+  friend_code TEXT NOT NULL UNIQUE,
   created_at TIMESTAMPTZ DEFAULT now()
 );
+
+CREATE INDEX IF NOT EXISTS idx_user_profiles_friend_code ON user_profiles(friend_code);
+
+-- Si la table existe deja, ajouter la colonne friend_code :
+-- ALTER TABLE user_profiles ADD COLUMN IF NOT EXISTS friend_code TEXT UNIQUE;
+-- UPDATE user_profiles SET friend_code = 'SF-' || upper(substr(md5(random()::text), 1, 6)) WHERE friend_code IS NULL;
+-- ALTER TABLE user_profiles ALTER COLUMN friend_code SET NOT NULL;
 
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
 

@@ -574,25 +574,44 @@ async def update_notification_prefs(
 # ── Friends ──────────────────────────────
 
 
+@router.get("/friends/code")
+@limiter.limit("30/minute")
+async def get_friend_code_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Get or create the authenticated user's friend code."""
+    from app.services.supabase import get_user_from_token, get_or_create_friend_code
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    code = await get_or_create_friend_code(user_id)
+    if not code:
+        raise HTTPException(status_code=500, detail="Erreur lors de la generation du code.")
+    return {"friend_code": code}
+
+
 @router.get("/friends/search")
 @limiter.limit("20/minute")
 async def search_users_endpoint(
     request: Request,
-    q: str = Query("", min_length=2, max_length=50),
+    q: str = Query("", min_length=2, max_length=20),
     authorization: str | None = Header(default=None),
 ):
-    """Search users by pseudo to add as friends."""
-    from app.services.supabase import get_user_from_token, search_users
+    """Find a user by friend code to add as friend."""
+    from app.services.supabase import get_user_from_token, find_user_by_friend_code
 
     user_id = await get_user_from_token(authorization)
     if not user_id:
         raise HTTPException(status_code=401, detail="Authentification requise.")
 
     try:
-        users = await search_users(q, user_id)
-        return {"users": users}
+        result = await find_user_by_friend_code(q, user_id)
+        return {"users": [result] if result else []}
     except Exception as e:
-        logger.warning("search_users failed: %s", e)
+        logger.warning("find_user_by_friend_code failed: %s", e)
         return {"users": []}
 
 
