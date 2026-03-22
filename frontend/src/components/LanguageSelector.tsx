@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useT } from "@/lib/i18n";
 import { LOCALE_LABELS, ALL_LOCALES, type Locale } from "@/lib/i18n";
+import { useAuth } from "@/lib/AuthContext";
+import { fetchNotificationPrefs, updateNotificationPrefs } from "@/lib/api";
 
 interface LanguageSelectorProps {
   className?: string;
@@ -10,6 +12,22 @@ interface LanguageSelectorProps {
 
 export default function LanguageSelector({ className = "" }: LanguageSelectorProps) {
   const { locale, setLocale } = useT();
+  const { user, getAccessToken } = useAuth();
+
+  const syncLocaleToServer = useCallback(async (newLocale: string) => {
+    if (!user) return;
+    try {
+      const token = await getAccessToken();
+      if (!token) return;
+      const prefs = await fetchNotificationPrefs(token);
+      await updateNotificationPrefs(token, prefs, newLocale);
+    } catch {}
+  }, [user, getAccessToken]);
+
+  const handleSetLocale = useCallback((loc: Locale) => {
+    setLocale(loc);
+    syncLocaleToServer(loc);
+  }, [setLocale, syncLocaleToServer]);
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -53,7 +71,7 @@ export default function LanguageSelector({ className = "" }: LanguageSelectorPro
               <button
                 key={loc}
                 onClick={() => {
-                  setLocale(loc);
+                  handleSetLocale(loc);
                   setOpen(false);
                 }}
                 className={`w-full flex items-center gap-2 px-3 py-2 text-left text-sm transition-colors
