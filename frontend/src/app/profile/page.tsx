@@ -133,6 +133,7 @@ export default function ProfilePage() {
   const [tab, setTab] = useState<Tab>("findy");
   const [profile, setProfile] = useState<ProfileData>({ avatarColor: "#C45D3E", avatarPhoto: null });
   const [mascotCustom, setMascotCustom] = useState<MascotCustomization>(loadMascotCustomization);
+  const [previewCustom, setPreviewCustom] = useState<MascotCustomization | null>(null);
   const [pseudo, setPseudo] = useState("Guest");
   const [points, setPoints] = useState(0);
   const [weeklyPoints, setWeeklyPoints] = useState(0);
@@ -475,7 +476,7 @@ export default function ProfilePage() {
                   className="p-8 flex flex-col items-center"
                   style={{ background: "linear-gradient(135deg, var(--sf-gold-light), var(--sf-accent-pale))" }}
                 >
-                  <Mascot size={180} customization={mascotCustom} />
+                  <Mascot size={180} customization={previewCustom || mascotCustom} />
                   <div className="mt-3 text-sm font-semibold text-sf-text">{pseudo}</div>
                   <div className="text-xs text-sf-gold">{t(rank.titleKey)} &middot; {t("stats.tier", { palier: rank.palier })}</div>
                 </div>
@@ -507,6 +508,7 @@ export default function ProfilePage() {
                     customization={mascotCustom}
                     userTier={rank.palier}
                     onChange={handleMascotChange}
+                    onPreview={setPreviewCustom}
                   />
                 </div>
 

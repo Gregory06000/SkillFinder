@@ -76,9 +76,17 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "cosmic",     nameKey: "mascot.item.cosmic",      category: "hat", tier: 10, preview: "🌌" },
   { id: "phoenix",    nameKey: "mascot.item.phoenix",     category: "hat", tier: 10, preview: "🔥" },
   { id: "infinity",   nameKey: "mascot.item.infinity",    category: "hat", tier: 10, preview: "♾️" },
-  // Premium
-  { id: "pirate",     nameKey: "mascot.item.pirate",      category: "hat", tier: null, price: 1.99, preview: "🏴‍☠️" },
-  { id: "santa",      nameKey: "mascot.item.santa",       category: "hat", tier: null, price: 1.99, preview: "🎅" },
+  // Premium Hats
+  { id: "pirate",       nameKey: "mascot.item.pirate",       category: "hat", tier: null, price: 1.99, preview: "🏴‍☠️" },
+  { id: "santa",        nameKey: "mascot.item.santa",        category: "hat", tier: null, price: 1.99, preview: "🎅" },
+  { id: "demon",        nameKey: "mascot.item.demon",        category: "hat", tier: null, price: 2.99, preview: "😈" },
+  { id: "angel",        nameKey: "mascot.item.angel",        category: "hat", tier: null, price: 2.99, preview: "👼" },
+  { id: "ninja",        nameKey: "mascot.item.ninja",        category: "hat", tier: null, price: 2.49, preview: "🥷" },
+  { id: "unicorn",      nameKey: "mascot.item.unicorn",      category: "hat", tier: null, price: 3.49, preview: "🦄" },
+  { id: "robot",        nameKey: "mascot.item.robot",        category: "hat", tier: null, price: 2.99, preview: "🤖" },
+  { id: "alien",        nameKey: "mascot.item.alien",        category: "hat", tier: null, price: 2.99, preview: "👽" },
+  { id: "steampunk",    nameKey: "mascot.item.steampunk",    category: "hat", tier: null, price: 3.49, preview: "⚙️" },
+  { id: "emperor",      nameKey: "mascot.item.emperor",      category: "hat", tier: null, price: 4.99, preview: "🫅" },
 
   // ══════════════════════════════════════
   // ── Scarves ──
@@ -123,6 +131,17 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "flame_s",    nameKey: "mascot.item.scarfFlame",  category: "scarf", tier: 10, preview: "🔥" },
   { id: "ice_s",      nameKey: "mascot.item.scarfIce",    category: "scarf", tier: 10, preview: "❄️" },
   { id: "galaxy_s",   nameKey: "mascot.item.scarfGalaxy", category: "scarf", tier: 10, preview: "🌌" },
+  // Premium Scarves
+  { id: "neon_s",       nameKey: "mascot.item.scarfNeon",       category: "scarf", tier: null, price: 1.49, preview: "💚" },
+  { id: "lava_s",       nameKey: "mascot.item.scarfLava",       category: "scarf", tier: null, price: 1.99, preview: "🌋" },
+  { id: "aurora_s",     nameKey: "mascot.item.scarfAurora",     category: "scarf", tier: null, price: 2.49, preview: "🌌" },
+  { id: "electric_s",   nameKey: "mascot.item.scarfElectric",   category: "scarf", tier: null, price: 1.99, preview: "⚡" },
+  { id: "sakura_s",     nameKey: "mascot.item.scarfSakura",     category: "scarf", tier: null, price: 2.49, preview: "🌸" },
+  { id: "dragonfire_s", nameKey: "mascot.item.scarfDragonfire",  category: "scarf", tier: null, price: 2.99, preview: "🐉" },
+  { id: "crystal_s",    nameKey: "mascot.item.scarfCrystal",    category: "scarf", tier: null, price: 2.49, preview: "💎" },
+  { id: "holographic_s",nameKey: "mascot.item.scarfHolographic", category: "scarf", tier: null, price: 3.49, preview: "🔮" },
+  { id: "stardust_s",   nameKey: "mascot.item.scarfStardust",   category: "scarf", tier: null, price: 2.99, preview: "🌠" },
+  { id: "celestial_s",  nameKey: "mascot.item.scarfCelestial",  category: "scarf", tier: null, price: 4.99, preview: "🪐" },
 
   // ══════════════════════════════════════
   // ── Accessories ──
@@ -167,8 +186,17 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "cosmic_aura",nameKey: "mascot.item.cosmicAura",  category: "accessory", tier: 10, preview: "🌌" },
   { id: "halo_acc",   nameKey: "mascot.item.haloAcc",     category: "accessory", tier: 10, preview: "😇" },
   { id: "phoenix_wings",nameKey: "mascot.item.phoenixWings",category: "accessory", tier: 10, preview: "🔥" },
-  // Premium
-  { id: "wings",      nameKey: "mascot.item.wings",       category: "accessory", tier: null, price: 1.99, preview: "🪽" },
+  // Premium Accessories
+  { id: "wings",          nameKey: "mascot.item.wings",          category: "accessory", tier: null, price: 1.99, preview: "🪽" },
+  { id: "demon_wings",    nameKey: "mascot.item.demonWings",     category: "accessory", tier: null, price: 2.99, preview: "🦇" },
+  { id: "katana",         nameKey: "mascot.item.katana",         category: "accessory", tier: null, price: 2.49, preview: "🗡️" },
+  { id: "trident",        nameKey: "mascot.item.trident",        category: "accessory", tier: null, price: 2.99, preview: "🔱" },
+  { id: "magic_wand",     nameKey: "mascot.item.magicWand",      category: "accessory", tier: null, price: 2.49, preview: "🪄" },
+  { id: "dragon_pet",     nameKey: "mascot.item.dragonPet",      category: "accessory", tier: null, price: 3.99, preview: "🐲" },
+  { id: "floating_orbs",  nameKey: "mascot.item.floatingOrbs",   category: "accessory", tier: null, price: 2.99, preview: "🔴" },
+  { id: "flaming_sword",  nameKey: "mascot.item.flamingSword",   category: "accessory", tier: null, price: 3.49, preview: "🗡️" },
+  { id: "galaxy_cloak",   nameKey: "mascot.item.galaxyCloak",    category: "accessory", tier: null, price: 3.99, preview: "🌌" },
+  { id: "royal_scepter",  nameKey: "mascot.item.royalScepter",   category: "accessory", tier: null, price: 4.99, preview: "👑" },
 
   // ══════════════════════════════════════
   // ── Boots ──
@@ -213,8 +241,17 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "flame_boots", nameKey: "mascot.item.bootsFlame",    category: "boots", tier: 10, preview: "🔥" },
   { id: "cosmic_boots",nameKey: "mascot.item.bootsCosmic",   category: "boots", tier: 10, preview: "🌌" },
   { id: "divine_boots",nameKey: "mascot.item.bootsDivine",   category: "boots", tier: 10, preview: "✨" },
-  // Premium
-  { id: "red_boots",   nameKey: "mascot.item.bootsRed",      category: "boots", tier: null, price: 0.99, preview: "🔴" },
+  // Premium Boots
+  { id: "red_boots",      nameKey: "mascot.item.bootsRed",         category: "boots", tier: null, price: 0.99, preview: "🔴" },
+  { id: "lava_boots",     nameKey: "mascot.item.bootsLava",        category: "boots", tier: null, price: 2.49, preview: "🌋" },
+  { id: "neon_boots",     nameKey: "mascot.item.bootsNeon",        category: "boots", tier: null, price: 1.99, preview: "💚" },
+  { id: "crystal_boots",  nameKey: "mascot.item.bootsCrystal",     category: "boots", tier: null, price: 2.49, preview: "💎" },
+  { id: "electric_boots", nameKey: "mascot.item.bootsElectric",    category: "boots", tier: null, price: 1.99, preview: "⚡" },
+  { id: "sakura_boots",   nameKey: "mascot.item.bootsSakura",      category: "boots", tier: null, price: 2.49, preview: "🌸" },
+  { id: "dragon_boots",   nameKey: "mascot.item.bootsDragon",      category: "boots", tier: null, price: 2.99, preview: "🐉" },
+  { id: "hologram_boots", nameKey: "mascot.item.bootsHologram",    category: "boots", tier: null, price: 3.49, preview: "🔮" },
+  { id: "stardust_boots", nameKey: "mascot.item.bootsStardust",    category: "boots", tier: null, price: 2.99, preview: "🌠" },
+  { id: "celestial_boots",nameKey: "mascot.item.bootsCelestial",   category: "boots", tier: null, price: 4.99, preview: "🪐" },
 ];
 
 // ── Helpers ──
@@ -292,6 +329,17 @@ export const SCARF_COLORS: Record<string, string> = {
   flame_s: "#EF4444",
   ice_s: "#7DD3FC",
   galaxy_s: "#6366F1",
+  // Premium
+  neon_s: "#39FF14",
+  lava_s: "#FF4500",
+  aurora_s: "#00CED1",
+  electric_s: "#FFD700",
+  sakura_s: "#FFB7C5",
+  dragonfire_s: "#FF6347",
+  crystal_s: "#B9F2FF",
+  holographic_s: "#E0B0FF",
+  stardust_s: "#C5B358",
+  celestial_s: "#7B68EE",
 };
 
 export const BOOT_COLORS: Record<string, { main: string; sole: string }> = {
@@ -336,5 +384,14 @@ export const BOOT_COLORS: Record<string, { main: string; sole: string }> = {
   cosmic_boots:{ main: "#4F46E5", sole: "#7C3AED" },
   divine_boots:{ main: "#D4A853", sole: "#FBBF24" },
   // Premium
-  red_boots:   { main: "#A63030", sole: "#7A2020" },
+  red_boots:       { main: "#A63030", sole: "#7A2020" },
+  lava_boots:      { main: "#FF4500", sole: "#CC3700" },
+  neon_boots:      { main: "#39FF14", sole: "#2BC40F" },
+  crystal_boots:   { main: "#B9F2FF", sole: "#87CEEB" },
+  electric_boots:  { main: "#FFD700", sole: "#DAA520" },
+  sakura_boots:    { main: "#FFB7C5", sole: "#FF91A4" },
+  dragon_boots:    { main: "#8B0000", sole: "#FF4500" },
+  hologram_boots:  { main: "#E0B0FF", sole: "#9370DB" },
+  stardust_boots:  { main: "#C5B358", sole: "#A0922D" },
+  celestial_boots: { main: "#7B68EE", sole: "#5B48CE" },
 };

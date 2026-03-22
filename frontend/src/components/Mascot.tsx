@@ -451,6 +451,126 @@ function HatSanta() {
   );
 }
 
+// ── Premium Hat SVGs ──
+
+function HatDemon() {
+  return (
+    <g>
+      <path d="M60 72 Q65 50 75 45 Q80 30 70 15" fill="#8B0000" stroke="#FF4500" strokeWidth="2"/>
+      <path d="M140 72 Q135 50 125 45 Q120 30 130 15" fill="#8B0000" stroke="#FF4500" strokeWidth="2"/>
+      <ellipse cx="100" cy="72" rx="42" ry="10" fill="#2D0000"/>
+      <path d="M58 72 Q65 55 100 50 Q135 55 142 72" fill="#4A0000"/>
+      <circle cx="75" cy="58" r="3" fill="#FF4500" opacity="0.8"/>
+      <circle cx="125" cy="58" r="3" fill="#FF4500" opacity="0.8"/>
+    </g>
+  );
+}
+
+function HatAngel() {
+  return (
+    <g>
+      <ellipse cx="100" cy="42" rx="30" ry="6" fill="none" stroke="#FFD700" strokeWidth="3" opacity="0.9"/>
+      <ellipse cx="100" cy="42" rx="30" ry="6" fill="none" stroke="#FFF8DC" strokeWidth="1.5" opacity="0.5"/>
+      <ellipse cx="100" cy="42" rx="26" ry="4" fill="#FFD700" opacity="0.15"/>
+    </g>
+  );
+}
+
+function HatNinja() {
+  return (
+    <g>
+      <path d="M55 82 Q55 55 100 50 Q145 55 145 82" fill="#1A1A2E"/>
+      <rect x="52" y="72" width="96" height="12" rx="2" fill="#2D2D44"/>
+      <path d="M145 76 Q160 74 170 80" fill="none" stroke="#2D2D44" strokeWidth="6" strokeLinecap="round"/>
+      <path d="M145 78 Q158 76 168 82" fill="none" stroke="#1A1A2E" strokeWidth="3" strokeLinecap="round"/>
+    </g>
+  );
+}
+
+function HatUnicorn() {
+  return (
+    <g>
+      <ellipse cx="100" cy="68" rx="42" ry="10" fill="#F0E6FF"/>
+      <path d="M58 68 Q65 50 100 45 Q135 50 142 68" fill="#E8D5FF"/>
+      <path d="M100 45 L96 10 L104 10 Z" fill="url(#unicornGrad)"/>
+      <defs>
+        <linearGradient id="unicornGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor="#E8D5FF"/>
+          <stop offset="33%" stopColor="#FFB7C5"/>
+          <stop offset="66%" stopColor="#87CEEB"/>
+          <stop offset="100%" stopColor="#FFD700"/>
+        </linearGradient>
+      </defs>
+      <circle cx="100" cy="10" r="3" fill="#FFD700"/>
+      <ellipse cx="80" cy="62" rx="5" ry="3" fill="#FFB7C5" opacity="0.5"/>
+      <ellipse cx="120" cy="62" rx="5" ry="3" fill="#87CEEB" opacity="0.5"/>
+    </g>
+  );
+}
+
+function HatRobot() {
+  return (
+    <g>
+      <rect x="62" y="50" width="76" height="25" rx="4" fill="#A8A8B0"/>
+      <rect x="62" y="50" width="76" height="8" rx="3" fill="#71797E"/>
+      <rect x="85" y="40" width="30" height="14" rx="3" fill="#B0B0B8"/>
+      <circle cx="100" cy="47" r="4" fill="#00FFFF" opacity="0.8"/>
+      <rect x="90" y="32" width="4" height="10" rx="2" fill="#A8A8B0"/>
+      <circle cx="92" cy="30" r="3" fill="#FF4444" opacity="0.7"/>
+      <rect x="66" y="55" width="8" height="4" rx="1" fill="#00FF00" opacity="0.6"/>
+      <rect x="78" y="55" width="8" height="4" rx="1" fill="#00FF00" opacity="0.6"/>
+      <rect x="114" y="55" width="8" height="4" rx="1" fill="#00FF00" opacity="0.6"/>
+      <rect x="126" y="55" width="8" height="4" rx="1" fill="#00FF00" opacity="0.6"/>
+    </g>
+  );
+}
+
+function HatAlien() {
+  return (
+    <g>
+      <ellipse cx="100" cy="58" rx="50" ry="18" fill="#4A6741"/>
+      <path d="M55 58 Q55 30 100 25 Q145 30 145 58" fill="#5C8A50"/>
+      <ellipse cx="100" cy="58" rx="50" ry="8" fill="#3A5731" opacity="0.5"/>
+      <circle cx="80" cy="42" r="5" fill="#ADFF2F" opacity="0.5"/>
+      <circle cx="120" cy="42" r="5" fill="#ADFF2F" opacity="0.5"/>
+      <circle cx="100" cy="36" r="3" fill="#ADFF2F" opacity="0.3"/>
+    </g>
+  );
+}
+
+function HatSteampunk() {
+  return (
+    <g>
+      <ellipse cx="100" cy="68" rx="52" ry="10" fill="#4A2E1A"/>
+      <path d="M55 68 Q60 42 100 35 Q140 42 145 68" fill="#6B4226"/>
+      <rect x="70" y="42" width="60" height="8" rx="2" fill="#8B5E3C"/>
+      <circle cx="130" cy="50" r="12" fill="none" stroke="#CD7F32" strokeWidth="3"/>
+      <circle cx="130" cy="50" r="6" fill="none" stroke="#B8860B" strokeWidth="2"/>
+      <line x1="130" y1="44" x2="130" y2="50" stroke="#CD7F32" strokeWidth="2"/>
+      <line x1="130" y1="50" x2="135" y2="48" stroke="#CD7F32" strokeWidth="1.5"/>
+      <rect x="72" y="46" width="20" height="3" rx="1" fill="#CD7F32"/>
+    </g>
+  );
+}
+
+function HatEmperor() {
+  return (
+    <g>
+      <ellipse cx="100" cy="65" rx="40" ry="10" fill="#8B0000"/>
+      <path d="M62 65 Q62 40 75 35 L80 20 L90 32 L100 15 L110 32 L120 20 L125 35 Q138 40 138 65" fill="#C41E3A"/>
+      <path d="M80 20 L90 32 L100 15 L110 32 L120 20" fill="#FFD700" opacity="0.3"/>
+      <circle cx="100" cy="15" r="4" fill="#FFD700"/>
+      <circle cx="80" cy="20" r="3" fill="#E0115F"/>
+      <circle cx="120" cy="20" r="3" fill="#4169E1"/>
+      <ellipse cx="100" cy="65" rx="40" ry="6" fill="#FFD700" opacity="0.4"/>
+      <rect x="62" y="61" width="76" height="6" rx="2" fill="#B8860B"/>
+      <circle cx="85" cy="64" r="2" fill="#FFD700"/>
+      <circle cx="100" cy="64" r="2" fill="#E0115F"/>
+      <circle cx="115" cy="64" r="2" fill="#FFD700"/>
+    </g>
+  );
+}
+
 function renderHat(hatId: string) {
   switch (hatId) {
     case "explorer": return <HatExplorer />;
@@ -484,6 +604,14 @@ function renderHat(hatId: string) {
     case "infinity": return <HatInfinity />;
     case "pirate": return <HatPirate />;
     case "santa": return <HatSanta />;
+    case "demon": return <HatDemon />;
+    case "angel": return <HatAngel />;
+    case "ninja": return <HatNinja />;
+    case "unicorn": return <HatUnicorn />;
+    case "robot": return <HatRobot />;
+    case "alien": return <HatAlien />;
+    case "steampunk": return <HatSteampunk />;
+    case "emperor": return <HatEmperor />;
     default: return null;
   }
 }
@@ -827,6 +955,133 @@ function AccessoryWings() {
   );
 }
 
+// ── Premium Accessory SVGs ──
+
+function AccessoryDemonWings() {
+  return (
+    <g>
+      <path d="M45 130 Q20 110 15 90 Q18 100 30 105 Q22 85 25 70 Q30 90 40 100 Q35 80 40 65 Q42 85 48 105" fill="#4A0000" opacity="0.8"/>
+      <path d="M155 130 Q180 110 185 90 Q182 100 170 105 Q178 85 175 70 Q170 90 160 100 Q165 80 160 65 Q158 85 152 105" fill="#4A0000" opacity="0.8"/>
+      <path d="M45 130 Q25 115 20 95" fill="none" stroke="#8B0000" strokeWidth="1.5" opacity="0.6"/>
+      <path d="M155 130 Q175 115 180 95" fill="none" stroke="#8B0000" strokeWidth="1.5" opacity="0.6"/>
+    </g>
+  );
+}
+
+function AccessoryKatana() {
+  return (
+    <g>
+      <line x1="135" y1="100" x2="170" y2="60" stroke="#B0B0B8" strokeWidth="3" strokeLinecap="round"/>
+      <line x1="135" y1="100" x2="170" y2="60" stroke="#E8E8E8" strokeWidth="1.5" strokeLinecap="round"/>
+      <rect x="130" y="97" width="12" height="5" rx="1" fill="#2D2D2D" transform="rotate(-40 136 100)"/>
+      <line x1="128" y1="104" x2="120" y2="118" stroke="#4A2E1A" strokeWidth="4" strokeLinecap="round"/>
+      <path d="M118 116 L122 120 L126 116" fill="#D4A853" stroke="#B8860B" strokeWidth="0.5"/>
+    </g>
+  );
+}
+
+function AccessoryTrident() {
+  return (
+    <g>
+      <line x1="155" y1="185" x2="155" y2="80" stroke="#8B6914" strokeWidth="4" strokeLinecap="round"/>
+      <path d="M145 85 L155 65 L165 85" fill="none" stroke="#FFD700" strokeWidth="3" strokeLinejoin="round"/>
+      <line x1="155" y1="65" x2="155" y2="55" stroke="#FFD700" strokeWidth="3" strokeLinecap="round"/>
+      <line x1="143" y1="80" x2="140" y2="60" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round"/>
+      <line x1="167" y1="80" x2="170" y2="60" stroke="#FFD700" strokeWidth="2.5" strokeLinecap="round"/>
+    </g>
+  );
+}
+
+function AccessoryMagicWand() {
+  return (
+    <g>
+      <line x1="130" y1="170" x2="155" y2="100" stroke="#6B4226" strokeWidth="4" strokeLinecap="round"/>
+      <circle cx="155" cy="98" r="6" fill="#9370DB"/>
+      <circle cx="155" cy="98" r="3" fill="#E0B0FF" opacity="0.8"/>
+      <circle cx="160" cy="90" r="2" fill="#FFD700" opacity="0.6"/>
+      <circle cx="148" cy="92" r="1.5" fill="#FFD700" opacity="0.5"/>
+      <circle cx="162" cy="96" r="1" fill="#FFD700" opacity="0.4"/>
+    </g>
+  );
+}
+
+function AccessoryDragonPet() {
+  return (
+    <g>
+      <ellipse cx="155" cy="165" rx="12" ry="10" fill="#228B22"/>
+      <ellipse cx="160" cy="155" rx="8" ry="7" fill="#2E8B57"/>
+      <circle cx="157" cy="153" r="2" fill="#FFD700"/>
+      <circle cx="163" cy="153" r="2" fill="#FFD700"/>
+      <path d="M152 150 Q148 145 150 140" fill="none" stroke="#228B22" strokeWidth="2"/>
+      <path d="M168 150 Q172 145 170 140" fill="none" stroke="#228B22" strokeWidth="2"/>
+      <path d="M145 170 Q140 175 138 172 Q142 168 145 170Z" fill="#228B22"/>
+      <path d="M167 165 Q175 168 178 165 Q175 162 167 165Z" fill="#228B22"/>
+    </g>
+  );
+}
+
+function AccessoryFloatingOrbs() {
+  return (
+    <g>
+      <circle cx="55" cy="100" r="6" fill="#FF4444" opacity="0.7"/>
+      <circle cx="55" cy="100" r="3" fill="#FF8888" opacity="0.5"/>
+      <circle cx="145" cy="95" r="6" fill="#4444FF" opacity="0.7"/>
+      <circle cx="145" cy="95" r="3" fill="#8888FF" opacity="0.5"/>
+      <circle cx="50" cy="140" r="5" fill="#44FF44" opacity="0.7"/>
+      <circle cx="50" cy="140" r="2.5" fill="#88FF88" opacity="0.5"/>
+      <circle cx="150" cy="145" r="5" fill="#FFD700" opacity="0.7"/>
+      <circle cx="150" cy="145" r="2.5" fill="#FFED88" opacity="0.5"/>
+    </g>
+  );
+}
+
+function AccessoryFlamingSword() {
+  return (
+    <g>
+      <line x1="135" y1="175" x2="160" y2="95" stroke="#A8A8B0" strokeWidth="4"/>
+      <line x1="135" y1="175" x2="160" y2="95" stroke="#E0E0E0" strokeWidth="2"/>
+      <rect x="128" y="172" width="16" height="6" rx="2" fill="#8B6914"/>
+      <path d="M155 100 Q165 80 160 60 Q155 75 150 80 Q160 65 155 50" fill="#FF4500" opacity="0.7"/>
+      <path d="M158 95 Q170 75 165 55 Q160 70 155 75" fill="#FFD700" opacity="0.5"/>
+    </g>
+  );
+}
+
+function AccessoryGalaxyCloak() {
+  return (
+    <g>
+      <path d="M60 120 Q55 140 50 180 Q70 185 100 190 Q130 185 150 180 Q145 140 140 120" fill="#1A1A4E" opacity="0.8"/>
+      <path d="M65 125 Q60 145 55 178 Q75 183 100 186 Q125 183 145 178 Q140 145 135 125" fill="#2D2D6B" opacity="0.6"/>
+      <circle cx="70" cy="150" r="1" fill="white" opacity="0.7"/>
+      <circle cx="90" cy="165" r="1.5" fill="white" opacity="0.8"/>
+      <circle cx="110" cy="155" r="1" fill="#FFD700" opacity="0.7"/>
+      <circle cx="130" cy="170" r="1.5" fill="white" opacity="0.6"/>
+      <circle cx="80" cy="175" r="1" fill="#7B68EE" opacity="0.8"/>
+      <circle cx="120" cy="145" r="1" fill="#87CEEB" opacity="0.7"/>
+    </g>
+  );
+}
+
+function AccessoryRoyalScepter() {
+  return (
+    <g>
+      <line x1="150" y1="185" x2="150" y2="75" stroke="url(#scepterGrad)" strokeWidth="5" strokeLinecap="round"/>
+      <defs>
+        <linearGradient id="scepterGrad" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0%" stopColor="#8B6914"/>
+          <stop offset="100%" stopColor="#FFD700"/>
+        </linearGradient>
+      </defs>
+      <circle cx="150" cy="73" r="10" fill="#FFD700"/>
+      <circle cx="150" cy="73" r="6" fill="#E0115F"/>
+      <circle cx="150" cy="73" r="3" fill="#FF6B81" opacity="0.6"/>
+      <circle cx="150" cy="60" r="3" fill="#FFD700" opacity="0.6"/>
+      <circle cx="140" cy="67" r="2.5" fill="#FFD700" opacity="0.5"/>
+      <circle cx="160" cy="67" r="2.5" fill="#FFD700" opacity="0.5"/>
+    </g>
+  );
+}
+
 function renderAccessory(accId: string, isSad: boolean) {
   if (isSad) return null;
   switch (accId) {
@@ -860,6 +1115,15 @@ function renderAccessory(accId: string, isSad: boolean) {
     case "halo_acc": return <AccessoryHaloAcc />;
     case "phoenix_wings": return <AccessoryPhoenixWings />;
     case "wings": return <AccessoryWings />;
+    case "demon_wings": return <AccessoryDemonWings />;
+    case "katana": return <AccessoryKatana />;
+    case "trident": return <AccessoryTrident />;
+    case "magic_wand": return <AccessoryMagicWand />;
+    case "dragon_pet": return <AccessoryDragonPet />;
+    case "floating_orbs": return <AccessoryFloatingOrbs />;
+    case "flaming_sword": return <AccessoryFlamingSword />;
+    case "galaxy_cloak": return <AccessoryGalaxyCloak />;
+    case "royal_scepter": return <AccessoryRoyalScepter />;
     default: return null;
   }
 }
