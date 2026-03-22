@@ -1195,13 +1195,49 @@ export default function Mascot({
       {c.accessory === "armor" && !isSad && <AccessoryArmor />}
 
       {/* ── Scarf ── */}
-      {c.scarf !== "none_scarf" && (
-        <g>
-          <path d="M78 142 Q100 155 122 142 Q120 150 115 155 L100 148 L85 155 Q80 150 78 142" fill={scarfColor}/>
-          <path d="M85 155 Q82 168 78 175" fill="none" stroke={scarfColor} strokeWidth="5" strokeLinecap="round"/>
-          <path d="M115 155 Q118 168 122 175" fill="none" stroke={scarfColor} strokeWidth="5" strokeLinecap="round"/>
-        </g>
-      )}
+      {c.scarf !== "none_scarf" && (() => {
+        const sc = scarfColor;
+        // Darken color for shading
+        const darken = (hex: string, amt: number) => {
+          const n = parseInt(hex.replace("#",""), 16);
+          const r = Math.max(0, (n >> 16) - amt);
+          const g = Math.max(0, ((n >> 8) & 0xff) - amt);
+          const b = Math.max(0, (n & 0xff) - amt);
+          return `#${(r<<16|g<<8|b).toString(16).padStart(6,"0")}`;
+        };
+        const shadow = darken(sc, 35);
+        const highlight = darken(sc, -20);
+        return (
+          <g>
+            {/* Main wrap around neck */}
+            <path d="M70 138 Q72 132 82 130 Q100 126 118 130 Q128 132 130 138 Q128 148 122 152 Q100 158 78 152 Q72 148 70 138Z" fill={sc}/>
+            {/* Top fold / overlap */}
+            <path d="M74 136 Q78 130 90 128 Q100 127 110 128 Q122 130 126 136 Q122 142 110 144 Q100 145 90 144 Q78 142 74 136Z" fill={highlight} opacity="0.4"/>
+            {/* Shadow under chin */}
+            <path d="M82 132 Q100 128 118 132 Q116 138 100 140 Q84 138 82 132Z" fill={shadow} opacity="0.3"/>
+            {/* Knot at front-right */}
+            <ellipse cx="118" cy="148" rx="8" ry="6" fill={sc}/>
+            <ellipse cx="118" cy="148" rx="5" ry="4" fill={shadow} opacity="0.3"/>
+            {/* Hanging end - front piece */}
+            <path d="M114 152 Q116 168 120 180 Q122 186 118 188 Q114 186 112 180 Q110 170 112 152Z" fill={sc}/>
+            <path d="M114 152 Q115 168 118 180 Q116 184 114 180 Q112 170 113 152Z" fill={shadow} opacity="0.25"/>
+            {/* Hanging end - back piece */}
+            <path d="M122 150 Q126 164 130 176 Q132 182 128 184 Q124 182 123 176 Q120 164 120 150Z" fill={sc}/>
+            <path d="M123 150 Q126 162 129 174 Q128 178 126 174 Q124 162 122 150Z" fill={shadow} opacity="0.25"/>
+            {/* Fringe / tassels on ends */}
+            <line x1="115" y1="187" x2="114" y2="193" stroke={sc} strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="118" y1="188" x2="118" y2="194" stroke={sc} strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="121" y1="187" x2="122" y2="193" stroke={sc} strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="126" y1="183" x2="125" y2="189" stroke={sc} strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="129" y1="184" x2="129" y2="190" stroke={sc} strokeWidth="1.5" strokeLinecap="round"/>
+            <line x1="132" y1="183" x2="133" y2="189" stroke={sc} strokeWidth="1.5" strokeLinecap="round"/>
+            {/* Knit texture lines */}
+            <path d="M78 138 Q90 134 100 135 Q110 134 122 138" fill="none" stroke={shadow} strokeWidth="0.6" opacity="0.3"/>
+            <path d="M76 142 Q90 138 100 139 Q110 138 124 142" fill="none" stroke={shadow} strokeWidth="0.6" opacity="0.3"/>
+            <path d="M78 146 Q90 142 100 143 Q110 142 122 146" fill="none" stroke={shadow} strokeWidth="0.6" opacity="0.3"/>
+          </g>
+        );
+      })()}
 
       {/* ── Arms ── */}
       <path
