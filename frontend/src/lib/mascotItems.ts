@@ -79,14 +79,14 @@ export const MASCOT_ITEMS: MascotItem[] = [
   // Premium Hats
   { id: "pirate",       nameKey: "mascot.item.pirate",       category: "hat", tier: null, price: 1.99, preview: "🏴‍☠️" },
   { id: "santa",        nameKey: "mascot.item.santa",        category: "hat", tier: null, price: 1.99, preview: "🎅" },
-  { id: "demon",        nameKey: "mascot.item.demon",        category: "hat", tier: null, price: 2.99, preview: "😈" },
-  { id: "angel",        nameKey: "mascot.item.angel",        category: "hat", tier: null, price: 2.99, preview: "👼" },
-  { id: "ninja",        nameKey: "mascot.item.ninja",        category: "hat", tier: null, price: 2.49, preview: "🥷" },
-  { id: "unicorn",      nameKey: "mascot.item.unicorn",      category: "hat", tier: null, price: 3.49, preview: "🦄" },
-  { id: "robot",        nameKey: "mascot.item.robot",        category: "hat", tier: null, price: 2.99, preview: "🤖" },
-  { id: "alien",        nameKey: "mascot.item.alien",        category: "hat", tier: null, price: 2.99, preview: "👽" },
-  { id: "steampunk",    nameKey: "mascot.item.steampunk",    category: "hat", tier: null, price: 3.49, preview: "⚙️" },
-  { id: "emperor",      nameKey: "mascot.item.emperor",      category: "hat", tier: null, price: 4.99, preview: "🫅" },
+  { id: "demon",        nameKey: "mascot.item.demon",        category: "hat", tier: null, price: 1.99, preview: "😈" },
+  { id: "angel",        nameKey: "mascot.item.angel",        category: "hat", tier: null, price: 1.99, preview: "👼" },
+  { id: "ninja",        nameKey: "mascot.item.ninja",        category: "hat", tier: null, price: 1.99, preview: "🥷" },
+  { id: "unicorn",      nameKey: "mascot.item.unicorn",      category: "hat", tier: null, price: 1.99, preview: "🦄" },
+  { id: "robot",        nameKey: "mascot.item.robot",        category: "hat", tier: null, price: 1.99, preview: "🤖" },
+  { id: "alien",        nameKey: "mascot.item.alien",        category: "hat", tier: null, price: 1.99, preview: "👽" },
+  { id: "steampunk",    nameKey: "mascot.item.steampunk",    category: "hat", tier: null, price: 1.99, preview: "⚙️" },
+  { id: "emperor",      nameKey: "mascot.item.emperor",      category: "hat", tier: null, price: 1.99, preview: "🫅" },
 
   // ══════════════════════════════════════
   // ── Scarves ──
@@ -132,16 +132,16 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "ice_s",      nameKey: "mascot.item.scarfIce",    category: "scarf", tier: 10, preview: "❄️" },
   { id: "galaxy_s",   nameKey: "mascot.item.scarfGalaxy", category: "scarf", tier: 10, preview: "🌌" },
   // Premium Scarves
-  { id: "neon_s",       nameKey: "mascot.item.scarfNeon",       category: "scarf", tier: null, price: 1.49, preview: "💚" },
+  { id: "neon_s",       nameKey: "mascot.item.scarfNeon",       category: "scarf", tier: null, price: 1.99, preview: "💚" },
   { id: "lava_s",       nameKey: "mascot.item.scarfLava",       category: "scarf", tier: null, price: 1.99, preview: "🌋" },
-  { id: "aurora_s",     nameKey: "mascot.item.scarfAurora",     category: "scarf", tier: null, price: 2.49, preview: "🌌" },
+  { id: "aurora_s",     nameKey: "mascot.item.scarfAurora",     category: "scarf", tier: null, price: 1.99, preview: "🌌" },
   { id: "electric_s",   nameKey: "mascot.item.scarfElectric",   category: "scarf", tier: null, price: 1.99, preview: "⚡" },
-  { id: "sakura_s",     nameKey: "mascot.item.scarfSakura",     category: "scarf", tier: null, price: 2.49, preview: "🌸" },
-  { id: "dragonfire_s", nameKey: "mascot.item.scarfDragonfire",  category: "scarf", tier: null, price: 2.99, preview: "🐉" },
-  { id: "crystal_s",    nameKey: "mascot.item.scarfCrystal",    category: "scarf", tier: null, price: 2.49, preview: "💎" },
-  { id: "holographic_s",nameKey: "mascot.item.scarfHolographic", category: "scarf", tier: null, price: 3.49, preview: "🔮" },
-  { id: "stardust_s",   nameKey: "mascot.item.scarfStardust",   category: "scarf", tier: null, price: 2.99, preview: "🌠" },
-  { id: "celestial_s",  nameKey: "mascot.item.scarfCelestial",  category: "scarf", tier: null, price: 4.99, preview: "🪐" },
+  { id: "sakura_s",     nameKey: "mascot.item.scarfSakura",     category: "scarf", tier: null, price: 1.99, preview: "🌸" },
+  { id: "dragonfire_s", nameKey: "mascot.item.scarfDragonfire",  category: "scarf", tier: null, price: 1.99, preview: "🐉" },
+  { id: "crystal_s",    nameKey: "mascot.item.scarfCrystal",    category: "scarf", tier: null, price: 1.99, preview: "💎" },
+  { id: "holographic_s",nameKey: "mascot.item.scarfHolographic", category: "scarf", tier: null, price: 1.99, preview: "🔮" },
+  { id: "stardust_s",   nameKey: "mascot.item.scarfStardust",   category: "scarf", tier: null, price: 1.99, preview: "🌠" },
+  { id: "celestial_s",  nameKey: "mascot.item.scarfCelestial",  category: "scarf", tier: null, price: 1.99, preview: "🪐" },
 
   // ══════════════════════════════════════
   // ── Accessories ──
@@ -188,15 +188,15 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "phoenix_wings",nameKey: "mascot.item.phoenixWings",category: "accessory", tier: 10, preview: "🔥" },
   // Premium Accessories
   { id: "wings",          nameKey: "mascot.item.wings",          category: "accessory", tier: null, price: 1.99, preview: "🪽" },
-  { id: "demon_wings",    nameKey: "mascot.item.demonWings",     category: "accessory", tier: null, price: 2.99, preview: "🦇" },
-  { id: "katana",         nameKey: "mascot.item.katana",         category: "accessory", tier: null, price: 2.49, preview: "🗡️" },
-  { id: "trident",        nameKey: "mascot.item.trident",        category: "accessory", tier: null, price: 2.99, preview: "🔱" },
-  { id: "magic_wand",     nameKey: "mascot.item.magicWand",      category: "accessory", tier: null, price: 2.49, preview: "🪄" },
-  { id: "dragon_pet",     nameKey: "mascot.item.dragonPet",      category: "accessory", tier: null, price: 3.99, preview: "🐲" },
-  { id: "floating_orbs",  nameKey: "mascot.item.floatingOrbs",   category: "accessory", tier: null, price: 2.99, preview: "🔴" },
-  { id: "flaming_sword",  nameKey: "mascot.item.flamingSword",   category: "accessory", tier: null, price: 3.49, preview: "🗡️" },
-  { id: "galaxy_cloak",   nameKey: "mascot.item.galaxyCloak",    category: "accessory", tier: null, price: 3.99, preview: "🌌" },
-  { id: "royal_scepter",  nameKey: "mascot.item.royalScepter",   category: "accessory", tier: null, price: 4.99, preview: "👑" },
+  { id: "demon_wings",    nameKey: "mascot.item.demonWings",     category: "accessory", tier: null, price: 1.99, preview: "🦇" },
+  { id: "katana",         nameKey: "mascot.item.katana",         category: "accessory", tier: null, price: 1.99, preview: "🗡️" },
+  { id: "trident",        nameKey: "mascot.item.trident",        category: "accessory", tier: null, price: 1.99, preview: "🔱" },
+  { id: "magic_wand",     nameKey: "mascot.item.magicWand",      category: "accessory", tier: null, price: 1.99, preview: "🪄" },
+  { id: "dragon_pet",     nameKey: "mascot.item.dragonPet",      category: "accessory", tier: null, price: 1.99, preview: "🐲" },
+  { id: "floating_orbs",  nameKey: "mascot.item.floatingOrbs",   category: "accessory", tier: null, price: 1.99, preview: "🔴" },
+  { id: "flaming_sword",  nameKey: "mascot.item.flamingSword",   category: "accessory", tier: null, price: 1.99, preview: "🗡️" },
+  { id: "galaxy_cloak",   nameKey: "mascot.item.galaxyCloak",    category: "accessory", tier: null, price: 1.99, preview: "🌌" },
+  { id: "royal_scepter",  nameKey: "mascot.item.royalScepter",   category: "accessory", tier: null, price: 1.99, preview: "👑" },
 
   // ══════════════════════════════════════
   // ── Boots ──
@@ -242,16 +242,16 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "cosmic_boots",nameKey: "mascot.item.bootsCosmic",   category: "boots", tier: 10, preview: "🌌" },
   { id: "divine_boots",nameKey: "mascot.item.bootsDivine",   category: "boots", tier: 10, preview: "✨" },
   // Premium Boots
-  { id: "red_boots",      nameKey: "mascot.item.bootsRed",         category: "boots", tier: null, price: 0.99, preview: "🔴" },
-  { id: "lava_boots",     nameKey: "mascot.item.bootsLava",        category: "boots", tier: null, price: 2.49, preview: "🌋" },
+  { id: "red_boots",      nameKey: "mascot.item.bootsRed",         category: "boots", tier: null, price: 1.99, preview: "🔴" },
+  { id: "lava_boots",     nameKey: "mascot.item.bootsLava",        category: "boots", tier: null, price: 1.99, preview: "🌋" },
   { id: "neon_boots",     nameKey: "mascot.item.bootsNeon",        category: "boots", tier: null, price: 1.99, preview: "💚" },
-  { id: "crystal_boots",  nameKey: "mascot.item.bootsCrystal",     category: "boots", tier: null, price: 2.49, preview: "💎" },
+  { id: "crystal_boots",  nameKey: "mascot.item.bootsCrystal",     category: "boots", tier: null, price: 1.99, preview: "💎" },
   { id: "electric_boots", nameKey: "mascot.item.bootsElectric",    category: "boots", tier: null, price: 1.99, preview: "⚡" },
-  { id: "sakura_boots",   nameKey: "mascot.item.bootsSakura",      category: "boots", tier: null, price: 2.49, preview: "🌸" },
-  { id: "dragon_boots",   nameKey: "mascot.item.bootsDragon",      category: "boots", tier: null, price: 2.99, preview: "🐉" },
-  { id: "hologram_boots", nameKey: "mascot.item.bootsHologram",    category: "boots", tier: null, price: 3.49, preview: "🔮" },
-  { id: "stardust_boots", nameKey: "mascot.item.bootsStardust",    category: "boots", tier: null, price: 2.99, preview: "🌠" },
-  { id: "celestial_boots",nameKey: "mascot.item.bootsCelestial",   category: "boots", tier: null, price: 4.99, preview: "🪐" },
+  { id: "sakura_boots",   nameKey: "mascot.item.bootsSakura",      category: "boots", tier: null, price: 1.99, preview: "🌸" },
+  { id: "dragon_boots",   nameKey: "mascot.item.bootsDragon",      category: "boots", tier: null, price: 1.99, preview: "🐉" },
+  { id: "hologram_boots", nameKey: "mascot.item.bootsHologram",    category: "boots", tier: null, price: 1.99, preview: "🔮" },
+  { id: "stardust_boots", nameKey: "mascot.item.bootsStardust",    category: "boots", tier: null, price: 1.99, preview: "🌠" },
+  { id: "celestial_boots",nameKey: "mascot.item.bootsCelestial",   category: "boots", tier: null, price: 1.99, preview: "🪐" },
 ];
 
 // ── Helpers ──
