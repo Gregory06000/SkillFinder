@@ -26,70 +26,7 @@ interface BadgeDef {
 }
 
 const BADGE_DEFS: BadgeDef[] = [
-  {
-    id: "first_vote",
-    titleKey: "badge.firstVote",
-    descKey: "badge.firstVoteDesc",
-    emoji: "🗳️",
-    check: (ctx) => ctx.points >= 10,
-  },
-  {
-    id: "explorer",
-    titleKey: "badge.explorer",
-    descKey: "badge.explorerDesc",
-    emoji: "🔍",
-    check: (ctx) => ctx.points >= 50,
-  },
-  {
-    id: "scout",
-    titleKey: "badge.scout",
-    descKey: "badge.scoutDesc",
-    emoji: "🏅",
-    check: (ctx) => ctx.votedCount >= 10,
-  },
-  {
-    id: "certified",
-    titleKey: "badge.certified",
-    descKey: "badge.certifiedDesc",
-    emoji: "📜",
-    check: (ctx) => getUserRank(ctx.points).palier >= 3,
-  },
-  {
-    id: "expert",
-    titleKey: "badge.expert",
-    descKey: "badge.expertDesc",
-    emoji: "⭐",
-    check: (ctx) => getUserRank(ctx.points).palier >= 5,
-  },
-  {
-    id: "marathon",
-    titleKey: "badge.marathon",
-    descKey: "badge.marathonDesc",
-    emoji: "🏃",
-    check: (ctx) => ctx.votedCount >= 50,
-  },
-  {
-    id: "veteran",
-    titleKey: "badge.veteran",
-    descKey: "badge.veteranDesc",
-    emoji: "🛡️",
-    check: (ctx) => getUserRank(ctx.points).palier >= 7,
-  },
-  {
-    id: "master",
-    titleKey: "badge.master",
-    descKey: "badge.masterDesc",
-    emoji: "👑",
-    check: (ctx) => getUserRank(ctx.points).palier >= 9,
-  },
-  {
-    id: "deity",
-    titleKey: "badge.deity",
-    descKey: "badge.deityDesc",
-    emoji: "🔱",
-    check: (ctx) => ctx.points >= 1000,
-  },
-  // ── New badges (11) ──
+  // ── 1 pt ──
   {
     id: "newcomer",
     titleKey: "badge.newcomer",
@@ -97,6 +34,7 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "👋",
     check: (ctx) => ctx.points >= 1,
   },
+  // ── 5 votes ──
   {
     id: "contributor",
     titleKey: "badge.contributor",
@@ -104,6 +42,31 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "✍️",
     check: (ctx) => ctx.votedCount >= 5,
   },
+  // ── 10 pts ──
+  {
+    id: "first_vote",
+    titleKey: "badge.firstVote",
+    descKey: "badge.firstVoteDesc",
+    emoji: "🗳️",
+    check: (ctx) => ctx.points >= 10,
+  },
+  // ── 10 votes ──
+  {
+    id: "scout",
+    titleKey: "badge.scout",
+    descKey: "badge.scoutDesc",
+    emoji: "🏅",
+    check: (ctx) => ctx.votedCount >= 10,
+  },
+  // ── 50 pts ──
+  {
+    id: "explorer",
+    titleKey: "badge.explorer",
+    descKey: "badge.explorerDesc",
+    emoji: "🔍",
+    check: (ctx) => ctx.points >= 50,
+  },
+  // ── 100 pts ──
   {
     id: "enthusiast",
     titleKey: "badge.enthusiast",
@@ -111,6 +74,7 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "🔥",
     check: (ctx) => ctx.points >= 100,
   },
+  // ── palier 2 (101 pts) ──
   {
     id: "adventurer",
     titleKey: "badge.adventurer",
@@ -118,6 +82,15 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "🧭",
     check: (ctx) => getUserRank(ctx.points).palier >= 2,
   },
+  // ── palier 3 (201 pts) ──
+  {
+    id: "certified",
+    titleKey: "badge.certified",
+    descKey: "badge.certifiedDesc",
+    emoji: "📜",
+    check: (ctx) => getUserRank(ctx.points).palier >= 3,
+  },
+  // ── 25 votes ──
   {
     id: "globe_trotter",
     titleKey: "badge.globeTrotter",
@@ -125,13 +98,7 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "🌍",
     check: (ctx) => ctx.votedCount >= 25,
   },
-  {
-    id: "sage",
-    titleKey: "badge.sage",
-    descKey: "badge.sageDesc",
-    emoji: "📚",
-    check: (ctx) => getUserRank(ctx.points).palier >= 4,
-  },
+  // ── 250 pts ──
   {
     id: "champion",
     titleKey: "badge.champion",
@@ -139,6 +106,39 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "🏆",
     check: (ctx) => ctx.points >= 250,
   },
+  // ── palier 4 (301 pts) ──
+  {
+    id: "sage",
+    titleKey: "badge.sage",
+    descKey: "badge.sageDesc",
+    emoji: "📚",
+    check: (ctx) => getUserRank(ctx.points).palier >= 4,
+  },
+  // ── palier 5 (401 pts) ──
+  {
+    id: "expert",
+    titleKey: "badge.expert",
+    descKey: "badge.expertDesc",
+    emoji: "⭐",
+    check: (ctx) => getUserRank(ctx.points).palier >= 5,
+  },
+  // ── 500 pts ──
+  {
+    id: "titan",
+    titleKey: "badge.titan",
+    descKey: "badge.titanDesc",
+    emoji: "⚡",
+    check: (ctx) => ctx.points >= 500,
+  },
+  // ── 50 votes ──
+  {
+    id: "marathon",
+    titleKey: "badge.marathon",
+    descKey: "badge.marathonDesc",
+    emoji: "🏃",
+    check: (ctx) => ctx.votedCount >= 50,
+  },
+  // ── palier 6 (501 pts) ──
   {
     id: "legend",
     titleKey: "badge.legend",
@@ -146,13 +146,15 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "🌟",
     check: (ctx) => getUserRank(ctx.points).palier >= 6,
   },
+  // ── palier 7 (601 pts) ──
   {
-    id: "centurion",
-    titleKey: "badge.centurion",
-    descKey: "badge.centurionDesc",
-    emoji: "💯",
-    check: (ctx) => ctx.votedCount >= 100,
+    id: "veteran",
+    titleKey: "badge.veteran",
+    descKey: "badge.veteranDesc",
+    emoji: "🛡️",
+    check: (ctx) => getUserRank(ctx.points).palier >= 7,
   },
+  // ── palier 8 (701 pts) ──
   {
     id: "oracle",
     titleKey: "badge.oracle",
@@ -160,12 +162,29 @@ const BADGE_DEFS: BadgeDef[] = [
     emoji: "🔮",
     check: (ctx) => getUserRank(ctx.points).palier >= 8,
   },
+  // ── palier 9 (801 pts) ──
   {
-    id: "titan",
-    titleKey: "badge.titan",
-    descKey: "badge.titanDesc",
-    emoji: "⚡",
-    check: (ctx) => ctx.points >= 500,
+    id: "master",
+    titleKey: "badge.master",
+    descKey: "badge.masterDesc",
+    emoji: "👑",
+    check: (ctx) => getUserRank(ctx.points).palier >= 9,
+  },
+  // ── 100 votes ──
+  {
+    id: "centurion",
+    titleKey: "badge.centurion",
+    descKey: "badge.centurionDesc",
+    emoji: "💯",
+    check: (ctx) => ctx.votedCount >= 100,
+  },
+  // ── 1000 pts (palier 10) ──
+  {
+    id: "deity",
+    titleKey: "badge.deity",
+    descKey: "badge.deityDesc",
+    emoji: "🔱",
+    check: (ctx) => ctx.points >= 1000,
   },
 ];
 
