@@ -64,15 +64,26 @@ function saveProfile(data: ProfileData): void {
 // Badge condition descriptions
 function getBadgeCondition(badge: Badge, t: (key: string, vars?: Record<string, string | number>) => string): string {
   switch (badge.id) {
+    case "newcomer": return t("profilePage.badgeCondition.points", { n: 1 });
     case "first_vote": return t("profilePage.badgeCondition.points", { n: 10 });
+    case "contributor": return t("profilePage.badgeCondition.votes", { n: 5 });
     case "explorer": return t("profilePage.badgeCondition.points", { n: 50 });
+    case "enthusiast": return t("profilePage.badgeCondition.points", { n: 100 });
     case "scout": return t("profilePage.badgeCondition.votes", { n: 10 });
+    case "adventurer": return t("profilePage.badgeCondition.tier", { n: 2 });
     case "certified": return t("profilePage.badgeCondition.tier", { n: 3 });
+    case "sage": return t("profilePage.badgeCondition.tier", { n: 4 });
     case "expert": return t("profilePage.badgeCondition.tier", { n: 5 });
+    case "globe_trotter": return t("profilePage.badgeCondition.votes", { n: 25 });
+    case "champion": return t("profilePage.badgeCondition.points", { n: 250 });
+    case "legend": return t("profilePage.badgeCondition.tier", { n: 6 });
     case "marathon": return t("profilePage.badgeCondition.votes", { n: 50 });
+    case "titan": return t("profilePage.badgeCondition.points", { n: 500 });
     case "veteran": return t("profilePage.badgeCondition.tier", { n: 7 });
+    case "oracle": return t("profilePage.badgeCondition.tier", { n: 8 });
     case "master": return t("profilePage.badgeCondition.tier", { n: 9 });
     case "deity": return t("profilePage.badgeCondition.points", { n: 1000 });
+    case "centurion": return t("profilePage.badgeCondition.votes", { n: 100 });
     default: return "";
   }
 }
@@ -80,15 +91,26 @@ function getBadgeCondition(badge: Badge, t: (key: string, vars?: Record<string, 
 // Badge progress calculation
 function getBadgeProgress(badge: Badge, points: number, votedCount: number): { current: number; target: number } {
   switch (badge.id) {
+    case "newcomer": return { current: Math.min(points, 1), target: 1 };
     case "first_vote": return { current: Math.min(points, 10), target: 10 };
+    case "contributor": return { current: Math.min(votedCount, 5), target: 5 };
     case "explorer": return { current: Math.min(points, 50), target: 50 };
+    case "enthusiast": return { current: Math.min(points, 100), target: 100 };
     case "scout": return { current: Math.min(votedCount, 10), target: 10 };
+    case "adventurer": return { current: Math.min(getUserRank(points).palier, 2), target: 2 };
     case "certified": return { current: Math.min(getUserRank(points).palier, 3), target: 3 };
+    case "sage": return { current: Math.min(getUserRank(points).palier, 4), target: 4 };
     case "expert": return { current: Math.min(getUserRank(points).palier, 5), target: 5 };
+    case "globe_trotter": return { current: Math.min(votedCount, 25), target: 25 };
+    case "champion": return { current: Math.min(points, 250), target: 250 };
+    case "legend": return { current: Math.min(getUserRank(points).palier, 6), target: 6 };
     case "marathon": return { current: Math.min(votedCount, 50), target: 50 };
+    case "titan": return { current: Math.min(points, 500), target: 500 };
     case "veteran": return { current: Math.min(getUserRank(points).palier, 7), target: 7 };
+    case "oracle": return { current: Math.min(getUserRank(points).palier, 8), target: 8 };
     case "master": return { current: Math.min(getUserRank(points).palier, 9), target: 9 };
     case "deity": return { current: Math.min(points, 1000), target: 1000 };
+    case "centurion": return { current: Math.min(votedCount, 100), target: 100 };
     default: return { current: 0, target: 1 };
   }
 }
