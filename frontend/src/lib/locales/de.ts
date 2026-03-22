@@ -297,6 +297,28 @@ const de: Record<string, string> = {
   "friends.addBtn": "Hinzufugen",
   "friends.empty": "Noch keine Freunde. Teile deinen Code, um Freunde hinzuzufugen!",
 
+  // -- Profile page --
+  "profilePage.title": "Mein Profil",
+  "profilePage.tab.findy": "Findy",
+  "profilePage.tab.badges": "Abzeichen",
+  "profilePage.tab.friends": "Freunde",
+  "profilePage.back": "Zuruck",
+  "profilePage.preview": "Vorschau",
+  "profilePage.badgeProgress": "{current}/{target}",
+  "profilePage.badgeUnlocked": "Freigeschaltet!",
+  "profilePage.badgeCondition.points": "{n} Punkte erreichen",
+  "profilePage.badgeCondition.votes": "Uber {n} Geschafte abstimmen",
+  "profilePage.badgeCondition.tier": "Stufe {n} erreichen",
+  "profilePage.friendProfile": "Profil von {pseudo}",
+  "profilePage.friendBadges": "Abzeichen von {pseudo}",
+  "profilePage.noBadgesYet": "Noch keine Abzeichen",
+  "profilePage.stats": "Statistiken",
+  "profilePage.totalPoints": "Gesamtpunkte",
+  "profilePage.weeklyPoints": "Punkte diese Woche",
+  "profilePage.currentTier": "Aktuelle Stufe",
+  "profilePage.nextTier": "Nachste Stufe in {pts} Pkt",
+  "profilePage.maxTier": "Maximale Stufe erreicht!",
+
   // -- Cookie banner --
   "cookie.label": "Cookie-Hinweis",
   "cookie.message": "Diese Website nutzt den lokalen Speicher deines Browsers fur Gamification und Google Maps fur die Kartierung.",

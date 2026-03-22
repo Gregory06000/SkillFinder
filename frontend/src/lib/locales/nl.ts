@@ -297,6 +297,28 @@ const nl: Record<string, string> = {
   "friends.addBtn": "Toevoegen",
   "friends.empty": "Nog geen vrienden. Deel je code om vrienden toe te voegen!",
 
+  // -- Profile page --
+  "profilePage.title": "Mijn profiel",
+  "profilePage.tab.findy": "Findy",
+  "profilePage.tab.badges": "Badges",
+  "profilePage.tab.friends": "Vrienden",
+  "profilePage.back": "Terug",
+  "profilePage.preview": "Voorbeeld",
+  "profilePage.badgeProgress": "{current}/{target}",
+  "profilePage.badgeUnlocked": "Ontgrendeld!",
+  "profilePage.badgeCondition.points": "{n} punten bereiken",
+  "profilePage.badgeCondition.votes": "Op {n} bedrijven stemmen",
+  "profilePage.badgeCondition.tier": "Niveau {n} bereiken",
+  "profilePage.friendProfile": "Profiel van {pseudo}",
+  "profilePage.friendBadges": "Badges van {pseudo}",
+  "profilePage.noBadgesYet": "Nog geen badges ontgrendeld",
+  "profilePage.stats": "Statistieken",
+  "profilePage.totalPoints": "Totaal punten",
+  "profilePage.weeklyPoints": "Punten deze week",
+  "profilePage.currentTier": "Huidig niveau",
+  "profilePage.nextTier": "Volgend niveau over {pts} pts",
+  "profilePage.maxTier": "Maximum niveau bereikt!",
+
   // -- Cookie banner --
   "cookie.label": "Cookiemelding",
   "cookie.message": "Deze site gebruikt de lokale opslag van je browser voor gamification en Google Maps voor cartografie.",

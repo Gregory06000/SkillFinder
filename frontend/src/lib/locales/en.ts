@@ -297,6 +297,28 @@ const en: Record<string, string> = {
   "friends.addBtn": "Add",
   "friends.empty": "No friends yet. Share your code to add friends!",
 
+  // -- Profile page --
+  "profilePage.title": "My profile",
+  "profilePage.tab.findy": "Findy",
+  "profilePage.tab.badges": "Badges",
+  "profilePage.tab.friends": "Friends",
+  "profilePage.back": "Back",
+  "profilePage.preview": "Preview",
+  "profilePage.badgeProgress": "{current}/{target}",
+  "profilePage.badgeUnlocked": "Unlocked!",
+  "profilePage.badgeCondition.points": "Reach {n} points",
+  "profilePage.badgeCondition.votes": "Vote on {n} businesses",
+  "profilePage.badgeCondition.tier": "Reach tier {n}",
+  "profilePage.friendProfile": "{pseudo}'s profile",
+  "profilePage.friendBadges": "{pseudo}'s badges",
+  "profilePage.noBadgesYet": "No badges unlocked yet",
+  "profilePage.stats": "Statistics",
+  "profilePage.totalPoints": "Total points",
+  "profilePage.weeklyPoints": "Points this week",
+  "profilePage.currentTier": "Current tier",
+  "profilePage.nextTier": "Next tier in {pts} pts",
+  "profilePage.maxTier": "Maximum tier reached!",
+
   // -- Cookie banner --
   "cookie.label": "Cookie notice",
   "cookie.message": "This site uses your browser's local storage for gamification and Google Maps for mapping.",

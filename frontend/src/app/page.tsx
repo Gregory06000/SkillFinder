@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, lazy, Suspense, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
 import ComparisonModal from "@/components/ComparisonModal";
@@ -10,7 +10,7 @@ const ResultsMap = lazy(() => import("@/components/ResultsMap"));
 import UserStats from "@/components/UserStats";
 import ConversionModal from "@/components/ConversionModal";
 import TierUpModal from "@/components/TierUpModal";
-import ProfilePanel from "@/components/ProfilePanel";
+import { getAvatarData } from "@/components/ProfilePanel";
 import LeaderboardTab from "@/components/LeaderboardTab";
 import { useSearch, type SortMode } from "@/lib/useSearch";
 import { useRewards } from "@/lib/useRewards";
@@ -56,6 +56,7 @@ export default function Page() {
 }
 
 function Home() {
+  const router = useRouter();
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [mobileView, setMobileView] = useState<"list" | "map">("list");
   const [activeTab, setActiveTab] = useState<"search" | "leaderboard">("search");
@@ -220,10 +221,8 @@ function Home() {
             </button>
           )}
           <button
-            data-no-panel-close
-            onClick={() => rewards.showProfile ? rewards.handleProfileClose() : rewards.setShowProfile(true)}
+            onClick={() => router.push("/profile")}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
-            aria-expanded={rewards.showProfile}
             className="hidden sm:flex items-center gap-2.5 border border-sf-gold/25
                         rounded-full py-1 pl-1.5 pr-3.5 cursor-pointer transition-shadow
                         hover:shadow-sf-sm"
@@ -303,10 +302,8 @@ function Home() {
 
           {/* Mobile avatar button */}
           <button
-            data-no-panel-close
-            onClick={() => rewards.showProfile ? rewards.handleProfileClose() : rewards.setShowProfile(true)}
+            onClick={() => router.push("/profile")}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
-            aria-expanded={rewards.showProfile}
             className="sm:hidden"
           >
             {rewards.avatarData.avatarPhoto ? (
@@ -324,16 +321,6 @@ function Home() {
             )}
           </button>
 
-          {/* Profile Panel */}
-          {rewards.showProfile && (
-            <ProfilePanel
-              rewards={rewards.rewards}
-              onClose={rewards.handleProfileClose}
-              onPseudoChange={rewards.handlePseudoChange}
-              favorites={favs.favorites}
-              onMascotChange={setMascotCustom}
-            />
-          )}
         </div>
       </nav>
 

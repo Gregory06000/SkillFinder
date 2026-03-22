@@ -297,6 +297,28 @@ const pt: Record<string, string> = {
   "friends.addBtn": "Adicionar",
   "friends.empty": "Ainda sem amigos. Partilhe o seu codigo para adicionar amigos!",
 
+  // -- Profile page --
+  "profilePage.title": "Meu perfil",
+  "profilePage.tab.findy": "Findy",
+  "profilePage.tab.badges": "Medalhas",
+  "profilePage.tab.friends": "Amigos",
+  "profilePage.back": "Voltar",
+  "profilePage.preview": "Pre-visualizacao",
+  "profilePage.badgeProgress": "{current}/{target}",
+  "profilePage.badgeUnlocked": "Desbloqueado!",
+  "profilePage.badgeCondition.points": "Alcancar {n} pontos",
+  "profilePage.badgeCondition.votes": "Votar em {n} negocios",
+  "profilePage.badgeCondition.tier": "Alcancar o nivel {n}",
+  "profilePage.friendProfile": "Perfil de {pseudo}",
+  "profilePage.friendBadges": "Medalhas de {pseudo}",
+  "profilePage.noBadgesYet": "Nenhuma medalha desbloqueada",
+  "profilePage.stats": "Estatisticas",
+  "profilePage.totalPoints": "Pontos totais",
+  "profilePage.weeklyPoints": "Pontos esta semana",
+  "profilePage.currentTier": "Nivel atual",
+  "profilePage.nextTier": "Proximo nivel em {pts} pts",
+  "profilePage.maxTier": "Nivel maximo atingido!",
+
   // -- Cookie banner --
   "cookie.label": "Aviso de cookies",
   "cookie.message": "Este site utiliza o armazenamento local do seu navegador para gamificacao e Google Maps para cartografia.",

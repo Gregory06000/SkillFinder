@@ -297,6 +297,28 @@ const es: Record<string, string> = {
   "friends.addBtn": "Anadir",
   "friends.empty": "Aun sin amigos. \u00a1Comparte tu codigo para anadir amigos!",
 
+  // -- Profile page --
+  "profilePage.title": "Mi perfil",
+  "profilePage.tab.findy": "Findy",
+  "profilePage.tab.badges": "Insignias",
+  "profilePage.tab.friends": "Amigos",
+  "profilePage.back": "Volver",
+  "profilePage.preview": "Vista previa",
+  "profilePage.badgeProgress": "{current}/{target}",
+  "profilePage.badgeUnlocked": "Desbloqueado!",
+  "profilePage.badgeCondition.points": "Alcanzar {n} puntos",
+  "profilePage.badgeCondition.votes": "Votar en {n} negocios",
+  "profilePage.badgeCondition.tier": "Alcanzar el nivel {n}",
+  "profilePage.friendProfile": "Perfil de {pseudo}",
+  "profilePage.friendBadges": "Insignias de {pseudo}",
+  "profilePage.noBadgesYet": "Sin insignias desbloqueadas",
+  "profilePage.stats": "Estadisticas",
+  "profilePage.totalPoints": "Puntos totales",
+  "profilePage.weeklyPoints": "Puntos esta semana",
+  "profilePage.currentTier": "Nivel actual",
+  "profilePage.nextTier": "Siguiente nivel en {pts} pts",
+  "profilePage.maxTier": "Nivel maximo alcanzado!",
+
   // -- Cookie banner --
   "cookie.label": "Aviso de cookies",
   "cookie.message": "Este sitio utiliza el almacenamiento local de tu navegador para la gamificacion y Google Maps para la cartografia.",
