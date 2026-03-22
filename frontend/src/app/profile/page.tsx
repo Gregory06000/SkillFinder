@@ -29,10 +29,13 @@ import {
 } from "@/lib/api";
 import Mascot from "@/components/Mascot";
 import MascotCustomizer from "@/components/MascotCustomizer";
-import type { MascotCustomization } from "@/lib/mascotItems";
-import { loadMascotCustomization, saveMascotCustomization } from "@/lib/mascotItems";
+import type { MascotCustomization, ItemCategory } from "@/lib/mascotItems";
+import { loadMascotCustomization, saveMascotCustomization, getItemsByTier, isItemUnlocked } from "@/lib/mascotItems";
 
-type Tab = "findy" | "badges" | "friends";
+type Tab = "findy" | "tiers" | "badges" | "friends";
+
+const CATEGORY_ICONS: Record<ItemCategory, string> = { hat: "🎩", scarf: "🧣", accessory: "🎒", boots: "👢" };
+const CATEGORY_KEYS: Record<ItemCategory, string> = { hat: "mascot.cat.hat", scarf: "mascot.cat.scarf", accessory: "mascot.cat.accessory", boots: "mascot.cat.boots" };
 
 const AVATAR_COLORS = [
   "#C45D3E", "#D4A853", "#3A7D5C", "#5B7FC7",
@@ -269,6 +272,7 @@ export default function ProfilePage() {
 
   const TABS: { key: Tab; labelKey: string; icon: string; count?: number }[] = [
     { key: "findy", labelKey: "profilePage.tab.findy", icon: "🦊" },
+    { key: "tiers", labelKey: "profilePage.tab.tiers", icon: "⭐" },
     { key: "badges", labelKey: "profilePage.tab.badges", icon: "🏆", count: unlockedCount },
     { key: "friends", labelKey: "profilePage.tab.friends", icon: "👥", count: friends.length },
   ];
@@ -484,69 +488,6 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                {/* Tier progression */}
-                <div className="p-6 border-t border-sf-border">
-                  <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-4">
-                    {t("profile.tierProgress")}
-                  </div>
-                  <div className="space-y-1.5">
-                    {TIERS.map((tier) => {
-                      const isCompleted = level > tier.maxLevel;
-                      const isCurrent = level >= tier.minLevel && level <= tier.maxLevel;
-                      const isLocked = level < tier.minLevel;
-                      let tierProgress = 0;
-                      if (isCompleted) tierProgress = 100;
-                      else if (isCurrent) {
-                        const range = tier.maxLevel - tier.minLevel + 1;
-                        tierProgress = Math.round(((level - tier.minLevel) / range) * 100);
-                      }
-                      return (
-                        <div
-                          key={tier.palier}
-                          className={`rounded-sf-sm p-3 transition-colors
-                            ${isCurrent ? "bg-sf-accent-pale border border-sf-accent/20" : ""}
-                            ${isLocked ? "opacity-50" : ""}`}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold
-                              ${isCompleted ? "bg-sf-success text-white" : ""}
-                              ${isCurrent ? "bg-sf-accent text-white" : ""}
-                              ${isLocked ? "bg-sf-border text-sf-text-light" : ""}`}
-                            >
-                              {isCompleted ? (
-                                <svg className="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
-                                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                              ) : tier.palier}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center justify-between gap-2">
-                                <span className={`text-[13px] font-semibold truncate ${isCurrent ? "text-sf-accent" : "text-sf-text"}`}>
-                                  {t(tier.titleKey)}
-                                </span>
-                                <span className="text-[10px] text-sf-text-light flex-shrink-0">
-                                  {t("profile.levelRange", { min: tier.minLevel, max: tier.maxLevel })}
-                                </span>
-                              </div>
-                              {(isCurrent || isCompleted) && (
-                                <div className="mt-1.5 h-1.5 bg-sf-border rounded-full overflow-hidden">
-                                  <div
-                                    className="h-full rounded-full transition-all duration-700"
-                                    style={{
-                                      width: `${tierProgress}%`,
-                                      background: isCompleted ? "#3A7D5C" : "linear-gradient(90deg, #C45D3E, #E8805F)",
-                                    }}
-                                  />
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
                 {/* Mobile-only settings */}
                 {user && (
                   <div className="p-6 border-t border-sf-border md:hidden">
@@ -596,6 +537,106 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* ═══ TAB: TIERS ═══ */}
+            {tab === "tiers" && (
+              <div className="space-y-4">
+                {TIERS.map((tier) => {
+                  const isCompleted = level > tier.maxLevel;
+                  const isCurrent = level >= tier.minLevel && level <= tier.maxLevel;
+                  const isLocked = level < tier.minLevel;
+                  let tierProgress = 0;
+                  if (isCompleted) tierProgress = 100;
+                  else if (isCurrent) {
+                    const range = tier.maxLevel - tier.minLevel + 1;
+                    tierProgress = Math.round(((level - tier.minLevel) / range) * 100);
+                  }
+                  const tierItems = getItemsByTier(tier.palier);
+                  const categories: ItemCategory[] = ["hat", "scarf", "accessory", "boots"];
+
+                  return (
+                    <div
+                      key={tier.palier}
+                      className={`bg-sf-card rounded-sf-lg border overflow-hidden transition-all
+                        ${isCurrent ? "border-sf-accent/30 ring-1 ring-sf-accent/10" : "border-sf-border"}
+                        ${isLocked ? "opacity-60" : ""}`}
+                    >
+                      {/* Tier header */}
+                      <div className={`px-5 py-3 flex items-center gap-3 ${isCurrent ? "bg-sf-accent-pale" : "bg-sf-bg"}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold
+                          ${isCompleted ? "bg-sf-success text-white" : ""}
+                          ${isCurrent ? "bg-sf-accent text-white" : ""}
+                          ${isLocked ? "bg-sf-border text-sf-text-light" : ""}`}
+                        >
+                          {isCompleted ? (
+                            <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          ) : tier.palier}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <span className={`text-sm font-semibold ${isCurrent ? "text-sf-accent" : "text-sf-text"}`}>
+                              {t(tier.titleKey)}
+                            </span>
+                            <span className="text-[10px] text-sf-text-light">
+                              {t("profile.levelRange", { min: tier.minLevel, max: tier.maxLevel })}
+                            </span>
+                          </div>
+                          {(isCurrent || isCompleted) && (
+                            <div className="mt-1.5 h-1.5 bg-sf-border rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-700"
+                                style={{
+                                  width: `${tierProgress}%`,
+                                  background: isCompleted ? "#3A7D5C" : "linear-gradient(90deg, #C45D3E, #E8805F)",
+                                }}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Items by category */}
+                      <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        {categories.map((cat) => {
+                          const items = tierItems.filter((i) => i.category === cat);
+                          if (items.length === 0) return null;
+                          return (
+                            <div key={cat}>
+                              <div className="text-[10px] font-semibold uppercase tracking-wider text-sf-text-light mb-2 flex items-center gap-1.5">
+                                <span>{CATEGORY_ICONS[cat]}</span>
+                                <span>{t(CATEGORY_KEYS[cat])}</span>
+                              </div>
+                              <div className="space-y-1">
+                                {items.map((item) => {
+                                  const unlocked = isItemUnlocked(item, rank.palier);
+                                  return (
+                                    <div
+                                      key={item.id}
+                                      className={`flex items-center gap-2 px-2.5 py-1.5 rounded-sf-sm text-xs
+                                        ${unlocked ? "bg-sf-bg text-sf-text" : "bg-sf-bg/50 text-sf-text-light"}`}
+                                    >
+                                      <span className={`text-base ${unlocked ? "" : "grayscale opacity-50"}`}>{item.preview}</span>
+                                      <span className={`truncate ${unlocked ? "font-medium" : ""}`}>{t(item.nameKey)}</span>
+                                      {!unlocked && (
+                                        <svg className="w-3 h-3 ml-auto flex-shrink-0 opacity-40" viewBox="0 0 20 20" fill="currentColor">
+                                          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                                        </svg>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             )}
 
