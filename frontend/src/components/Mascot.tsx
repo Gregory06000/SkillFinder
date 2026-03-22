@@ -20,17 +20,43 @@ interface MascotProps {
 function HatExplorer() {
   return (
     <g>
-      <ellipse cx="100" cy="62" rx="52" ry="10" fill="#6B4226"/>
-      <ellipse cx="100" cy="61" rx="52" ry="10" fill="#8B5E3C"/>
-      <path d="M56 62 Q58 22 100 15 Q142 22 144 62" fill="#8B5E3C"/>
-      <path d="M58 62 Q60 24 100 18 Q140 24 142 62" fill="#A67B4F" opacity="0.4"/>
-      <rect x="62" y="52" width="76" height="10" rx="2" fill="#4A2E1A"/>
-      <ellipse cx="86" cy="50" rx="10" ry="7" fill="#4A2E1A" stroke="#D4A853" strokeWidth="1.5"/>
-      <ellipse cx="86" cy="50" rx="7" ry="5" fill="#8BAEC4" opacity="0.5"/>
-      <ellipse cx="114" cy="50" rx="10" ry="7" fill="#4A2E1A" stroke="#D4A853" strokeWidth="1.5"/>
-      <ellipse cx="114" cy="50" rx="7" ry="5" fill="#8BAEC4" opacity="0.5"/>
-      <path d="M96 50 L104 50" stroke="#D4A853" strokeWidth="2"/>
-      <text x="100" y="60" fontFamily="Arial,sans-serif" fontSize="8" fontWeight="bold" fill="#D4A853" textAnchor="middle">SF</text>
+      {/* Brim shadow */}
+      <ellipse cx="100" cy="66" rx="55" ry="11" fill="#5A3A1A" opacity="0.3"/>
+      {/* Brim bottom */}
+      <ellipse cx="100" cy="64" rx="54" ry="11" fill="#6B4226"/>
+      {/* Brim top */}
+      <ellipse cx="100" cy="63" rx="54" ry="10" fill="#8B5E3C"/>
+      {/* Brim highlight */}
+      <ellipse cx="90" cy="62" rx="30" ry="6" fill="#A67B4F" opacity="0.25"/>
+      {/* Crown */}
+      <path d="M58 64 Q60 28 80 18 Q100 12 120 18 Q140 28 142 64" fill="#7A5232"/>
+      {/* Crown lighter side */}
+      <path d="M62 64 Q64 32 82 22 Q100 16 118 22 Q136 32 138 64" fill="#8B5E3C"/>
+      {/* Crown highlight */}
+      <path d="M70 60 Q72 36 88 26 Q100 22 105 24 Q95 30 80 50 Q74 58 70 60" fill="#A67B4F" opacity="0.3"/>
+      {/* Crown dent */}
+      <path d="M78 22 Q90 28 100 26 Q110 28 122 22 Q115 18 100 16 Q85 18 78 22Z" fill="#6B4226" opacity="0.35"/>
+      {/* Leather band */}
+      <rect x="60" y="54" width="80" height="9" rx="2" fill="#4A2E1A"/>
+      {/* Band stitching */}
+      <line x1="65" y1="58.5" x2="135" y2="58.5" stroke="#3A1E0A" strokeWidth="0.5" strokeDasharray="3,2" opacity="0.5"/>
+      {/* Band highlight */}
+      <rect x="60" y="54" width="80" height="3" rx="1" fill="#5C3820" opacity="0.4"/>
+      {/* Band buckle */}
+      <rect x="108" y="54" width="10" height="9" rx="1.5" fill="#D4A853"/>
+      <rect x="110" y="56" width="6" height="5" rx="1" fill="#4A2E1A"/>
+      {/* Feather */}
+      <g transform="translate(130, 42) rotate(25)">
+        <path d="M0 0 Q-2 -12 -1 -25 Q0 -28 1 -25 Q2 -12 0 0Z" fill="#8B6B4F"/>
+        <path d="M0 -5 Q-3 -15 -2 -24" fill="none" stroke="#6B4226" strokeWidth="0.5" opacity="0.6"/>
+        <path d="M0 0 Q2 -10 1 -25" fill="none" stroke="#A67B4F" strokeWidth="0.4" opacity="0.4"/>
+        {/* Feather barbs */}
+        <path d="M-1 -20 Q-4 -22 -5 -21" fill="none" stroke="#8B6B4F" strokeWidth="0.5"/>
+        <path d="M-1 -16 Q-5 -17 -6 -16" fill="none" stroke="#8B6B4F" strokeWidth="0.5"/>
+        <path d="M0 -12 Q-4 -13 -5 -12" fill="none" stroke="#8B6B4F" strokeWidth="0.5"/>
+        <path d="M1 -20 Q4 -21 5 -20" fill="none" stroke="#A67B4F" strokeWidth="0.4"/>
+        <path d="M1 -16 Q4 -17 5 -16" fill="none" stroke="#A67B4F" strokeWidth="0.4"/>
+      </g>
     </g>
   );
 }
@@ -1172,21 +1198,138 @@ export default function Mascot({
       {/* ── Cape (behind body) ── */}
       {hasCape && !isSad && <AccessoryCape />}
 
-      {/* ── Legs ── */}
-      <rect x="72" y="218" width="20" height="38" rx="10" fill={bootColor.main}/>
-      <rect x="108" y="218" width="20" height="38" rx="10" fill={bootColor.main}/>
-      <ellipse cx="82" cy="256" rx="14" ry="7" fill={bootColor.sole}/>
-      <ellipse cx="118" cy="256" rx="14" ry="7" fill={bootColor.sole}/>
+      {/* ── Legs / Boots ── */}
+      {(() => {
+        const bm = bootColor.main;
+        const bs = bootColor.sole;
+        // Darken helper for boot shading
+        const bDarken = (hex: string, amt: number) => {
+          const n = parseInt(hex.replace("#",""), 16);
+          const r = Math.max(0, Math.min(255, (n >> 16) - amt));
+          const g = Math.max(0, Math.min(255, ((n >> 8) & 0xff) - amt));
+          const b = Math.max(0, Math.min(255, (n & 0xff) - amt));
+          return `#${(r<<16|g<<8|b).toString(16).padStart(6,"0")}`;
+        };
+        const bShadow = bDarken(bm, 30);
+        const bHighlight = bDarken(bm, -20);
+        return (
+          <g>
+            {/* Left boot */}
+            <g>
+              {/* Boot shaft */}
+              <path d="M72 218 L72 248 Q72 258 82 258 Q92 258 92 248 L92 218Z" fill={bm}/>
+              {/* Boot toe */}
+              <path d="M68 248 Q68 260 82 260 Q96 260 96 248 L92 248 Q92 256 82 256 Q72 256 72 248Z" fill={bm}/>
+              {/* Sole */}
+              <path d="M66 256 Q66 264 82 264 Q98 264 98 256 Q96 260 82 260 Q68 260 66 256Z" fill={bs}/>
+              {/* Heel */}
+              <rect x="68" y="258" width="8" height="5" rx="1" fill={bs}/>
+              {/* Boot shaft highlight */}
+              <path d="M74 220 L74 246 Q74 248 76 248 L76 220Z" fill={bHighlight} opacity="0.25"/>
+              {/* Lace holes + laces */}
+              <circle cx="78" cy="226" r="1" fill={bShadow}/>
+              <circle cx="86" cy="226" r="1" fill={bShadow}/>
+              <line x1="78" y1="226" x2="86" y2="226" stroke={bShadow} strokeWidth="0.7"/>
+              <circle cx="78" cy="232" r="1" fill={bShadow}/>
+              <circle cx="86" cy="232" r="1" fill={bShadow}/>
+              <line x1="78" y1="232" x2="86" y2="232" stroke={bShadow} strokeWidth="0.7"/>
+              <circle cx="78" cy="238" r="1" fill={bShadow}/>
+              <circle cx="86" cy="238" r="1" fill={bShadow}/>
+              <line x1="78" y1="238" x2="86" y2="238" stroke={bShadow} strokeWidth="0.7"/>
+              <circle cx="78" cy="244" r="1" fill={bShadow}/>
+              <circle cx="86" cy="244" r="1" fill={bShadow}/>
+              <line x1="78" y1="244" x2="86" y2="244" stroke={bShadow} strokeWidth="0.7"/>
+              {/* Boot top rim */}
+              <rect x="70" y="217" width="24" height="4" rx="2" fill={bShadow}/>
+            </g>
+            {/* Right boot */}
+            <g>
+              <path d="M108 218 L108 248 Q108 258 118 258 Q128 258 128 248 L128 218Z" fill={bm}/>
+              <path d="M104 248 Q104 260 118 260 Q132 260 132 248 L128 248 Q128 256 118 256 Q108 256 108 248Z" fill={bm}/>
+              <path d="M102 256 Q102 264 118 264 Q134 264 134 256 Q132 260 118 260 Q104 260 102 256Z" fill={bs}/>
+              <rect x="124" y="258" width="8" height="5" rx="1" fill={bs}/>
+              <path d="M110 220 L110 246 Q110 248 112 248 L112 220Z" fill={bHighlight} opacity="0.25"/>
+              <circle cx="114" cy="226" r="1" fill={bShadow}/>
+              <circle cx="122" cy="226" r="1" fill={bShadow}/>
+              <line x1="114" y1="226" x2="122" y2="226" stroke={bShadow} strokeWidth="0.7"/>
+              <circle cx="114" cy="232" r="1" fill={bShadow}/>
+              <circle cx="122" cy="232" r="1" fill={bShadow}/>
+              <line x1="114" y1="232" x2="122" y2="232" stroke={bShadow} strokeWidth="0.7"/>
+              <circle cx="114" cy="238" r="1" fill={bShadow}/>
+              <circle cx="122" cy="238" r="1" fill={bShadow}/>
+              <line x1="114" y1="238" x2="122" y2="238" stroke={bShadow} strokeWidth="0.7"/>
+              <circle cx="114" cy="244" r="1" fill={bShadow}/>
+              <circle cx="122" cy="244" r="1" fill={bShadow}/>
+              <line x1="114" y1="244" x2="122" y2="244" stroke={bShadow} strokeWidth="0.7"/>
+              <rect x="106" y="217" width="24" height="4" rx="2" fill={bShadow}/>
+            </g>
+          </g>
+        );
+      })()}
 
-      {/* ── Body ── */}
-      <ellipse cx="100" cy="195" rx="42" ry="45" fill="#C49A6C"/>
-      <ellipse cx="100" cy="195" rx="38" ry="41" fill="#E8D5B8"/>
-      <rect x="62" y="210" width="76" height="8" rx="4" fill="#6B4226"/>
-      <rect x="95" y="208" width="10" height="12" rx="2" fill="#D4A853"/>
-      <rect x="72" y="188" width="16" height="14" rx="3" fill="#C49A6C" stroke="#A67B4F" strokeWidth="1"/>
-      <rect x="112" y="188" width="16" height="14" rx="3" fill="#C49A6C" stroke="#A67B4F" strokeWidth="1"/>
-      <rect x="72" y="188" width="16" height="5" rx="2" fill="#A67B4F"/>
-      <rect x="112" y="188" width="16" height="5" rx="2" fill="#A67B4F"/>
+      {/* ── Body / Explorer Jacket ── */}
+      <g>
+        {/* Jacket base */}
+        <ellipse cx="100" cy="190" rx="44" ry="48" fill="#A89070"/>
+        {/* Jacket front */}
+        <ellipse cx="100" cy="190" rx="40" ry="44" fill="#C4AC8A"/>
+        {/* Jacket highlight */}
+        <path d="M65 175 Q70 160 85 155 Q90 165 80 185 Q72 195 65 195Z" fill="#D4BC9A" opacity="0.3"/>
+        {/* Collar */}
+        <path d="M70 148 Q75 142 85 140 L85 152 Q78 154 72 155Z" fill="#B89A72"/>
+        <path d="M130 148 Q125 142 115 140 L115 152 Q122 154 128 155Z" fill="#B89A72"/>
+        {/* Collar shadow */}
+        <path d="M72 150 Q80 145 85 143 L85 148 Q80 150 74 153Z" fill="#9A8060" opacity="0.3"/>
+        <path d="M128 150 Q120 145 115 143 L115 148 Q120 150 126 153Z" fill="#9A8060" opacity="0.3"/>
+        {/* Center seam */}
+        <line x1="100" y1="148" x2="100" y2="210" stroke="#9A8060" strokeWidth="0.8" opacity="0.4"/>
+        {/* Buttons */}
+        <circle cx="100" cy="162" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+        <circle cx="100" cy="175" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+        <circle cx="100" cy="188" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+        <circle cx="100" cy="200" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+        {/* Button holes */}
+        <line x1="99" y1="162" x2="101" y2="162" stroke="#8A7252" strokeWidth="0.5"/>
+        <line x1="99" y1="175" x2="101" y2="175" stroke="#8A7252" strokeWidth="0.5"/>
+        <line x1="99" y1="188" x2="101" y2="188" stroke="#8A7252" strokeWidth="0.5"/>
+        <line x1="99" y1="200" x2="101" y2="200" stroke="#8A7252" strokeWidth="0.5"/>
+        {/* Left breast pocket */}
+        <rect x="72" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
+        {/* Pocket flap */}
+        <path d="M71 166 L91 166 L91 171 Q82 173 71 171Z" fill="#A89070" stroke="#9A8060" strokeWidth="0.5"/>
+        {/* Pocket button */}
+        <circle cx="81" cy="169" r="1.2" fill="#8A7252"/>
+        {/* Compass in pocket */}
+        <circle cx="81" cy="177" r="4" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
+        <circle cx="81" cy="177" r="2" fill="#E8D5B8"/>
+        <line x1="81" y1="175" x2="81" y2="177" stroke="#C45D3E" strokeWidth="0.6"/>
+        <line x1="81" y1="177" x2="82.5" y2="178" stroke="#333" strokeWidth="0.5"/>
+        {/* Right breast pocket */}
+        <rect x="110" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
+        {/* Pocket flap */}
+        <path d="M109 166 L129 166 L129 171 Q120 173 109 171Z" fill="#A89070" stroke="#9A8060" strokeWidth="0.5"/>
+        {/* Pocket button */}
+        <circle cx="119" cy="169" r="1.2" fill="#8A7252"/>
+        {/* Pen in pocket */}
+        <rect x="122" y="162" width="2" height="12" rx="0.5" fill="#2D2D2D"/>
+        <polygon points="122,174 124,174 123,177" fill="#C0C0C0"/>
+        <rect x="121.5" y="163" width="3" height="2" rx="0.5" fill="#D4A853"/>
+        {/* Belt */}
+        <rect x="60" y="207" width="80" height="9" rx="3" fill="#6B4226"/>
+        {/* Belt stitching */}
+        <line x1="64" y1="209" x2="136" y2="209" stroke="#4A2E1A" strokeWidth="0.4" strokeDasharray="2,1.5" opacity="0.5"/>
+        <line x1="64" y1="214" x2="136" y2="214" stroke="#4A2E1A" strokeWidth="0.4" strokeDasharray="2,1.5" opacity="0.5"/>
+        {/* Belt buckle */}
+        <rect x="92" y="206" width="16" height="11" rx="2" fill="#D4A853" stroke="#B8860B" strokeWidth="1"/>
+        <rect x="95" y="208" width="10" height="7" rx="1" fill="#6B4226"/>
+        {/* Buckle prong */}
+        <line x1="100" y1="207" x2="100" y2="216" stroke="#D4A853" strokeWidth="1.2"/>
+        {/* Belt highlight */}
+        <rect x="60" y="207" width="80" height="3" rx="1.5" fill="#8B5E3C" opacity="0.3"/>
+        {/* Shoulder seams */}
+        <path d="M62 158 Q65 155 70 155" fill="none" stroke="#9A8060" strokeWidth="0.8" opacity="0.5"/>
+        <path d="M138 158 Q135 155 130 155" fill="none" stroke="#9A8060" strokeWidth="0.8" opacity="0.5"/>
+      </g>
 
       {/* ── Bow tie / Medal / Badge / Whistle (on body, before scarf) ── */}
       {["bowtie", "medal", "badge_acc", "whistle"].includes(c.accessory) && !isSad && renderAccessory(c.accessory, isSad)}
@@ -1239,13 +1382,44 @@ export default function Mascot({
         );
       })()}
 
-      {/* ── Arms ── */}
-      <path
-        d={isSad ? "M58 170 Q42 195 48 220" : "M58 170 Q42 185 45 210"}
-        fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"
-      />
-      {!isSad && <circle cx="45" cy="210" r="9" fill="#FDDCBD"/>}
-      {isSad && <circle cx="48" cy="220" r="9" fill="#FDDCBD"/>}
+      {/* ── Left Arm ── */}
+      <g>
+        {/* Sleeve */}
+        <path
+          d={isSad ? "M60 162 Q44 185 48 210" : "M60 162 Q44 178 46 200"}
+          fill="none" stroke="#B89A72" strokeWidth="16" strokeLinecap="round"
+        />
+        {/* Sleeve highlight */}
+        <path
+          d={isSad ? "M60 162 Q46 183 50 205" : "M60 162 Q46 176 48 196"}
+          fill="none" stroke="#C4AC8A" strokeWidth="6" strokeLinecap="round" opacity="0.4"
+        />
+        {/* Sleeve cuff */}
+        {!isSad && (
+          <g>
+            <circle cx="46" cy="200" r="9" fill="#A89070"/>
+            <circle cx="46" cy="200" r="8" fill="#B89A72"/>
+          </g>
+        )}
+        {isSad && (
+          <g>
+            <circle cx="48" cy="210" r="9" fill="#A89070"/>
+            <circle cx="48" cy="210" r="8" fill="#B89A72"/>
+          </g>
+        )}
+        {/* Hand */}
+        {!isSad && <circle cx="45" cy="208" r="8" fill="#FDDCBD"/>}
+        {!isSad && <circle cx="45" cy="208" r="8" fill="#F5C4A5" opacity="0.3"/>}
+        {isSad && <circle cx="48" cy="218" r="8" fill="#FDDCBD"/>}
+        {isSad && <circle cx="48" cy="218" r="8" fill="#F5C4A5" opacity="0.3"/>}
+        {/* Fingers hint */}
+        {!isSad && (
+          <g opacity="0.4">
+            <path d="M40 212 Q38 215 39 217" fill="none" stroke="#E0B898" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M43 213 Q42 216 42 218" fill="none" stroke="#E0B898" strokeWidth="1.5" strokeLinecap="round"/>
+          </g>
+        )}
+      </g>
 
       {/* ── Held accessories (satchel, compass, etc.) ── */}
       {!["bowtie", "medal", "badge_acc", "whistle", "cape", "wings", "phoenix_wings",
@@ -1261,64 +1435,115 @@ export default function Mascot({
       {/* Sad right arm */}
       {isSad && (
         <g>
-          <path d="M142 170 Q158 195 152 220" fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"/>
-          <circle cx="152" cy="220" r="9" fill="#FDDCBD"/>
-          <line x1="152" y1="220" x2="155" y2="235" stroke="#D4A853" strokeWidth="4" strokeLinecap="round" opacity="0.5"/>
-          <circle cx="158" cy="245" r="12" fill="none" stroke="#D4A853" strokeWidth="3.5" opacity="0.4"/>
+          {/* Sleeve */}
+          <path d="M140 162 Q156 185 152 210" fill="none" stroke="#B89A72" strokeWidth="16" strokeLinecap="round"/>
+          <path d="M140 162 Q154 183 150 205" fill="none" stroke="#C4AC8A" strokeWidth="6" strokeLinecap="round" opacity="0.4"/>
+          {/* Cuff */}
+          <circle cx="152" cy="210" r="9" fill="#A89070"/>
+          <circle cx="152" cy="210" r="8" fill="#B89A72"/>
+          {/* Hand */}
+          <circle cx="152" cy="218" r="8" fill="#FDDCBD"/>
+          {/* Dropped magnifying glass */}
+          <line x1="152" y1="218" x2="155" y2="233" stroke="#8B6B4F" strokeWidth="4" strokeLinecap="round" opacity="0.5"/>
+          <circle cx="158" cy="243" r="12" fill="none" stroke="#C4A050" strokeWidth="3.5" opacity="0.4"/>
+          <circle cx="158" cy="243" r="12" fill="#E8F4FF" opacity="0.08"/>
         </g>
       )}
 
       {/* ── Head ── */}
-      <ellipse cx="100" cy="100" rx="48" ry="52" fill="#FDDCBD"/>
+      <g>
+        {/* Head base */}
+        <ellipse cx="100" cy="100" rx="48" ry="52" fill="#FDDCBD"/>
+        {/* Head shading — left */}
+        <path d="M52 100 Q54 70 70 55 Q60 70 56 100 Q54 120 60 140" fill="#F0C8A0" opacity="0.3"/>
+        {/* Head shading — right */}
+        <path d="M148 100 Q146 70 130 55 Q140 70 144 100 Q146 120 140 140" fill="#F0C8A0" opacity="0.3"/>
+        {/* Head highlight */}
+        <ellipse cx="90" cy="80" rx="20" ry="15" fill="white" opacity="0.08"/>
+      </g>
 
       {/* ── Ears ── */}
-      <circle cx="54" cy="105" r="10" fill="#FDDCBD"/>
-      <circle cx="54" cy="105" r="6" fill="#F5C4A5"/>
-      <circle cx="146" cy="105" r="10" fill="#FDDCBD"/>
-      <circle cx="146" cy="105" r="6" fill="#F5C4A5"/>
+      <g>
+        {/* Left ear */}
+        <circle cx="54" cy="105" r="11" fill="#FDDCBD"/>
+        <circle cx="54" cy="105" r="7" fill="#F5C4A5"/>
+        <circle cx="54" cy="105" r="4" fill="#F0B898" opacity="0.4"/>
+        {/* Right ear */}
+        <circle cx="146" cy="105" r="11" fill="#FDDCBD"/>
+        <circle cx="146" cy="105" r="7" fill="#F5C4A5"/>
+        <circle cx="146" cy="105" r="4" fill="#F0B898" opacity="0.4"/>
+      </g>
 
       {/* ── Eyebrows ── */}
       {isSad ? (
         <>
-          <path d="M72 86 Q80 82 90 88" fill="none" stroke="#8B6B4F" strokeWidth="2.5" strokeLinecap="round"/>
-          <path d="M110 88 Q120 82 128 86" fill="none" stroke="#8B6B4F" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M72 85 Q80 80 90 87" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+          <path d="M110 87 Q120 80 128 85" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
         </>
       ) : (
         <>
-          <path d="M74 86 Q82 80 92 84" fill="none" stroke="#8B6B4F" strokeWidth="2.5" strokeLinecap="round"/>
-          <path d="M108 84 Q118 80 126 86" fill="none" stroke="#8B6B4F" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M73 85 Q81 78 92 83" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+          <path d="M108 83 Q119 78 127 85" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
         </>
       )}
 
       {/* ── Eyes ── */}
       <g className="mascot-eyes">
-        <ellipse cx="84" cy="100" rx="12" ry="13" fill="white"/>
-        <ellipse cx="84" cy="100" rx="12" ry="13" fill="none" stroke="#DDBFA0" strokeWidth="1"/>
+        {/* Left eye */}
+        <ellipse cx="84" cy="100" rx="13" ry="14" fill="white"/>
+        <ellipse cx="84" cy="100" rx="13" ry="14" fill="none" stroke="#DDBFA0" strokeWidth="1.2"/>
         <g className="mascot-pupils">
-          <circle cx={isSearch ? "88" : "85"} cy={isSearch ? "101" : "100"} r="7" fill="#3D2314"/>
-          <circle cx={isSearch ? "89.5" : "86.5"} cy={isSearch ? "98" : "97"} r="2.5" fill="white"/>
+          {/* Iris */}
+          <circle cx={isSearch ? "88" : "85"} cy={isSearch ? "101" : "100"} r="8" fill="#6B4226"/>
+          {/* Pupil */}
+          <circle cx={isSearch ? "88" : "85"} cy={isSearch ? "101" : "100"} r="4.5" fill="#3D2314"/>
+          {/* Iris ring detail */}
+          <circle cx={isSearch ? "88" : "85"} cy={isSearch ? "101" : "100"} r="7" fill="none" stroke="#8B5E3C" strokeWidth="0.5" opacity="0.5"/>
+          {/* Catchlight big */}
+          <circle cx={isSearch ? "89.5" : "86.5"} cy={isSearch ? "97" : "96"} r="3" fill="white" opacity="0.9"/>
+          {/* Catchlight small */}
+          <circle cx={isSearch ? "86" : "83"} cy={isSearch ? "103" : "102"} r="1.5" fill="white" opacity="0.5"/>
         </g>
-        <ellipse cx="116" cy="100" rx="12" ry="13" fill="white"/>
-        <ellipse cx="116" cy="100" rx="12" ry="13" fill="none" stroke="#DDBFA0" strokeWidth="1"/>
+        {/* Right eye */}
+        <ellipse cx="116" cy="100" rx="13" ry="14" fill="white"/>
+        <ellipse cx="116" cy="100" rx="13" ry="14" fill="none" stroke="#DDBFA0" strokeWidth="1.2"/>
         <g className="mascot-pupils">
-          <circle cx={isSearch ? "120" : "117"} cy={isSearch ? "101" : "100"} r="7" fill="#3D2314"/>
-          <circle cx={isSearch ? "121.5" : "118.5"} cy={isSearch ? "98" : "97"} r="2.5" fill="white"/>
+          <circle cx={isSearch ? "120" : "117"} cy={isSearch ? "101" : "100"} r="8" fill="#6B4226"/>
+          <circle cx={isSearch ? "120" : "117"} cy={isSearch ? "101" : "100"} r="4.5" fill="#3D2314"/>
+          <circle cx={isSearch ? "120" : "117"} cy={isSearch ? "101" : "100"} r="7" fill="none" stroke="#8B5E3C" strokeWidth="0.5" opacity="0.5"/>
+          <circle cx={isSearch ? "121.5" : "118.5"} cy={isSearch ? "97" : "96"} r="3" fill="white" opacity="0.9"/>
+          <circle cx={isSearch ? "118" : "115"} cy={isSearch ? "103" : "102"} r="1.5" fill="white" opacity="0.5"/>
         </g>
       </g>
 
       {/* ── Nose ── */}
-      <ellipse cx="100" cy="112" rx="4" ry="3" fill="#F5C4A5"/>
+      <ellipse cx="100" cy="112" rx="4.5" ry="3.5" fill="#F0B898"/>
+      <ellipse cx="99" cy="111" rx="2" ry="1.5" fill="#FDDCBD" opacity="0.4"/>
 
       {/* ── Mouth ── */}
       {isSad ? (
-        <path d="M90 122 Q100 117 110 122" fill="none" stroke="#8B6B4F" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M90 123 Q100 117 110 123" fill="none" stroke="#7A5A3A" strokeWidth="2.2" strokeLinecap="round"/>
       ) : (
-        <path d="M88 120 Q100 130 112 120" fill="none" stroke="#8B6B4F" strokeWidth="2" strokeLinecap="round"/>
+        <>
+          <path d="M87 120 Q100 131 113 120" fill="none" stroke="#7A5A3A" strokeWidth="2.2" strokeLinecap="round"/>
+          {/* Smile fill */}
+          <path d="M89 121 Q100 129 111 121" fill="#E88080" opacity="0.15"/>
+        </>
       )}
 
       {/* ── Cheeks ── */}
-      <circle cx="70" cy="114" r="7" fill="#F5A5A5" opacity="0.35"/>
-      <circle cx="130" cy="114" r="7" fill="#F5A5A5" opacity="0.35"/>
+      <ellipse cx="68" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity="0.35"/>
+      <ellipse cx="132" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity="0.35"/>
+
+      {/* ── Freckles ── */}
+      <g opacity="0.2" fill="#C49A6C">
+        <circle cx="66" cy="108" r="1"/>
+        <circle cx="71" cy="106" r="1"/>
+        <circle cx="69" cy="111" r="0.8"/>
+        <circle cx="130" cy="108" r="1"/>
+        <circle cx="135" cy="106" r="1"/>
+        <circle cx="132" cy="111" r="0.8"/>
+      </g>
 
       {/* ── Hat ── */}
       {renderHat(c.hat)}
@@ -1326,12 +1551,43 @@ export default function Mascot({
       {/* ── Right arm + loupe (rendered LAST = on top) ── */}
       {!isSad && (
         <g className="mascot-right-arm">
-          <path d="M142 170 Q162 150 158 125" fill="none" stroke="#E8D5B8" strokeWidth="14" strokeLinecap="round"/>
-          <circle cx="158" cy="125" r="9" fill="#FDDCBD"/>
-          <line x1="158" y1="125" x2="168" y2="100" stroke="#D4A853" strokeWidth="5" strokeLinecap="round"/>
-          <circle cx="174" cy="88" r="20" fill="none" stroke="#D4A853" strokeWidth="4.5"/>
-          <circle cx="174" cy="88" r="20" fill="#E8F4FF" opacity="0.25"/>
-          <path d="M165 80 Q168 76 173 74" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" opacity="0.6"/>
+          {/* Sleeve */}
+          <path d="M140 162 Q160 145 158 120" fill="none" stroke="#B89A72" strokeWidth="16" strokeLinecap="round"/>
+          <path d="M140 162 Q158 147 156 124" fill="none" stroke="#C4AC8A" strokeWidth="6" strokeLinecap="round" opacity="0.4"/>
+          {/* Cuff */}
+          <circle cx="158" cy="120" r="9" fill="#A89070"/>
+          <circle cx="158" cy="120" r="8" fill="#B89A72"/>
+          {/* Hand */}
+          <circle cx="158" cy="120" r="8" fill="#FDDCBD"/>
+          <circle cx="158" cy="120" r="7" fill="#F5C4A5" opacity="0.2"/>
+          {/* Magnifying glass handle — wood */}
+          <line x1="158" y1="120" x2="168" y2="98" stroke="#6B4226" strokeWidth="6" strokeLinecap="round"/>
+          <line x1="158" y1="120" x2="168" y2="98" stroke="#8B5E3C" strokeWidth="3" strokeLinecap="round"/>
+          {/* Handle grain */}
+          <line x1="160" y1="116" x2="164" y2="106" stroke="#5A3A1A" strokeWidth="0.5" opacity="0.3"/>
+          <line x1="161" y1="117" x2="165" y2="107" stroke="#A67B4F" strokeWidth="0.4" opacity="0.3"/>
+          {/* Handle ferrule (brass joint) */}
+          <circle cx="168" cy="98" r="4" fill="#C4A050"/>
+          <circle cx="168" cy="98" r="3" fill="#D4A853"/>
+          {/* Brass ring — outer */}
+          <circle cx="175" cy="84" r="21" fill="none" stroke="#A08030" strokeWidth="2"/>
+          {/* Brass ring — main */}
+          <circle cx="175" cy="84" r="20" fill="none" stroke="#C4A050" strokeWidth="5"/>
+          {/* Brass ring — inner highlight */}
+          <circle cx="175" cy="84" r="18" fill="none" stroke="#D4B860" strokeWidth="1" opacity="0.5"/>
+          {/* Ring detail — rivet dots */}
+          <circle cx="157" cy="78" r="1.2" fill="#A08030" opacity="0.6"/>
+          <circle cx="159" cy="92" r="1.2" fill="#A08030" opacity="0.6"/>
+          <circle cx="193" cy="78" r="1.2" fill="#A08030" opacity="0.6"/>
+          <circle cx="191" cy="92" r="1.2" fill="#A08030" opacity="0.6"/>
+          {/* Glass fill */}
+          <circle cx="175" cy="84" r="17" fill="#D8ECFA" opacity="0.3"/>
+          {/* Glass reflection — arc */}
+          <path d="M164 76 Q168 70 175 68" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" opacity="0.7"/>
+          {/* Glass reflection — small spot */}
+          <circle cx="167" cy="78" r="2" fill="white" opacity="0.5"/>
+          {/* Glass subtle tint */}
+          <circle cx="180" cy="90" r="8" fill="#B8D8F0" opacity="0.12"/>
         </g>
       )}
 
