@@ -3230,39 +3230,49 @@ function AccessoryFlamingSword() {
 function AccessoryGalaxyCloak() {
   return (
     <g>
-      {/* Cloak outer layer */}
-      <path d="M58 118 Q52 140 48 182 Q68 188 100 192 Q132 188 152 182 Q148 140 142 118" fill="#0F0F2E" opacity="0.85"/>
+      {/* Cloak outer layer - flows behind and wider */}
+      <path d="M62 152 Q50 180 42 220 Q45 240 55 252 Q78 260 100 262 Q122 260 145 252 Q155 240 158 220 Q150 180 138 152" fill="#0F0F2E" opacity="0.85"/>
       {/* Cloak inner layer */}
-      <path d="M62 122 Q56 142 52 180 Q72 186 100 188 Q128 186 148 180 Q144 142 138 122" fill="#1A1A4E" opacity="0.6"/>
+      <path d="M65 155 Q54 182 46 218 Q50 238 58 250 Q80 256 100 258 Q120 256 142 250 Q150 238 154 218 Q146 182 135 155" fill="#1A1A4E" opacity="0.6"/>
+      {/* Cloak flowing bottom edge */}
+      <path d="M42 220 Q55 225 62 218 Q72 225 82 218 Q92 225 100 218 Q108 225 118 218 Q128 225 138 218 Q145 225 158 220" fill="none" stroke="#2D2D6B" strokeWidth="1.5" opacity="0.3"/>
       {/* Nebula swirls */}
-      <path d="M68 145 Q80 138 92 148 Q88 158 76 155" fill="#4F46E5" opacity="0.15"/>
-      <path d="M108 155 Q120 148 132 158 Q128 168 116 165" fill="#7C3AED" opacity="0.12"/>
-      <path d="M80 168 Q92 162 104 172 Q100 180 88 178" fill="#6366F1" opacity="0.1"/>
-      {/* Stars - bright */}
-      <circle cx="72" cy="148" r="1.5" fill="white" opacity="0.85"/>
-      <circle cx="72" cy="148" r="0.6" fill="white"/>
-      <circle cx="92" cy="162" r="1.8" fill="white" opacity="0.9"/>
-      <circle cx="92" cy="162" r="0.7" fill="white"/>
-      <circle cx="128" cy="168" r="1.5" fill="white" opacity="0.7"/>
-      <circle cx="128" cy="168" r="0.6" fill="white"/>
-      {/* Stars - medium */}
-      <circle cx="110" cy="150" r="1.2" fill="#FFD700" opacity="0.7"/>
-      <circle cx="82" cy="175" r="1" fill="#7B68EE" opacity="0.7"/>
-      <circle cx="118" cy="142" r="1" fill="#87CEEB" opacity="0.6"/>
-      <circle cx="100" cy="178" r="1.2" fill="white" opacity="0.5"/>
+      <path d="M58 185 Q72 176 86 188 Q80 200 66 196" fill="#4F46E5" opacity="0.15"/>
+      <path d="M112 195 Q126 186 140 198 Q134 210 120 206" fill="#7C3AED" opacity="0.12"/>
+      <path d="M80 215 Q94 208 108 220 Q102 232 88 228" fill="#6366F1" opacity="0.1"/>
+      <path d="M95 170 Q108 164 118 175 Q112 184 100 180" fill="#312E81" opacity="0.1"/>
+      {/* Stars - bright with glow */}
+      <circle cx="62" cy="188" r="2" fill="white" opacity="0.8"/>
+      <circle cx="62" cy="188" r="0.8" fill="white"/>
+      <circle cx="92" cy="208" r="2" fill="white" opacity="0.85"/>
+      <circle cx="92" cy="208" r="0.8" fill="white"/>
+      <circle cx="135" cy="204" r="1.8" fill="white" opacity="0.7"/>
+      <circle cx="135" cy="204" r="0.7" fill="white"/>
+      <circle cx="108" cy="178" r="1.5" fill="white" opacity="0.75"/>
+      <circle cx="108" cy="178" r="0.6" fill="white"/>
+      {/* Stars - medium colored */}
+      <circle cx="75" cy="172" r="1.2" fill="#FFD700" opacity="0.7"/>
+      <circle cx="128" cy="220" r="1" fill="#7B68EE" opacity="0.7"/>
+      <circle cx="118" cy="170" r="1" fill="#87CEEB" opacity="0.6"/>
+      <circle cx="100" cy="232" r="1.2" fill="white" opacity="0.5"/>
+      <circle cx="56" cy="210" r="1" fill="#A78BFA" opacity="0.6"/>
+      <circle cx="145" cy="228" r="1" fill="#87CEEB" opacity="0.5"/>
       {/* Stars - small */}
-      <circle cx="65" cy="158" r="0.7" fill="white" opacity="0.5"/>
-      <circle cx="135" cy="155" r="0.7" fill="white" opacity="0.4"/>
-      <circle cx="75" cy="182" r="0.6" fill="white" opacity="0.4"/>
-      <circle cx="120" cy="178" r="0.8" fill="#C4B5FD" opacity="0.5"/>
-      <circle cx="95" cy="145" r="0.5" fill="white" opacity="0.35"/>
+      <circle cx="68" cy="200" r="0.7" fill="white" opacity="0.5"/>
+      <circle cx="140" cy="195" r="0.7" fill="white" opacity="0.4"/>
+      <circle cx="80" cy="238" r="0.6" fill="white" opacity="0.4"/>
+      <circle cx="120" cy="240" r="0.8" fill="#C4B5FD" opacity="0.5"/>
+      <circle cx="52" cy="230" r="0.5" fill="white" opacity="0.35"/>
+      <circle cx="148" cy="238" r="0.6" fill="white" opacity="0.3"/>
       {/* Shooting star */}
-      <line x1="105" y1="138" x2="98" y2="142" stroke="white" strokeWidth="0.6" opacity="0.4"/>
-      <circle cx="105" cy="138" r="1" fill="white" opacity="0.6"/>
-      {/* Clasp at collar */}
-      <circle cx="100" cy="120" r="4" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
-      <circle cx="100" cy="120" r="2.5" fill="#E8C860"/>
-      <circle cx="99" cy="119" r="1" fill="white" opacity="0.3"/>
+      <line x1="110" y1="185" x2="102" y2="190" stroke="white" strokeWidth="0.7" opacity="0.4"/>
+      <circle cx="110" cy="185" r="1.2" fill="white" opacity="0.6"/>
+      {/* Constellation lines */}
+      <g stroke="white" strokeWidth="0.3" opacity="0.12">
+        <line x1="62" y1="188" x2="75" y2="172"/>
+        <line x1="92" y1="208" x2="108" y2="178"/>
+        <line x1="108" y1="178" x2="135" y2="204"/>
+      </g>
     </g>
   );
 }
@@ -3378,8 +3388,8 @@ export default function Mascot({
 
   const scarfColor = SCARF_COLORS[c.scarf] || SCARF_COLORS.red;
   const bootColor = BOOT_COLORS[c.boots] || BOOT_COLORS.brown;
-  const hasCape = c.accessory === "cape";
-  const hasWings = c.accessory === "wings" || c.accessory === "phoenix_wings";
+  const hasCape = c.accessory === "cape" || c.accessory === "galaxy_cloak";
+  const hasWings = c.accessory === "wings" || c.accessory === "phoenix_wings" || c.accessory === "demon_wings";
   const hasAura = c.accessory === "aura" || c.accessory === "cosmic_aura" || c.accessory === "stardust";
   const hasLightning = c.accessory === "lightning";
 
@@ -3463,8 +3473,8 @@ export default function Mascot({
       {/* ── Wings (behind body) ── */}
       {hasWings && !isSad && renderAccessory(c.accessory, isSad)}
 
-      {/* ── Cape (behind body) ── */}
-      {hasCape && !isSad && <AccessoryCape />}
+      {/* ── Cape / Cloak (behind body) ── */}
+      {hasCape && !isSad && renderAccessory(c.accessory, isSad)}
 
       {/* ── Legs / Boots ── */}
       {(() => {
@@ -3690,8 +3700,8 @@ export default function Mascot({
       </g>
 
       {/* ── Held accessories (satchel, compass, etc.) ── */}
-      {!["bowtie", "medal", "badge_acc", "whistle", "cape", "wings", "phoenix_wings",
-         "aura", "cosmic_aura", "stardust", "lightning", "armor", "halo_acc",
+      {!["bowtie", "medal", "badge_acc", "whistle", "cape", "galaxy_cloak", "wings", "phoenix_wings",
+         "demon_wings", "aura", "cosmic_aura", "stardust", "lightning", "armor", "halo_acc",
          "none_acc"].includes(c.accessory) && !isSad && renderAccessory(c.accessory, isSad)}
 
       {/* ── Lightning (over body) ── */}
