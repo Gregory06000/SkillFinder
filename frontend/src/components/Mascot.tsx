@@ -1903,29 +1903,40 @@ function AccessoryBinoculars() {
 function AccessoryWhistle() {
   return (
     <g>
-      {/* Lanyard cord from neck */}
-      <path d="M93 143 Q100 149 109 148" fill="none" stroke="#C45D3E" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* Lanyard cord from neck - braided look */}
+      <path d="M93 143 Q97 146 100 149 Q105 148 109 148" fill="none" stroke="#C45D3E" strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M93 143 Q97 145 100 148" fill="none" stroke="#A03828" strokeWidth="0.6" strokeDasharray="2,2" opacity="0.5"/>
+      {/* Shadow under whistle */}
+      <ellipse cx="120" cy="153" rx="14" ry="2" fill="#000" opacity="0.08"/>
       {/* Whistle body — polished metal */}
-      <rect x="107" y="143" width="22" height="9" rx="3.5" fill="#C8C8D4"/>
+      <rect x="107" y="143" width="22" height="9" rx="3.5" fill="#C8C8D4" stroke="#9090A0" strokeWidth="0.5"/>
       {/* Metal shading */}
       <rect x="107" y="143" width="22" height="4" rx="3" fill="#E0E0EC" opacity="0.5"/>
       <rect x="107" y="148" width="22" height="4" rx="3" fill="#9090A0" opacity="0.4"/>
       {/* Polished highlight streak */}
       <rect x="110" y="144" width="14" height="1.5" rx="0.7" fill="white" opacity="0.55"/>
+      {/* Engraved line detail */}
+      <line x1="112" y1="150" x2="126" y2="150" stroke="#808088" strokeWidth="0.4" opacity="0.5"/>
       {/* Pea chamber bump */}
       <ellipse cx="118" cy="147.5" rx="4" ry="3" fill="#B0B0BC" stroke="#9090A0" strokeWidth="0.7"/>
       <ellipse cx="118" cy="147.5" rx="2" ry="1.5" fill="#D0D0DC" opacity="0.5"/>
+      <ellipse cx="117" cy="146.5" rx="1" ry="0.6" fill="white" opacity="0.3"/>
       {/* Mouthpiece — narrowed end */}
-      <rect x="129" y="144.5" width="5" height="7" rx="2" fill="#A0A0AC"/>
-      <rect x="129" y="144.5" width="5" height="2" rx="1" fill="#C8C8D4" opacity="0.5"/>
+      <rect x="129" y="144.5" width="6" height="7" rx="2" fill="#A0A0AC" stroke="#808088" strokeWidth="0.4"/>
+      <rect x="129" y="144.5" width="6" height="2.5" rx="1" fill="#C8C8D4" opacity="0.5"/>
+      {/* Mouthpiece opening */}
+      <ellipse cx="135" cy="148" rx="1" ry="2.5" fill="#707078"/>
       {/* Lanyard ring at end */}
       <circle cx="108.5" cy="147.5" r="3" fill="none" stroke="#B8860B" strokeWidth="1.4"/>
       <circle cx="108.5" cy="147.5" r="1.5" fill="none" stroke="#D4A853" strokeWidth="0.8"/>
+      <circle cx="107.5" cy="146.5" r="0.5" fill="#F0C060" opacity="0.5"/>
       {/* Sound waves hint */}
-      <path d="M136 143 Q139 147.5 136 152" fill="none" stroke="#A8A8B0" strokeWidth="0.8" opacity="0.4"/>
-      <path d="M138.5 141.5 Q143 147.5 138.5 153.5" fill="none" stroke="#A8A8B0" strokeWidth="0.7" opacity="0.25"/>
+      <path d="M137 143.5 Q140 147.5 137 151.5" fill="none" stroke="#A8A8B0" strokeWidth="0.8" opacity="0.4"/>
+      <path d="M139.5 142 Q144 147.5 139.5 153" fill="none" stroke="#A8A8B0" strokeWidth="0.7" opacity="0.25"/>
+      <path d="M142 140.5 Q147 147.5 142 154.5" fill="none" stroke="#A8A8B0" strokeWidth="0.5" opacity="0.15"/>
       {/* Air holes */}
       <ellipse cx="114" cy="147.5" rx="1" ry="2" fill="#9090A0" opacity="0.6"/>
+      <ellipse cx="122" cy="147.5" rx="0.8" ry="1.5" fill="#9090A0" opacity="0.4"/>
     </g>
   );
 }
@@ -2675,29 +2686,46 @@ function AccessoryArmor() {
 function AccessoryFlag() {
   return (
     <g>
+      {/* Pole shadow */}
+      <line x1="153" y1="146" x2="153" y2="219" stroke="#000" strokeWidth="2" opacity="0.08"/>
       {/* Pole wooden with grain texture */}
       <line x1="152" y1="145" x2="152" y2="218" stroke="#5A3820" strokeWidth="4" strokeLinecap="round"/>
       <line x1="153" y1="145" x2="153" y2="218" stroke="#8B5E3C" strokeWidth="1.5" strokeLinecap="round" opacity="0.4"/>
+      {/* Wood grain lines */}
+      <line x1="151" y1="160" x2="151" y2="180" stroke="#4A2E1A" strokeWidth="0.4" opacity="0.3"/>
+      <line x1="153" y1="190" x2="153" y2="210" stroke="#4A2E1A" strokeWidth="0.3" opacity="0.25"/>
+      {/* Pole bands */}
+      <rect x="149.5" y="165" width="5" height="2" rx="0.5" fill="#D4A853" opacity="0.6"/>
+      <rect x="149.5" y="200" width="5" height="2" rx="0.5" fill="#D4A853" opacity="0.6"/>
       {/* Pole finial spear tip */}
-      <polygon points="152,140 149,148 152,146 155,148" fill="#D4A853"/>
-      <polygon points="152,140 151,145 153,145" fill="#F0C060" opacity="0.6"/>
+      <polygon points="152,138 148,148 152,146 156,148" fill="#D4A853" stroke="#B8860B" strokeWidth="0.5"/>
+      <polygon points="152,138 151,145 153,145" fill="#F0C060" opacity="0.6"/>
       {/* Rope tie at flag base */}
       <circle cx="152" cy="152" r="2" fill="#A07840"/>
       <circle cx="152" cy="155" r="1.5" fill="#A07840"/>
       <path d="M152 152 Q149 153 150 156" fill="none" stroke="#C8A060" strokeWidth="0.8"/>
+      <path d="M152 155 Q150 157 151 159" fill="none" stroke="#C8A060" strokeWidth="0.6" opacity="0.5"/>
       {/* Flag rippling pennant */}
-      <path d="M152 150 Q162 152 172 150 Q178 154 175 158 Q168 156 162 158 Q168 161 178 162 Q180 167 172 167 Q162 164 152 166 Z" fill="#C45D3E"/>
+      <path d="M152 150 Q162 152 172 150 Q178 154 175 158 Q168 156 162 158 Q168 161 178 162 Q180 167 172 167 Q162 164 152 166 Z" fill="#C45D3E" stroke="#A03828" strokeWidth="0.5"/>
       {/* Mid-ripple shadow */}
       <path d="M162 150 Q168 152 172 150 Q175 154 172 156 Q168 154 162 152 Z" fill="#A03828" opacity="0.4"/>
       <path d="M162 158 Q168 160 178 162 Q178 165 174 166 Q168 163 162 163 Z" fill="#A03828" opacity="0.35"/>
       {/* Top edge highlight */}
       <path d="M152 150 Q162 149 172 150 Q175 151 174 152 Q164 151 152 152 Z" fill="#E87060" opacity="0.4"/>
+      {/* Bottom edge highlight */}
+      <path d="M152 164 Q162 166 172 167 Q170 165.5 168 165" fill="none" stroke="#E87060" strokeWidth="0.5" opacity="0.3"/>
+      {/* Fabric texture lines */}
+      <path d="M156 152 Q164 154 170 152" fill="none" stroke="#B04030" strokeWidth="0.4" opacity="0.3"/>
+      <path d="M155 156 Q162 157 168 156" fill="none" stroke="#B04030" strokeWidth="0.4" opacity="0.25"/>
+      <path d="M156 161 Q164 162 174 163" fill="none" stroke="#B04030" strokeWidth="0.4" opacity="0.25"/>
       {/* Star emblem on flag */}
       <polygon points="164,153 165,156 168,156 165.5,158 166.5,161 164,159.5 161.5,161 162.5,158 160,156 163,156" fill="#FDE68A" opacity="0.85"/>
+      <polygon points="164,154 164.6,155.8 166.8,155.8 165.1,157 165.7,159 164,158 162.3,159 162.9,157 161.2,155.8 163.4,155.8" fill="#FFF8DC" opacity="0.4"/>
       {/* Rope fringe at back */}
       <line x1="152" y1="150" x2="150" y2="153" stroke="#8B3020" strokeWidth="0.8" opacity="0.7"/>
       <line x1="152" y1="155" x2="150" y2="158" stroke="#8B3020" strokeWidth="0.8" opacity="0.7"/>
       <line x1="152" y1="160" x2="150" y2="163" stroke="#8B3020" strokeWidth="0.8" opacity="0.7"/>
+      <line x1="152" y1="164" x2="150" y2="167" stroke="#8B3020" strokeWidth="0.6" opacity="0.5"/>
     </g>
   );
 }
@@ -2974,31 +3002,46 @@ function AccessoryWings() {
 function AccessoryDemonWings() {
   return (
     <g>
-      {/* Left wing - membrane */}
-      <path d="M50 130 Q22 108 12 85 Q16 98 28 104 Q20 82 22 65 Q28 88 38 98 Q32 76 36 60 Q40 82 46 102" fill="#3A0000" opacity="0.8"/>
-      <path d="M50 130 Q26 112 16 90" fill="none" stroke="#660000" strokeWidth="1.5" opacity="0.5"/>
-      {/* Left wing bones */}
-      <path d="M50 130 Q30 105 18 80" fill="none" stroke="#5A0000" strokeWidth="2" opacity="0.6"/>
-      <path d="M46 120 Q32 98 26 72" fill="none" stroke="#4A0000" strokeWidth="1.5" opacity="0.5"/>
-      {/* Left membrane veins */}
-      <path d="M35 95 Q38 100 42 108" fill="none" stroke="#660000" strokeWidth="0.6" opacity="0.4"/>
-      <path d="M25 80 Q30 90 36 102" fill="none" stroke="#660000" strokeWidth="0.5" opacity="0.3"/>
-      {/* Left wing holes/tears */}
-      <circle cx="30" cy="95" r="2" fill="#1A0000" opacity="0.3"/>
-      {/* Right wing - membrane */}
-      <path d="M150 130 Q178 108 188 85 Q184 98 172 104 Q180 82 178 65 Q172 88 162 98 Q168 76 164 60 Q160 82 154 102" fill="#3A0000" opacity="0.8"/>
-      <path d="M150 130 Q174 112 184 90" fill="none" stroke="#660000" strokeWidth="1.5" opacity="0.5"/>
-      {/* Right wing bones */}
-      <path d="M150 130 Q170 105 182 80" fill="none" stroke="#5A0000" strokeWidth="2" opacity="0.6"/>
-      <path d="M154 120 Q168 98 174 72" fill="none" stroke="#4A0000" strokeWidth="1.5" opacity="0.5"/>
-      {/* Right membrane veins */}
-      <path d="M165 95 Q162 100 158 108" fill="none" stroke="#660000" strokeWidth="0.6" opacity="0.4"/>
-      <path d="M175 80 Q170 90 164 102" fill="none" stroke="#660000" strokeWidth="0.5" opacity="0.3"/>
-      {/* Right wing holes */}
-      <circle cx="170" cy="95" r="2" fill="#1A0000" opacity="0.3"/>
-      {/* Ember glow at tips */}
-      <circle cx="12" cy="85" r="2" fill="#FF4500" opacity="0.2"/>
-      <circle cx="188" cy="85" r="2" fill="#FF4500" opacity="0.2"/>
+      {/* Left wing */}
+      <g className="anim-wing-l">
+        {/* Membrane */}
+        <path d="M50 130 Q22 108 12 85 Q16 98 28 104 Q20 82 22 65 Q28 88 38 98 Q32 76 36 60 Q40 82 46 102" fill="#3A0000" opacity="0.8"/>
+        <path d="M50 130 Q26 112 16 90" fill="none" stroke="#660000" strokeWidth="1.5" opacity="0.5"/>
+        {/* Bones */}
+        <path d="M50 130 Q30 105 18 80" fill="none" stroke="#5A0000" strokeWidth="2" opacity="0.6"/>
+        <path d="M46 120 Q32 98 26 72" fill="none" stroke="#4A0000" strokeWidth="1.5" opacity="0.5"/>
+        {/* Membrane veins */}
+        <path d="M35 95 Q38 100 42 108" fill="none" stroke="#660000" strokeWidth="0.6" opacity="0.4"/>
+        <path d="M25 80 Q30 90 36 102" fill="none" stroke="#660000" strokeWidth="0.5" opacity="0.3"/>
+        <path d="M30 88 Q34 94 38 104" fill="none" stroke="#550000" strokeWidth="0.4" opacity="0.25"/>
+        {/* Wing claw at tip */}
+        <path d="M12 85 Q10 80 8 82 Q11 84 12 85" fill="#5A0000" opacity="0.7"/>
+        {/* Holes/tears */}
+        <circle cx="30" cy="95" r="2" fill="#1A0000" opacity="0.3"/>
+        <circle cx="24" cy="78" r="1.2" fill="#1A0000" opacity="0.2"/>
+        {/* Ember glow */}
+        <circle cx="12" cy="85" r="2" fill="#FF4500" className="anim-ember-1"/>
+      </g>
+      {/* Right wing */}
+      <g className="anim-wing-r">
+        {/* Membrane */}
+        <path d="M150 130 Q178 108 188 85 Q184 98 172 104 Q180 82 178 65 Q172 88 162 98 Q168 76 164 60 Q160 82 154 102" fill="#3A0000" opacity="0.8"/>
+        <path d="M150 130 Q174 112 184 90" fill="none" stroke="#660000" strokeWidth="1.5" opacity="0.5"/>
+        {/* Bones */}
+        <path d="M150 130 Q170 105 182 80" fill="none" stroke="#5A0000" strokeWidth="2" opacity="0.6"/>
+        <path d="M154 120 Q168 98 174 72" fill="none" stroke="#4A0000" strokeWidth="1.5" opacity="0.5"/>
+        {/* Membrane veins */}
+        <path d="M165 95 Q162 100 158 108" fill="none" stroke="#660000" strokeWidth="0.6" opacity="0.4"/>
+        <path d="M175 80 Q170 90 164 102" fill="none" stroke="#660000" strokeWidth="0.5" opacity="0.3"/>
+        <path d="M170 88 Q166 94 162 104" fill="none" stroke="#550000" strokeWidth="0.4" opacity="0.25"/>
+        {/* Wing claw at tip */}
+        <path d="M188 85 Q190 80 192 82 Q189 84 188 85" fill="#5A0000" opacity="0.7"/>
+        {/* Holes */}
+        <circle cx="170" cy="95" r="2" fill="#1A0000" opacity="0.3"/>
+        <circle cx="176" cy="78" r="1.2" fill="#1A0000" opacity="0.2"/>
+        {/* Ember glow */}
+        <circle cx="188" cy="85" r="2" fill="#FF4500" className="anim-ember-2"/>
+      </g>
     </g>
   );
 }
@@ -3006,33 +3049,45 @@ function AccessoryDemonWings() {
 function AccessoryKatana() {
   return (
     <g>
+      {/* Blade shadow */}
+      <line x1="133" y1="103" x2="173" y2="56" stroke="#000" strokeWidth="3" opacity="0.06"/>
       {/* Blade - back edge */}
       <line x1="132" y1="102" x2="172" y2="55" stroke="#808088" strokeWidth="4" strokeLinecap="round"/>
       {/* Blade - face */}
       <line x1="132" y1="102" x2="172" y2="55" stroke="#C0C0C8" strokeWidth="2.5" strokeLinecap="round"/>
       {/* Blade edge gleam */}
       <line x1="133" y1="101" x2="172" y2="56" stroke="#E8E8F0" strokeWidth="1" strokeLinecap="round" opacity="0.7"/>
-      {/* Hamon line (temper pattern) */}
-      <path d="M140 96 Q145 92 148 88 Q152 84 155 80 Q158 76 162 72 Q166 68 170 60" fill="none" stroke="#D0D0D8" strokeWidth="0.8" opacity="0.4"/>
-      {/* Blade tip */}
-      <path d="M170 58 L174 52 L172 55" fill="#E0E0E8" stroke="#A0A0A8" strokeWidth="0.5"/>
+      {/* Hamon line (temper pattern) - wavy */}
+      <path d="M138 98 Q141 95 143 92 Q146 89 148 86 Q151 83 154 80 Q157 77 160 74 Q163 70 166 66 Q169 62 171 58" fill="none" stroke="#D0D0D8" strokeWidth="0.8" opacity="0.4"/>
+      <path d="M139 97 Q143 94 146 90 Q150 86 153 82 Q157 78 161 73 Q165 69 168 64" fill="none" stroke="#E0E0E8" strokeWidth="0.4" opacity="0.25"/>
+      {/* Blade tip - kissaki */}
+      <path d="M170 58 L175 50 L172 55" fill="#E0E0E8" stroke="#A0A0A8" strokeWidth="0.5"/>
+      <path d="M171 56 L173 52" stroke="white" strokeWidth="0.3" opacity="0.4"/>
+      {/* Habaki (blade collar) */}
+      <rect x="129" y="100" width="6" height="4" rx="1" fill="#D4A853" transform="rotate(-40 132 102)" opacity="0.7"/>
       {/* Tsuba (hand guard) */}
       <ellipse cx="132" cy="104" rx="8" ry="4" fill="#2D2D2D" transform="rotate(-40 132 104)"/>
       <ellipse cx="132" cy="104" rx="6" ry="3" fill="#3D3D3D" transform="rotate(-40 132 104)" opacity="0.5"/>
-      {/* Tsuba pattern */}
+      {/* Tsuba pattern - dragon swirl */}
       <circle cx="132" cy="104" r="2" fill="none" stroke="#D4A853" strokeWidth="0.5" opacity="0.5"/>
+      <path d="M130 103 Q132 101 134 103" fill="none" stroke="#D4A853" strokeWidth="0.4" opacity="0.4"/>
+      <path d="M130 105 Q132 107 134 105" fill="none" stroke="#D4A853" strokeWidth="0.4" opacity="0.4"/>
       {/* Tsuka (handle) - wrapped */}
       <line x1="126" y1="110" x2="116" y2="125" stroke="#2D2D2D" strokeWidth="5" strokeLinecap="round"/>
       <line x1="126" y1="110" x2="116" y2="125" stroke="#4A2E1A" strokeWidth="4" strokeLinecap="round"/>
-      {/* Handle wrapping diamonds */}
+      {/* Handle wrapping diamonds (ito) */}
       <g stroke="#D4A853" strokeWidth="0.6" opacity="0.6" fill="none">
         <path d="M124 112 L122 115 L120 112 L122 109Z"/>
         <path d="M121 116 L119 119 L117 116 L119 113Z"/>
         <path d="M118 120 L116 123 L114 120 L116 117Z"/>
       </g>
+      {/* Menuki (handle ornament) */}
+      <ellipse cx="121" cy="116" rx="1.5" ry="1" fill="#D4A853" transform="rotate(-40 121 116)" opacity="0.5"/>
       {/* Kashira (pommel cap) */}
       <ellipse cx="115" cy="126" rx="3.5" ry="2" fill="#D4A853" transform="rotate(-40 115 126)"/>
       <ellipse cx="115" cy="126" rx="2" ry="1.2" fill="#E8C860" transform="rotate(-40 115 126)" opacity="0.5"/>
+      {/* Kashira detail */}
+      <ellipse cx="114.5" cy="125.5" rx="1" ry="0.6" fill="#F0C060" transform="rotate(-40 114.5 125.5)" opacity="0.3"/>
     </g>
   );
 }
