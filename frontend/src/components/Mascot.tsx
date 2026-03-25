@@ -118,9 +118,9 @@ function HatBandana() {
       <circle cx="90" cy="58" r="1" fill="#E88060" opacity="0.4"/>
       <circle cx="110" cy="58" r="1" fill="#E88060" opacity="0.4"/>
       {/* Knot tails hanging on the right side at back */}
-      <path d="M138 58 Q152 62 156 74 Q158 80 155 84" fill="#C45D3E" stroke="#A03020" strokeWidth="0.5"/>
-      <path d="M142 60 Q154 64 156 76 Q157 80 155 84" fill="#A03828" opacity="0.6"/>
-      <path d="M140 60 Q156 66 158 78 Q159 85 155 88" fill="#C45D3E" stroke="#A03020" strokeWidth="0.5"/>
+      <path d="M138 58 Q152 62 156 70 Q158 74 155 78" fill="#C45D3E" stroke="#A03020" strokeWidth="0.5"/>
+      <path d="M142 60 Q154 64 156 72 Q157 76 155 78" fill="#A03828" opacity="0.6"/>
+      <path d="M140 60 Q156 66 158 74 Q159 78 155 80" fill="#C45D3E" stroke="#A03020" strokeWidth="0.5"/>
       {/* Knot bump detail */}
       <ellipse cx="140" cy="58" rx="6" ry="4" fill="#B04030" transform="rotate(-20 140 58)"/>
       <ellipse cx="140" cy="58" rx="4" ry="2.5" fill="#D06050" opacity="0.5" transform="rotate(-20 140 58)"/>
@@ -959,14 +959,14 @@ function HatPharaoh() {
         <path d="M62 32 Q100 26 138 32"/><path d="M58 42 Q100 36 142 42"/>
         <path d="M56 52 Q100 46 144 52"/><path d="M55 62 Q100 56 145 62"/>
       </g>
-      {/* Side lappets */}
-      <path d="M55 72 Q52 82 50 98 Q48 100 52 100 Q56 98 58 80" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
-      <path d="M145 72 Q148 82 150 98 Q152 100 148 100 Q144 98 142 80" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
+      {/* Side lappets - shorter, stop above eyes */}
+      <path d="M55 72 Q53 76 52 82 Q51 84 54 84 Q57 82 58 76" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
+      <path d="M145 72 Q147 76 148 82 Q149 84 146 84 Q143 82 142 76" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
       {/* Lappet stripes */}
-      <line x1="52" y1="80" x2="56" y2="80" stroke="#B8860B" strokeWidth="1"/>
-      <line x1="51" y1="88" x2="57" y2="88" stroke="#B8860B" strokeWidth="1"/>
-      <line x1="144" y1="80" x2="148" y2="80" stroke="#B8860B" strokeWidth="1"/>
-      <line x1="143" y1="88" x2="149" y2="88" stroke="#B8860B" strokeWidth="1"/>
+      <line x1="53" y1="77" x2="57" y2="77" stroke="#B8860B" strokeWidth="1"/>
+      <line x1="52" y1="81" x2="56" y2="81" stroke="#B8860B" strokeWidth="1"/>
+      <line x1="143" y1="77" x2="147" y2="77" stroke="#B8860B" strokeWidth="1"/>
+      <line x1="144" y1="81" x2="148" y2="81" stroke="#B8860B" strokeWidth="1"/>
       {/* Crown band */}
       <rect x="56" y="62" width="88" height="8" rx="2" fill="#B8860B"/>
       <rect x="56" y="63" width="88" height="6" rx="1" fill="#D4A853"/>
@@ -3042,30 +3042,30 @@ function AccessoryKatana() {
 function AccessoryTrident() {
   return (
     <g>
-      {/* Shaft */}
-      <line x1="155" y1="190" x2="155" y2="80" stroke="#6B4226" strokeWidth="5" strokeLinecap="round"/>
-      <line x1="155" y1="190" x2="155" y2="80" stroke="#8B5E3C" strokeWidth="2" strokeLinecap="round" opacity="0.4"/>
+      {/* Shaft - held at right hand y~115, extends down to ~145 */}
+      <line x1="155" y1="145" x2="155" y2="68" stroke="#6B4226" strokeWidth="5" strokeLinecap="round"/>
+      <line x1="155" y1="145" x2="155" y2="68" stroke="#8B5E3C" strokeWidth="2" strokeLinecap="round" opacity="0.4"/>
       {/* Shaft bands */}
-      <rect x="151" y="140" width="8" height="4" rx="1" fill="#D4A853"/>
-      <rect x="151" y="160" width="8" height="4" rx="1" fill="#D4A853"/>
+      <rect x="151" y="120" width="8" height="4" rx="1" fill="#D4A853"/>
+      <rect x="151" y="135" width="8" height="4" rx="1" fill="#D4A853"/>
       {/* Center prong */}
-      <line x1="155" y1="80" x2="155" y2="48" stroke="#FFD700" strokeWidth="4" strokeLinecap="round"/>
-      <line x1="155" y1="80" x2="155" y2="48" stroke="#FDE68A" strokeWidth="1.5" strokeLinecap="round" opacity="0.4"/>
-      <path d="M152 52 L155 42 L158 52" fill="#FFD700"/>
+      <line x1="155" y1="68" x2="155" y2="40" stroke="#FFD700" strokeWidth="4" strokeLinecap="round"/>
+      <line x1="155" y1="68" x2="155" y2="40" stroke="#FDE68A" strokeWidth="1.5" strokeLinecap="round" opacity="0.4"/>
+      <path d="M152 44 L155 34 L158 44" fill="#FFD700"/>
       {/* Left prong */}
-      <path d="M148 82 Q142 72 140 55" stroke="#FFD700" strokeWidth="3" fill="none" strokeLinecap="round"/>
-      <path d="M138 58 L140 48 L142 58" fill="#FFD700"/>
+      <path d="M148 70 Q142 60 140 47" stroke="#FFD700" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      <path d="M138 50 L140 40 L142 50" fill="#FFD700"/>
       {/* Right prong */}
-      <path d="M162 82 Q168 72 170 55" stroke="#FFD700" strokeWidth="3" fill="none" strokeLinecap="round"/>
-      <path d="M168 58 L170 48 L172 58" fill="#FFD700"/>
+      <path d="M162 70 Q168 60 170 47" stroke="#FFD700" strokeWidth="3" fill="none" strokeLinecap="round"/>
+      <path d="M168 50 L170 40 L172 50" fill="#FFD700"/>
       {/* Cross guard */}
-      <rect x="144" y="78" width="22" height="5" rx="2" fill="#B8860B"/>
-      <rect x="146" y="79" width="18" height="3" rx="1" fill="#D4A853" opacity="0.4"/>
+      <rect x="144" y="66" width="22" height="5" rx="2" fill="#B8860B"/>
+      <rect x="146" y="67" width="18" height="3" rx="1" fill="#D4A853" opacity="0.4"/>
       {/* Prong highlights */}
-      <line x1="155" y1="50" x2="155" y2="75" stroke="#FEF9C3" strokeWidth="0.8" opacity="0.3"/>
+      <line x1="155" y1="42" x2="155" y2="63" stroke="#FEF9C3" strokeWidth="0.8" opacity="0.3"/>
       {/* Gem on shaft */}
-      <circle cx="155" cy="84" r="3" fill="#4A7FC4" stroke="#2C3E6B" strokeWidth="0.8"/>
-      <circle cx="154" cy="83" r="1" fill="white" opacity="0.3"/>
+      <circle cx="155" cy="72" r="3" fill="#4A7FC4" stroke="#2C3E6B" strokeWidth="0.8"/>
+      <circle cx="154" cy="71" r="1" fill="white" opacity="0.3"/>
     </g>
   );
 }
@@ -3073,31 +3073,31 @@ function AccessoryTrident() {
 function AccessoryMagicWand() {
   return (
     <g>
-      {/* Wand shaft */}
-      <line x1="128" y1="175" x2="155" y2="98" stroke="#4A2E1A" strokeWidth="5" strokeLinecap="round"/>
-      <line x1="128" y1="175" x2="155" y2="98" stroke="#6B4226" strokeWidth="3" strokeLinecap="round" opacity="0.5"/>
+      {/* Wand shaft - held at right hand y~115 */}
+      <line x1="132" y1="122" x2="155" y2="62" stroke="#4A2E1A" strokeWidth="5" strokeLinecap="round"/>
+      <line x1="132" y1="122" x2="155" y2="62" stroke="#6B4226" strokeWidth="3" strokeLinecap="round" opacity="0.5"/>
       {/* Shaft spiral detail */}
-      <path d="M132 168 Q135 162 133 156 Q131 150 134 144 Q137 138 135 132 Q133 126 136 120 Q139 114 138 108" fill="none" stroke="#8B5E3C" strokeWidth="0.8" opacity="0.4"/>
+      <path d="M134 118 Q137 112 135 106 Q133 100 136 94 Q139 88 137 82 Q135 76 138 72" fill="none" stroke="#8B5E3C" strokeWidth="0.8" opacity="0.4"/>
       {/* Handle grip */}
-      <line x1="126" y1="180" x2="128" y2="175" stroke="#D4A853" strokeWidth="6" strokeLinecap="round"/>
-      <line x1="126" y1="180" x2="128" y2="175" stroke="#E8C860" strokeWidth="3" strokeLinecap="round" opacity="0.4"/>
+      <line x1="130" y1="126" x2="132" y2="122" stroke="#D4A853" strokeWidth="6" strokeLinecap="round"/>
+      <line x1="130" y1="126" x2="132" y2="122" stroke="#E8C860" strokeWidth="3" strokeLinecap="round" opacity="0.4"/>
       {/* Star ornament at tip */}
-      <circle cx="156" cy="96" r="8" fill="#9370DB" opacity="0.3"/>
-      <circle cx="156" cy="96" r="6" fill="#9370DB"/>
-      <circle cx="156" cy="96" r="4.5" fill="#A78BFA"/>
-      <circle cx="156" cy="96" r="3" fill="#C4B5FD" opacity="0.7"/>
-      <circle cx="154" cy="94" r="1.5" fill="white" opacity="0.4"/>
+      <circle cx="156" cy="60" r="8" fill="#9370DB" opacity="0.3"/>
+      <circle cx="156" cy="60" r="6" fill="#9370DB"/>
+      <circle cx="156" cy="60" r="4.5" fill="#A78BFA"/>
+      <circle cx="156" cy="60" r="3" fill="#C4B5FD" opacity="0.7"/>
+      <circle cx="154" cy="58" r="1.5" fill="white" opacity="0.4"/>
       {/* Magic sparkles */}
-      <circle cx="162" cy="88" r="2.5" fill="#FFD700" opacity="0.6"/>
-      <circle cx="162" cy="88" r="1" fill="#FEF9C3" opacity="0.5"/>
-      <circle cx="148" cy="90" r="2" fill="#FFD700" opacity="0.5"/>
-      <circle cx="148" cy="90" r="0.8" fill="#FEF9C3" opacity="0.4"/>
-      <circle cx="164" cy="98" r="1.5" fill="#FFD700" opacity="0.4"/>
-      <circle cx="152" cy="84" r="1" fill="#FDE68A" opacity="0.5"/>
+      <circle cx="162" cy="52" r="2.5" fill="#FFD700" opacity="0.6"/>
+      <circle cx="162" cy="52" r="1" fill="#FEF9C3" opacity="0.5"/>
+      <circle cx="148" cy="54" r="2" fill="#FFD700" opacity="0.5"/>
+      <circle cx="148" cy="54" r="0.8" fill="#FEF9C3" opacity="0.4"/>
+      <circle cx="164" cy="62" r="1.5" fill="#FFD700" opacity="0.4"/>
+      <circle cx="152" cy="48" r="1" fill="#FDE68A" opacity="0.5"/>
       {/* Trailing sparkle particles */}
-      <circle cx="160" cy="82" r="0.8" fill="white" opacity="0.5"/>
-      <circle cx="166" cy="92" r="0.6" fill="white" opacity="0.4"/>
-      <circle cx="146" cy="86" r="0.7" fill="white" opacity="0.3"/>
+      <circle cx="160" cy="46" r="0.8" fill="white" opacity="0.5"/>
+      <circle cx="166" cy="56" r="0.6" fill="white" opacity="0.4"/>
+      <circle cx="146" cy="50" r="0.7" fill="white" opacity="0.3"/>
     </g>
   );
 }
@@ -3188,41 +3188,40 @@ function AccessoryFloatingOrbs() {
 function AccessoryFlamingSword() {
   return (
     <g>
-      {/* Blade back */}
-      <line x1="134" y1="178" x2="162" y2="90" stroke="#707078" strokeWidth="5"/>
+      {/* Blade back - from crossguard up */}
+      <line x1="138" y1="108" x2="158" y2="48" stroke="#707078" strokeWidth="5"/>
       {/* Blade face */}
-      <line x1="134" y1="178" x2="162" y2="90" stroke="#A8A8B0" strokeWidth="3.5"/>
+      <line x1="138" y1="108" x2="158" y2="48" stroke="#A8A8B0" strokeWidth="3.5"/>
       {/* Blade edge */}
-      <line x1="135" y1="177" x2="163" y2="91" stroke="#D0D0D8" strokeWidth="1.5" opacity="0.6"/>
+      <line x1="139" y1="107" x2="159" y2="49" stroke="#D0D0D8" strokeWidth="1.5" opacity="0.6"/>
       {/* Fuller groove */}
-      <line x1="137" y1="172" x2="161" y2="96" stroke="#606068" strokeWidth="1" opacity="0.4"/>
+      <line x1="140" y1="104" x2="157" y2="54" stroke="#606068" strokeWidth="1" opacity="0.4"/>
       {/* Blade tip */}
-      <path d="M161 92 L165 84 L163 90" fill="#C0C0C8" stroke="#A0A0A8" strokeWidth="0.5"/>
+      <path d="M157 50 L161 42 L159 48" fill="#C0C0C8" stroke="#A0A0A8" strokeWidth="0.5"/>
       {/* Crossguard */}
-      <rect x="126" y="175" width="18" height="6" rx="2" fill="#8B6914"/>
-      <rect x="128" y="176" width="14" height="4" rx="1" fill="#B8860B" opacity="0.4"/>
-      {/* Handle */}
-      <line x1="134" y1="182" x2="130" y2="198" stroke="#4A2E1A" strokeWidth="5" strokeLinecap="round"/>
-      <line x1="134" y1="182" x2="130" y2="198" stroke="#6B4226" strokeWidth="2.5" strokeLinecap="round" opacity="0.4"/>
+      <rect x="126" y="106" width="18" height="6" rx="2" fill="#8B6914"/>
+      <rect x="128" y="107" width="14" height="4" rx="1" fill="#B8860B" opacity="0.4"/>
+      {/* Handle - held at right hand y~115 */}
+      <line x1="134" y1="112" x2="130" y2="128" stroke="#4A2E1A" strokeWidth="5" strokeLinecap="round"/>
+      <line x1="134" y1="112" x2="130" y2="128" stroke="#6B4226" strokeWidth="2.5" strokeLinecap="round" opacity="0.4"/>
       {/* Handle wrapping */}
       <g stroke="#D4A853" strokeWidth="0.6" opacity="0.5">
-        <line x1="132" y1="185" x2="136" y2="185"/>
-        <line x1="131" y1="189" x2="135" y2="189"/>
-        <line x1="130" y1="193" x2="134" y2="193"/>
+        <line x1="133" y1="116" x2="137" y2="116"/>
+        <line x1="132" y1="120" x2="136" y2="120"/>
+        <line x1="131" y1="124" x2="135" y2="124"/>
       </g>
       {/* Pommel */}
-      <circle cx="129" cy="200" r="3" fill="#8B6914"/>
-      <circle cx="129" cy="200" r="2" fill="#D4A853" opacity="0.5"/>
+      <circle cx="129" cy="130" r="3" fill="#8B6914"/>
+      <circle cx="129" cy="130" r="2" fill="#D4A853" opacity="0.5"/>
       {/* Fire effect - multilayer */}
-      <path d="M158 94 Q168 78 164 58 Q160 72 156 76 Q164 62 160 45" fill="#FF4500" opacity="0.6"/>
-      <path d="M160 90 Q170 72 166 52 Q162 66 158 70 Q166 56 162 40" fill="#FF6B00" opacity="0.45"/>
-      <path d="M156 96 Q164 80 160 65 Q157 75 154 78" fill="#FBBF24" opacity="0.5"/>
-      <path d="M159 92 Q166 78 163 60 Q160 70 157 74" fill="#FDE68A" opacity="0.3"/>
+      <path d="M155 52 Q165 36 161 16 Q157 30 153 34 Q161 20 157 5" fill="#FF4500" opacity="0.6"/>
+      <path d="M157 48 Q167 30 163 10 Q159 24 155 28 Q163 14 159 0" fill="#FF6B00" opacity="0.45"/>
+      <path d="M153 54 Q161 38 157 23 Q154 33 151 36" fill="#FBBF24" opacity="0.5"/>
+      <path d="M156 50 Q163 36 160 18 Q157 28 154 32" fill="#FDE68A" opacity="0.3"/>
       {/* Ember particles */}
-      <circle cx="170" cy="62" r="1.5" fill="#FF4500" opacity="0.5"/>
-      <circle cx="155" cy="50" r="1" fill="#FBBF24" opacity="0.4"/>
-      <circle cx="166" cy="45" r="1.2" fill="#FF6B00" opacity="0.35"/>
-      <circle cx="162" cy="38" r="0.8" fill="#FDE68A" opacity="0.3"/>
+      <circle cx="167" cy="20" r="1.5" fill="#FF4500" opacity="0.5"/>
+      <circle cx="152" cy="8" r="1" fill="#FBBF24" opacity="0.4"/>
+      <circle cx="163" cy="3" r="1.2" fill="#FF6B00" opacity="0.35"/>
     </g>
   );
 }
@@ -3287,40 +3286,40 @@ function AccessoryRoyalScepter() {
           <stop offset="100%" stopColor="#FFD700"/>
         </linearGradient>
       </defs>
-      <line x1="150" y1="190" x2="150" y2="80" stroke="url(#scepterGrad)" strokeWidth="6" strokeLinecap="round"/>
-      <line x1="150" y1="190" x2="150" y2="80" stroke="#E8C860" strokeWidth="2" strokeLinecap="round" opacity="0.3"/>
+      <line x1="150" y1="140" x2="150" y2="68" stroke="url(#scepterGrad)" strokeWidth="6" strokeLinecap="round"/>
+      <line x1="150" y1="140" x2="150" y2="68" stroke="#E8C860" strokeWidth="2" strokeLinecap="round" opacity="0.3"/>
       {/* Shaft filigree bands */}
-      <rect x="146" y="150" width="8" height="4" rx="1" fill="#B8860B"/>
-      <rect x="147" y="151" width="6" height="2" rx="0.5" fill="#E8C860" opacity="0.5"/>
-      <rect x="146" y="170" width="8" height="4" rx="1" fill="#B8860B"/>
-      <rect x="147" y="171" width="6" height="2" rx="0.5" fill="#E8C860" opacity="0.5"/>
+      <rect x="146" y="120" width="8" height="4" rx="1" fill="#B8860B"/>
+      <rect x="147" y="121" width="6" height="2" rx="0.5" fill="#E8C860" opacity="0.5"/>
+      <rect x="146" y="132" width="8" height="4" rx="1" fill="#B8860B"/>
+      <rect x="147" y="133" width="6" height="2" rx="0.5" fill="#E8C860" opacity="0.5"/>
       {/* Bottom finial */}
-      <ellipse cx="150" cy="192" rx="5" ry="3" fill="#B8860B"/>
-      <ellipse cx="150" cy="192" rx="3.5" ry="2" fill="#D4A853" opacity="0.5"/>
+      <ellipse cx="150" cy="142" rx="5" ry="3" fill="#B8860B"/>
+      <ellipse cx="150" cy="142" rx="3.5" ry="2" fill="#D4A853" opacity="0.5"/>
       {/* Crown ornament base */}
-      <path d="M140 82 L140 76 L143 80 L146 72 L150 78 L154 72 L157 80 L160 76 L160 82 Z" fill="#D4A853"/>
-      <path d="M141 82 L141 77 L144 80 L147 74 L150 79 L153 74 L156 80 L159 77 L159 82 Z" fill="#E8C860" opacity="0.4"/>
+      <path d="M140 70 L140 64 L143 68 L146 60 L150 66 L154 60 L157 68 L160 64 L160 70 Z" fill="#D4A853"/>
+      <path d="M141 70 L141 65 L144 68 L147 62 L150 67 L153 62 L156 68 L159 65 L159 70 Z" fill="#E8C860" opacity="0.4"/>
       {/* Main gem setting */}
-      <circle cx="150" cy="72" r="10" fill="#D4A853" stroke="#B8860B" strokeWidth="1.5"/>
-      <circle cx="150" cy="72" r="8" fill="#E8C860" opacity="0.3"/>
+      <circle cx="150" cy="60" r="10" fill="#D4A853" stroke="#B8860B" strokeWidth="1.5"/>
+      <circle cx="150" cy="60" r="8" fill="#E8C860" opacity="0.3"/>
       {/* Central ruby */}
-      <circle cx="150" cy="72" r="7" fill="#E0115F"/>
-      <circle cx="150" cy="72" r="5.5" fill="#FF2050" opacity="0.6"/>
-      <circle cx="150" cy="72" r="3.5" fill="#FF6B81" opacity="0.5"/>
-      <circle cx="148" cy="70" r="2" fill="white" opacity="0.25"/>
+      <circle cx="150" cy="60" r="7" fill="#E0115F"/>
+      <circle cx="150" cy="60" r="5.5" fill="#FF2050" opacity="0.6"/>
+      <circle cx="150" cy="60" r="3.5" fill="#FF6B81" opacity="0.5"/>
+      <circle cx="148" cy="58" r="2" fill="white" opacity="0.25"/>
       {/* Gem glow */}
-      <circle cx="150" cy="72" r="13" fill="#E0115F" opacity="0.08"/>
+      <circle cx="150" cy="60" r="13" fill="#E0115F" opacity="0.08"/>
       {/* Cross on top */}
-      <rect x="148" y="58" width="4" height="10" rx="1" fill="#FFD700"/>
-      <rect x="145" y="62" width="10" height="3" rx="1" fill="#FFD700"/>
+      <rect x="148" y="46" width="4" height="10" rx="1" fill="#FFD700"/>
+      <rect x="145" y="50" width="10" height="3" rx="1" fill="#FFD700"/>
       {/* Side gems */}
-      <circle cx="140" cy="76" r="3" fill="#4169E1" stroke="#2850A0" strokeWidth="0.8"/>
-      <circle cx="139" cy="75" r="1" fill="white" opacity="0.25"/>
-      <circle cx="160" cy="76" r="3" fill="#3A7D5C" stroke="#2E6A4A" strokeWidth="0.8"/>
-      <circle cx="159" cy="75" r="1" fill="white" opacity="0.25"/>
+      <circle cx="140" cy="64" r="3" fill="#4169E1" stroke="#2850A0" strokeWidth="0.8"/>
+      <circle cx="139" cy="63" r="1" fill="white" opacity="0.25"/>
+      <circle cx="160" cy="64" r="3" fill="#3A7D5C" stroke="#2E6A4A" strokeWidth="0.8"/>
+      <circle cx="159" cy="63" r="1" fill="white" opacity="0.25"/>
       {/* Filigree scrolls near crown */}
-      <path d="M138 82 Q136 86 138 90" fill="none" stroke="#D4A853" strokeWidth="1" opacity="0.5"/>
-      <path d="M162 82 Q164 86 162 90" fill="none" stroke="#D4A853" strokeWidth="1" opacity="0.5"/>
+      <path d="M138 70 Q136 74 138 78" fill="none" stroke="#D4A853" strokeWidth="1" opacity="0.5"/>
+      <path d="M162 70 Q164 74 162 78" fill="none" stroke="#D4A853" strokeWidth="1" opacity="0.5"/>
     </g>
   );
 }
