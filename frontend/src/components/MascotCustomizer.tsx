@@ -58,7 +58,6 @@ export default function MascotCustomizer({
         }
         .premium-card {
           position: relative;
-          overflow: hidden;
         }
         .premium-card::before {
           content: '';
@@ -76,6 +75,7 @@ export default function MascotCustomizer({
           animation: premium-shimmer 4s ease-in-out infinite;
           pointer-events: none;
           border-radius: inherit;
+          overflow: hidden;
           z-index: 1;
         }
         .premium-glow {
@@ -148,7 +148,7 @@ export default function MascotCustomizer({
                 )}
                 {/* Premium diamond badge with price */}
                 {isPremium && !unlocked && !isPreviewing && (
-                  <div className="absolute -top-1.5 -right-1.5 flex items-center gap-0.5 text-[7px] font-bold rounded-full pl-1 pr-1.5 py-0.5 leading-none bg-gradient-to-r from-yellow-500 to-sf-gold text-white shadow-md z-[3]">
+                  <div className="absolute -top-2 -right-2 flex items-center gap-0.5 text-[9px] font-bold rounded-full pl-1 pr-1.5 py-0.5 leading-none bg-gradient-to-r from-yellow-500 to-sf-gold text-white shadow-lg z-[3]">
                     <svg className="w-2.5 h-2.5" viewBox="0 0 16 16" fill="currentColor">
                       <path d="M8 0L10.2 5.6L16 6.4L12 10.8L12.8 16L8 13.2L3.2 16L4 10.8L0 6.4L5.8 5.6Z"/>
                     </svg>
