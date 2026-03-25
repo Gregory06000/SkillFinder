@@ -1141,9 +1141,9 @@ function HatSpartan() {
 function HatDivine() {
   return (
     <g>
-      {/* Glow effect */}
-      <ellipse cx="100" cy="45" rx="55" ry="35" fill="#FBBF24" opacity="0.08"/>
-      <ellipse cx="100" cy="45" rx="45" ry="28" fill="#FDE68A" opacity="0.1"/>
+      {/* Glow effect - pulsing */}
+      <ellipse cx="100" cy="45" rx="55" ry="35" fill="#FBBF24" className="anim-halo"/>
+      <ellipse cx="100" cy="45" rx="45" ry="28" fill="#FDE68A" className="anim-pulse-soft"/>
       {/* Crown base */}
       <path d="M58 68 Q60 28 100 14 Q140 28 142 68" fill="#FBBF24"/>
       <path d="M60 68 Q62 32 100 18 Q138 32 140 68" fill="#FDE68A" opacity="0.5"/>
@@ -1157,16 +1157,16 @@ function HatDivine() {
       <circle cx="75" cy="64" r="2.5" fill="#E85D3E" opacity="0.8"/><circle cx="75" cy="63.5" r="1" fill="white" opacity="0.3"/>
       <circle cx="100" cy="64" r="2.5" fill="#4A7FC4" opacity="0.8"/><circle cx="100" cy="63.5" r="1" fill="white" opacity="0.3"/>
       <circle cx="125" cy="64" r="2.5" fill="#3A7D5C" opacity="0.8"/><circle cx="125" cy="63.5" r="1" fill="white" opacity="0.3"/>
-      {/* Rays of light */}
-      <g stroke="#FBBF24" strokeWidth="2" opacity="0.5" strokeLinecap="round">
+      {/* Rays of light - pulsing */}
+      <g stroke="#FBBF24" strokeWidth="2" strokeLinecap="round" className="anim-pulse">
         <line x1="100" y1="14" x2="100" y2="-2"/><line x1="80" y1="20" x2="68" y2="6"/>
         <line x1="120" y1="20" x2="132" y2="6"/><line x1="70" y1="32" x2="56" y2="22"/>
         <line x1="130" y1="32" x2="144" y2="22"/>
       </g>
       {/* Ray tips */}
-      <circle cx="100" cy="-4" r="2" fill="#FDE68A" opacity="0.6"/>
-      <circle cx="67" cy="4" r="1.5" fill="#FDE68A" opacity="0.5"/>
-      <circle cx="133" cy="4" r="1.5" fill="#FDE68A" opacity="0.5"/>
+      <circle cx="100" cy="-4" r="2" fill="#FDE68A" className="anim-sparkle-1"/>
+      <circle cx="67" cy="4" r="1.5" fill="#FDE68A" className="anim-sparkle-2"/>
+      <circle cx="133" cy="4" r="1.5" fill="#FDE68A" className="anim-sparkle-3"/>
     </g>
   );
 }
@@ -1175,20 +1175,20 @@ function HatHalo() {
   return (
     <g>
       {/* Outer glow */}
-      <ellipse cx="100" cy="42" rx="38" ry="12" fill="#FBBF24" opacity="0.06"/>
-      <ellipse cx="100" cy="42" rx="35" ry="10" fill="#FDE68A" opacity="0.1"/>
+      <ellipse cx="100" cy="42" rx="38" ry="12" fill="#FBBF24" className="anim-halo"/>
+      <ellipse cx="100" cy="42" rx="35" ry="10" fill="#FDE68A" className="anim-pulse-soft"/>
       {/* Main ring */}
       <ellipse cx="100" cy="42" rx="32" ry="8" fill="none" stroke="#FBBF24" strokeWidth="5"/>
       <ellipse cx="100" cy="42" rx="32" ry="8" fill="none" stroke="#FDE68A" strokeWidth="2" opacity="0.6"/>
       {/* Inner glow */}
-      <ellipse cx="100" cy="42" rx="28" ry="5" fill="#FDE68A" opacity="0.2"/>
+      <ellipse cx="100" cy="42" rx="28" ry="5" fill="#FDE68A" className="anim-pulse-soft"/>
       {/* Sparkle highlights */}
-      <circle cx="72" cy="40" r="1.5" fill="white" opacity="0.7"/>
-      <circle cx="128" cy="40" r="1.5" fill="white" opacity="0.7"/>
-      <circle cx="100" cy="34" r="1" fill="white" opacity="0.5"/>
+      <circle cx="72" cy="40" r="1.5" fill="white" className="anim-sparkle-1"/>
+      <circle cx="128" cy="40" r="1.5" fill="white" className="anim-sparkle-2"/>
+      <circle cx="100" cy="34" r="1" fill="white" className="anim-sparkle-3"/>
       {/* Light particles */}
-      <circle cx="80" cy="32" r="1" fill="#FBBF24" opacity="0.4"/>
-      <circle cx="120" cy="32" r="1" fill="#FBBF24" opacity="0.4"/>
+      <circle cx="80" cy="32" r="1" fill="#FBBF24" className="anim-sparkle-2"/>
+      <circle cx="120" cy="32" r="1" fill="#FBBF24" className="anim-sparkle-3"/>
     </g>
   );
 }
@@ -1242,18 +1242,18 @@ function HatCosmic() {
       {/* Nebula swirl */}
       <path d="M70 35 Q85 25 100 35 Q115 45 130 35" fill="none" stroke="#6366F1" strokeWidth="2" opacity="0.2"/>
       <path d="M65 48 Q85 38 105 48 Q125 58 140 48" fill="none" stroke="#8B5CF6" strokeWidth="1.5" opacity="0.15"/>
-      {/* Stars */}
-      <circle cx="78" cy="32" r="2.5" fill="white" opacity="0.9"/>
+      {/* Stars - twinkling */}
+      <circle cx="78" cy="32" r="2.5" fill="white" className="anim-galaxy-1"/>
       <circle cx="78" cy="32" r="1" fill="white"/>
-      <circle cx="118" cy="28" r="2" fill="white" opacity="0.7"/>
+      <circle cx="118" cy="28" r="2" fill="white" className="anim-galaxy-2"/>
       <circle cx="118" cy="28" r="0.8" fill="white"/>
-      <circle cx="95" cy="22" r="1.5" fill="#FBBF24" opacity="0.8"/>
-      <circle cx="130" cy="40" r="1.5" fill="white" opacity="0.6"/>
-      <circle cx="70" cy="50" r="1" fill="white" opacity="0.5"/>
-      <circle cx="110" cy="48" r="1.2" fill="#87CEEB" opacity="0.7"/>
+      <circle cx="95" cy="22" r="1.5" fill="#FBBF24" className="anim-galaxy-3"/>
+      <circle cx="130" cy="40" r="1.5" fill="white" className="anim-galaxy-1"/>
+      <circle cx="70" cy="50" r="1" fill="white" className="anim-galaxy-2"/>
+      <circle cx="110" cy="48" r="1.2" fill="#87CEEB" className="anim-galaxy-3"/>
       {/* Shooting star */}
-      <line x1="85" y1="40" x2="75" y2="44" stroke="white" strokeWidth="0.8" opacity="0.5"/>
-      <circle cx="85" cy="40" r="1.5" fill="white" opacity="0.8"/>
+      <line x1="85" y1="40" x2="75" y2="44" stroke="white" strokeWidth="0.8" className="anim-shimmer"/>
+      <circle cx="85" cy="40" r="1.5" fill="white" className="anim-sparkle-1"/>
       {/* Constellation lines */}
       <g stroke="white" strokeWidth="0.4" opacity="0.25">
         <line x1="78" y1="32" x2="95" y2="22"/><line x1="95" y1="22" x2="118" y2="28"/>
@@ -1285,17 +1285,21 @@ function HatPhoenix() {
         <path d="M76 52 Q88 46 100 52 L88 56Z"/>
         <path d="M100 52 Q112 46 124 52 L112 56Z"/>
       </g>
-      {/* Flames - multilayer */}
-      <path d="M75 20 Q70 2 78 -12 Q75 5 85 14" fill="#F97316" opacity="0.8"/>
-      <path d="M77 18 Q73 5 80 -8 Q78 8 86 16" fill="#FBBF24" opacity="0.5"/>
-      <path d="M92 16 Q88 -5 96 -18 Q94 0 102 12" fill="#F97316" opacity="0.9"/>
-      <path d="M94 14 Q91 -2 97 -14 Q96 2 103 12" fill="#FDE68A" opacity="0.5"/>
-      <path d="M108 18 Q112 0 120 -10 Q115 8 108 16" fill="#F97316" opacity="0.8"/>
-      <path d="M110 16 Q113 4 118 -6 Q114 10 109 16" fill="#FBBF24" opacity="0.5"/>
-      {/* Ember particles */}
-      <circle cx="70" cy="5" r="1.5" fill="#FBBF24" opacity="0.6"/>
-      <circle cx="130" cy="2" r="1" fill="#F97316" opacity="0.5"/>
-      <circle cx="100" cy="-15" r="1.5" fill="#FDE68A" opacity="0.4"/>
+      {/* Flames - multilayer animated */}
+      <g className="anim-flicker">
+        <path d="M75 20 Q70 2 78 -12 Q75 5 85 14" fill="#F97316" opacity="0.8"/>
+        <path d="M92 16 Q88 -5 96 -18 Q94 0 102 12" fill="#F97316" opacity="0.9"/>
+        <path d="M108 18 Q112 0 120 -10 Q115 8 108 16" fill="#F97316" opacity="0.8"/>
+      </g>
+      <g className="anim-flicker-delayed">
+        <path d="M77 18 Q73 5 80 -8 Q78 8 86 16" fill="#FBBF24" opacity="0.5"/>
+        <path d="M94 14 Q91 -2 97 -14 Q96 2 103 12" fill="#FDE68A" opacity="0.5"/>
+        <path d="M110 16 Q113 4 118 -6 Q114 10 109 16" fill="#FBBF24" opacity="0.5"/>
+      </g>
+      {/* Ember particles - rising */}
+      <circle cx="70" cy="5" r="1.5" fill="#FBBF24" className="anim-ember-1"/>
+      <circle cx="130" cy="2" r="1" fill="#F97316" className="anim-ember-2"/>
+      <circle cx="100" cy="-15" r="1.5" fill="#FDE68A" className="anim-ember-3"/>
       {/* Beak emblem */}
       <path d="M95 56 L100 48 L105 56" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
       {/* Band */}
@@ -1319,14 +1323,14 @@ function HatInfinity() {
       {/* Infinity symbol - detailed */}
       <path d="M80 38 Q68 26 68 38 Q68 50 80 38 Q92 26 104 38 Q116 50 116 38 Q116 26 104 38 Q92 50 80 38" fill="none" stroke="#FBBF24" strokeWidth="3" opacity="0.8"/>
       <path d="M80 38 Q68 26 68 38 Q68 50 80 38 Q92 26 104 38 Q116 50 116 38 Q116 26 104 38 Q92 50 80 38" fill="none" stroke="#FDE68A" strokeWidth="1.5" opacity="0.5"/>
-      {/* Glow nodes */}
-      <circle cx="68" cy="38" r="3" fill="#FBBF24" opacity="0.3"/>
-      <circle cx="92" cy="38" r="3" fill="#FBBF24" opacity="0.3"/>
-      <circle cx="116" cy="38" r="3" fill="#FBBF24" opacity="0.3"/>
+      {/* Glow nodes - pulsing */}
+      <circle cx="68" cy="38" r="3" fill="#FBBF24" className="anim-pulse"/>
+      <circle cx="92" cy="38" r="3" fill="#FBBF24" className="anim-pulse-delayed"/>
+      <circle cx="116" cy="38" r="3" fill="#FBBF24" className="anim-pulse"/>
       {/* Sparkles */}
-      <circle cx="75" cy="30" r="1" fill="white" opacity="0.6"/>
-      <circle cx="109" cy="30" r="1" fill="white" opacity="0.6"/>
-      <circle cx="92" cy="46" r="1" fill="white" opacity="0.5"/>
+      <circle cx="75" cy="30" r="1" fill="white" className="anim-sparkle-1"/>
+      <circle cx="109" cy="30" r="1" fill="white" className="anim-sparkle-2"/>
+      <circle cx="92" cy="46" r="1" fill="white" className="anim-sparkle-3"/>
       {/* Band */}
       <rect x="54" y="60" width="92" height="8" rx="2" fill="#5B21B6"/>
       <rect x="56" y="61" width="88" height="3" rx="1" fill="#7C3AED" opacity="0.4"/>
@@ -1426,14 +1430,14 @@ function HatDemon() {
       <ellipse cx="100" cy="72" rx="44" ry="10" fill="#2D0000"/>
       <path d="M58 72 Q62 52 100 45 Q138 52 142 72" fill="#4A0000"/>
       <path d="M60 72 Q64 54 100 48 Q136 54 140 72" fill="#660000" opacity="0.3"/>
-      {/* Ember glow */}
-      <circle cx="78" cy="58" r="4" fill="#FF4500" opacity="0.5"/>
-      <circle cx="78" cy="58" r="2" fill="#FFD700" opacity="0.3"/>
-      <circle cx="122" cy="58" r="4" fill="#FF4500" opacity="0.5"/>
-      <circle cx="122" cy="58" r="2" fill="#FFD700" opacity="0.3"/>
-      {/* Cracks */}
-      <path d="M90 55 L95 60 L92 68" stroke="#FF4500" strokeWidth="0.8" opacity="0.4" fill="none"/>
-      <path d="M110 55 L105 60 L108 68" stroke="#FF4500" strokeWidth="0.8" opacity="0.4" fill="none"/>
+      {/* Ember glow - pulsing */}
+      <circle cx="78" cy="58" r="4" fill="#FF4500" className="anim-pulse"/>
+      <circle cx="78" cy="58" r="2" fill="#FFD700" className="anim-pulse-delayed"/>
+      <circle cx="122" cy="58" r="4" fill="#FF4500" className="anim-pulse-delayed"/>
+      <circle cx="122" cy="58" r="2" fill="#FFD700" className="anim-pulse"/>
+      {/* Cracks - flickering */}
+      <path d="M90 55 L95 60 L92 68" stroke="#FF4500" strokeWidth="0.8" fill="none" className="anim-shimmer"/>
+      <path d="M110 55 L105 60 L108 68" stroke="#FF4500" strokeWidth="0.8" fill="none" className="anim-shimmer-delayed"/>
     </g>
   );
 }
@@ -1442,22 +1446,22 @@ function HatAngel() {
   return (
     <g>
       {/* Outer glow */}
-      <ellipse cx="100" cy="40" rx="42" ry="14" fill="#FFD700" opacity="0.06"/>
-      <ellipse cx="100" cy="40" rx="38" ry="11" fill="#FDE68A" opacity="0.08"/>
+      <ellipse cx="100" cy="40" rx="42" ry="14" fill="#FFD700" className="anim-halo"/>
+      <ellipse cx="100" cy="40" rx="38" ry="11" fill="#FDE68A" className="anim-pulse-soft"/>
       {/* Main halo ring */}
       <ellipse cx="100" cy="40" rx="34" ry="8" fill="none" stroke="#FFD700" strokeWidth="4"/>
       <ellipse cx="100" cy="40" rx="34" ry="8" fill="none" stroke="#FFF8DC" strokeWidth="2" opacity="0.6"/>
       {/* Inner glow */}
-      <ellipse cx="100" cy="40" rx="30" ry="5" fill="#FFD700" opacity="0.12"/>
+      <ellipse cx="100" cy="40" rx="30" ry="5" fill="#FFD700" className="anim-pulse-soft"/>
       {/* Sparkle highlights */}
-      <circle cx="70" cy="38" r="2" fill="white" opacity="0.7"/>
-      <circle cx="130" cy="38" r="2" fill="white" opacity="0.7"/>
-      <circle cx="100" cy="32" r="1.5" fill="white" opacity="0.5"/>
+      <circle cx="70" cy="38" r="2" fill="white" className="anim-sparkle-1"/>
+      <circle cx="130" cy="38" r="2" fill="white" className="anim-sparkle-2"/>
+      <circle cx="100" cy="32" r="1.5" fill="white" className="anim-sparkle-3"/>
       {/* Floating light particles */}
-      <circle cx="82" cy="30" r="1" fill="#FFD700" opacity="0.4"/>
-      <circle cx="118" cy="30" r="1" fill="#FFD700" opacity="0.4"/>
-      <circle cx="90" cy="26" r="0.8" fill="#FDE68A" opacity="0.3"/>
-      <circle cx="110" cy="26" r="0.8" fill="#FDE68A" opacity="0.3"/>
+      <circle cx="82" cy="30" r="1" fill="#FFD700" className="anim-sparkle-2"/>
+      <circle cx="118" cy="30" r="1" fill="#FFD700" className="anim-sparkle-3"/>
+      <circle cx="90" cy="26" r="0.8" fill="#FDE68A" className="anim-sparkle-1"/>
+      <circle cx="110" cy="26" r="0.8" fill="#FDE68A" className="anim-sparkle-2"/>
     </g>
   );
 }
@@ -2750,7 +2754,7 @@ function AccessoryBanner() {
 
 function AccessoryLightning() {
   return (
-    <g>
+    <g className="anim-lightning">
       {/* Outermost glow halo */}
       <polygon points="96,152 87,174 97,173 84,202 115,168 103,169 112,152" fill="#FEF08A" opacity="0.15"/>
       {/* Mid glow layer */}
@@ -2766,12 +2770,12 @@ function AccessoryLightning() {
       {/* Small upper branch */}
       <path d="M104 158 Q110 154 113 157" fill="none" stroke="#FEF08A" strokeWidth="1" strokeLinecap="round" opacity="0.5"/>
       {/* Energy crackling sparks */}
-      <circle cx="96" cy="155" r="2.5" fill="#FEF9C3" opacity="0.6"/>
-      <circle cx="86" cy="199" r="2" fill="#FEF9C3" opacity="0.5"/>
-      <circle cx="97" cy="173" r="1.5" fill="white" opacity="0.7"/>
+      <circle cx="96" cy="155" r="2.5" fill="#FEF9C3" className="anim-sparkle-1"/>
+      <circle cx="86" cy="199" r="2" fill="#FEF9C3" className="anim-sparkle-2"/>
+      <circle cx="97" cy="173" r="1.5" fill="white" className="anim-sparkle-3"/>
       {/* Glow end dots */}
-      <circle cx="84" cy="158" r="1.2" fill="#FDE047" opacity="0.6"/>
-      <circle cx="112" cy="179" r="1" fill="#FDE047" opacity="0.5"/>
+      <circle cx="84" cy="158" r="1.2" fill="#FDE047" className="anim-sparkle-2"/>
+      <circle cx="112" cy="179" r="1" fill="#FDE047" className="anim-sparkle-3"/>
     </g>
   );
 }
@@ -2780,36 +2784,38 @@ function AccessoryAura() {
   return (
     <g>
       {/* Outermost faint ring */}
-      <ellipse cx="100" cy="192" rx="62" ry="66" fill="none" stroke="#FBBF24" strokeWidth="1" opacity="0.1"/>
+      <ellipse cx="100" cy="192" rx="62" ry="66" fill="none" stroke="#FBBF24" strokeWidth="1" className="anim-pulse-soft"/>
       {/* Outer energy ring */}
-      <ellipse cx="100" cy="192" rx="57" ry="61" fill="none" stroke="#FBBF24" strokeWidth="1.5" opacity="0.18"/>
+      <ellipse cx="100" cy="192" rx="57" ry="61" fill="none" stroke="#FBBF24" strokeWidth="1.5" className="anim-pulse"/>
       {/* Middle ring */}
-      <ellipse cx="100" cy="192" rx="52" ry="56" fill="none" stroke="#F59E0B" strokeWidth="2" opacity="0.25"/>
+      <ellipse cx="100" cy="192" rx="52" ry="56" fill="none" stroke="#F59E0B" strokeWidth="2" className="anim-pulse-delayed"/>
       {/* Inner bright ring */}
-      <ellipse cx="100" cy="192" rx="47" ry="51" fill="none" stroke="#FDE68A" strokeWidth="2.5" opacity="0.35"/>
+      <ellipse cx="100" cy="192" rx="47" ry="51" fill="none" stroke="#FDE68A" strokeWidth="2.5" className="anim-pulse"/>
       {/* Innermost glow fill ring */}
-      <ellipse cx="100" cy="192" rx="42" ry="46" fill="#FBBF24" fillOpacity="0.04" stroke="#FBBF24" strokeWidth="1.5" opacity="0.3"/>
+      <ellipse cx="100" cy="192" rx="42" ry="46" fill="#FBBF24" fillOpacity="0.04" stroke="#FBBF24" strokeWidth="1.5" className="anim-pulse-delayed"/>
       {/* Warm ground glow */}
       <ellipse cx="100" cy="215" rx="30" ry="18" fill="#FBBF24" opacity="0.06"/>
       {/* Floating light motes large */}
-      <circle cx="52" cy="172" r="2.5" fill="#FDE68A" opacity="0.55"/>
-      <circle cx="148" cy="168" r="2" fill="#FDE68A" opacity="0.5"/>
-      <circle cx="46" cy="205" r="2" fill="#FDE68A" opacity="0.45"/>
-      <circle cx="154" cy="210" r="2.5" fill="#FDE68A" opacity="0.5"/>
-      <circle cx="50" cy="188" r="1.5" fill="#FBBF24" opacity="0.4"/>
-      <circle cx="150" cy="192" r="1.5" fill="#FBBF24" opacity="0.4"/>
+      <circle cx="52" cy="172" r="2.5" fill="#FDE68A" className="anim-sparkle-1"/>
+      <circle cx="148" cy="168" r="2" fill="#FDE68A" className="anim-sparkle-2"/>
+      <circle cx="46" cy="205" r="2" fill="#FDE68A" className="anim-sparkle-3"/>
+      <circle cx="154" cy="210" r="2.5" fill="#FDE68A" className="anim-sparkle-1"/>
+      <circle cx="50" cy="188" r="1.5" fill="#FBBF24" className="anim-sparkle-2"/>
+      <circle cx="150" cy="192" r="1.5" fill="#FBBF24" className="anim-sparkle-3"/>
       {/* Floating motes small */}
-      <circle cx="60" cy="155" r="1.2" fill="#FEF9C3" opacity="0.5"/>
-      <circle cx="140" cy="155" r="1" fill="#FEF9C3" opacity="0.45"/>
-      <circle cx="44" cy="220" r="1.2" fill="#FEF9C3" opacity="0.4"/>
-      <circle cx="156" cy="225" r="1" fill="#FEF9C3" opacity="0.4"/>
+      <circle cx="60" cy="155" r="1.2" fill="#FEF9C3" className="anim-sparkle-3"/>
+      <circle cx="140" cy="155" r="1" fill="#FEF9C3" className="anim-sparkle-1"/>
+      <circle cx="44" cy="220" r="1.2" fill="#FEF9C3" className="anim-sparkle-2"/>
+      <circle cx="156" cy="225" r="1" fill="#FEF9C3" className="anim-sparkle-3"/>
       {/* Top particle sparkle */}
-      <line x1="100" y1="137" x2="100" y2="141" stroke="#FDE68A" strokeWidth="1.2" opacity="0.4"/>
-      <line x1="97" y1="138" x2="103" y2="138" stroke="#FDE68A" strokeWidth="1.2" opacity="0.4"/>
+      <g className="anim-shimmer">
+        <line x1="100" y1="137" x2="100" y2="141" stroke="#FDE68A" strokeWidth="1.2" opacity="0.4"/>
+        <line x1="97" y1="138" x2="103" y2="138" stroke="#FDE68A" strokeWidth="1.2" opacity="0.4"/>
+      </g>
       {/* Energy arc left */}
-      <path d="M50 175 Q44 185 48 196" fill="none" stroke="#FBBF24" strokeWidth="1" opacity="0.25" strokeDasharray="3,2"/>
+      <path d="M50 175 Q44 185 48 196" fill="none" stroke="#FBBF24" strokeWidth="1" opacity="0.25" strokeDasharray="3,2" className="anim-shimmer"/>
       {/* Energy arc right */}
-      <path d="M150 175 Q156 185 152 196" fill="none" stroke="#FBBF24" strokeWidth="1" opacity="0.25" strokeDasharray="3,2"/>
+      <path d="M150 175 Q156 185 152 196" fill="none" stroke="#FBBF24" strokeWidth="1" opacity="0.25" strokeDasharray="3,2" className="anim-shimmer-delayed"/>
     </g>
   );
 }
@@ -2818,36 +2824,36 @@ function AccessoryStardust() {
   return (
     <g>
       {/* 4-point star large left */}
-      <path d="M55 160 L56.2 157 L57.4 160 L60 158.8 L57.4 160 L56.2 163 L55 160 L52.4 158.8 Z" fill="#FDE68A" opacity="0.85"/>
+      <path d="M55 160 L56.2 157 L57.4 160 L60 158.8 L57.4 160 L56.2 163 L55 160 L52.4 158.8 Z" fill="#FDE68A" className="anim-sparkle-1"/>
       {/* 4-point star large right */}
-      <path d="M145 162 L146.2 159 L147.4 162 L150 160.8 L147.4 162 L146.2 165 L145 162 L142.4 160.8 Z" fill="#FDE68A" opacity="0.8"/>
+      <path d="M145 162 L146.2 159 L147.4 162 L150 160.8 L147.4 162 L146.2 165 L145 162 L142.4 160.8 Z" fill="#FDE68A" className="anim-sparkle-2"/>
       {/* 4-point star bottom-left */}
-      <path d="M60 220 L61.2 217 L62.4 220 L65 218.8 L62.4 220 L61.2 223 L60 220 L57.4 218.8 Z" fill="#FBBF24" opacity="0.7"/>
+      <path d="M60 220 L61.2 217 L62.4 220 L65 218.8 L62.4 220 L61.2 223 L60 220 L57.4 218.8 Z" fill="#FBBF24" className="anim-sparkle-3"/>
       {/* 4-point star bottom-right */}
-      <path d="M140 230 L141.2 227 L142.4 230 L145 228.8 L142.4 230 L141.2 233 L140 230 L137.4 228.8 Z" fill="#FDE68A" opacity="0.75"/>
+      <path d="M140 230 L141.2 227 L142.4 230 L145 228.8 L142.4 230 L141.2 233 L140 230 L137.4 228.8 Z" fill="#FDE68A" className="anim-sparkle-1"/>
       {/* 6-point star left mid */}
-      <path d="M50 185 L51 183 L52 185 L54 185 L52 187 L53 189 L51 188 L49 189 L50 187 L48 185 Z" fill="#FEF9C3" opacity="0.7"/>
+      <path d="M50 185 L51 183 L52 185 L54 185 L52 187 L53 189 L51 188 L49 189 L50 187 L48 185 Z" fill="#FEF9C3" className="anim-sparkle-2"/>
       {/* 6-point star right mid */}
-      <path d="M150 180 L151 178 L152 180 L154 180 L152 182 L153 184 L151 183 L149 184 L150 182 L148 180 Z" fill="#FEF9C3" opacity="0.65"/>
+      <path d="M150 180 L151 178 L152 180 L154 180 L152 182 L153 184 L151 183 L149 184 L150 182 L148 180 Z" fill="#FEF9C3" className="anim-sparkle-3"/>
       {/* Small sparkle dots */}
-      <circle cx="65" cy="175" r="1.5" fill="#FBBF24" opacity="0.65"/>
-      <circle cx="135" cy="172" r="1.2" fill="#FBBF24" opacity="0.6"/>
-      <circle cx="48" cy="200" r="1.8" fill="#FDE68A" opacity="0.5"/>
-      <circle cx="152" cy="198" r="1.5" fill="#FDE68A" opacity="0.55"/>
-      <circle cx="70" cy="235" r="1.2" fill="#FBBF24" opacity="0.45"/>
-      <circle cx="130" cy="240" r="1.5" fill="#FBBF24" opacity="0.4"/>
+      <circle cx="65" cy="175" r="1.5" fill="#FBBF24" className="anim-sparkle-3"/>
+      <circle cx="135" cy="172" r="1.2" fill="#FBBF24" className="anim-sparkle-1"/>
+      <circle cx="48" cy="200" r="1.8" fill="#FDE68A" className="anim-sparkle-2"/>
+      <circle cx="152" cy="198" r="1.5" fill="#FDE68A" className="anim-sparkle-3"/>
+      <circle cx="70" cy="235" r="1.2" fill="#FBBF24" className="anim-sparkle-1"/>
+      <circle cx="130" cy="240" r="1.5" fill="#FBBF24" className="anim-sparkle-2"/>
       {/* Trailing sparkle streaks */}
-      <path d="M55 162 Q60 160 65 162" fill="none" stroke="#FDE68A" strokeWidth="0.8" opacity="0.4"/>
-      <path d="M145 164 Q140 162 135 164" fill="none" stroke="#FDE68A" strokeWidth="0.8" opacity="0.35"/>
-      <path d="M50 188 Q52 184 55 186" fill="none" stroke="#FEF9C3" strokeWidth="0.7" opacity="0.35"/>
-      <path d="M150 183 Q148 179 145 181" fill="none" stroke="#FEF9C3" strokeWidth="0.7" opacity="0.3"/>
+      <path d="M55 162 Q60 160 65 162" fill="none" stroke="#FDE68A" strokeWidth="0.8" className="anim-shimmer"/>
+      <path d="M145 164 Q140 162 135 164" fill="none" stroke="#FDE68A" strokeWidth="0.8" className="anim-shimmer-delayed"/>
+      <path d="M50 188 Q52 184 55 186" fill="none" stroke="#FEF9C3" strokeWidth="0.7" className="anim-shimmer"/>
+      <path d="M150 183 Q148 179 145 181" fill="none" stroke="#FEF9C3" strokeWidth="0.7" className="anim-shimmer-delayed"/>
       {/* Tiny glints */}
-      <circle cx="58" cy="196" r="0.8" fill="white" opacity="0.5"/>
-      <circle cx="142" cy="190" r="0.8" fill="white" opacity="0.5"/>
-      <circle cx="63" cy="210" r="0.7" fill="white" opacity="0.45"/>
-      <circle cx="137" cy="215" r="0.7" fill="white" opacity="0.45"/>
-      <circle cx="55" cy="155" r="0.7" fill="white" opacity="0.6"/>
-      <circle cx="145" cy="155" r="0.7" fill="white" opacity="0.55"/>
+      <circle cx="58" cy="196" r="0.8" fill="white" className="anim-sparkle-1"/>
+      <circle cx="142" cy="190" r="0.8" fill="white" className="anim-sparkle-2"/>
+      <circle cx="63" cy="210" r="0.7" fill="white" className="anim-sparkle-3"/>
+      <circle cx="137" cy="215" r="0.7" fill="white" className="anim-sparkle-1"/>
+      <circle cx="55" cy="155" r="0.7" fill="white" className="anim-sparkle-2"/>
+      <circle cx="145" cy="155" r="0.7" fill="white" className="anim-sparkle-3"/>
     </g>
   );
 }
@@ -2856,32 +2862,32 @@ function AccessoryCosmicAura() {
   return (
     <g>
       {/* Outer nebula ring */}
-      <ellipse cx="100" cy="192" rx="62" ry="66" fill="none" stroke="#4F46E5" strokeWidth="1" opacity="0.12"/>
-      <ellipse cx="100" cy="192" rx="57" ry="61" fill="none" stroke="#6366F1" strokeWidth="1.5" opacity="0.2"/>
-      <ellipse cx="100" cy="192" rx="52" ry="56" fill="none" stroke="#8B5CF6" strokeWidth="2" opacity="0.28"/>
-      <ellipse cx="100" cy="192" rx="47" ry="51" fill="none" stroke="#A78BFA" strokeWidth="2" opacity="0.18"/>
+      <ellipse cx="100" cy="192" rx="62" ry="66" fill="none" stroke="#4F46E5" strokeWidth="1" className="anim-pulse-soft"/>
+      <ellipse cx="100" cy="192" rx="57" ry="61" fill="none" stroke="#6366F1" strokeWidth="1.5" className="anim-pulse"/>
+      <ellipse cx="100" cy="192" rx="52" ry="56" fill="none" stroke="#8B5CF6" strokeWidth="2" className="anim-pulse-delayed"/>
+      <ellipse cx="100" cy="192" rx="47" ry="51" fill="none" stroke="#A78BFA" strokeWidth="2" className="anim-pulse"/>
       {/* Nebula swirl hints */}
-      <path d="M50 175 Q60 168 75 175 Q85 182 70 190" fill="none" stroke="#818CF8" strokeWidth="1.5" opacity="0.15"/>
-      <path d="M130 178 Q140 170 150 178 Q145 188 135 185" fill="none" stroke="#818CF8" strokeWidth="1.5" opacity="0.12"/>
+      <path d="M50 175 Q60 168 75 175 Q85 182 70 190" fill="none" stroke="#818CF8" strokeWidth="1.5" className="anim-shimmer"/>
+      <path d="M130 178 Q140 170 150 178 Q145 188 135 185" fill="none" stroke="#818CF8" strokeWidth="1.5" className="anim-shimmer-delayed"/>
       {/* Stars */}
-      <circle cx="52" cy="170" r="2" fill="white" opacity="0.7"/>
+      <circle cx="52" cy="170" r="2" fill="white" className="anim-galaxy-1"/>
       <circle cx="52" cy="170" r="0.8" fill="white"/>
-      <circle cx="148" cy="175" r="1.5" fill="white" opacity="0.5"/>
-      <circle cx="58" cy="210" r="1.5" fill="white" opacity="0.4"/>
-      <circle cx="142" cy="220" r="2" fill="white" opacity="0.6"/>
+      <circle cx="148" cy="175" r="1.5" fill="white" className="anim-galaxy-2"/>
+      <circle cx="58" cy="210" r="1.5" fill="white" className="anim-galaxy-3"/>
+      <circle cx="142" cy="220" r="2" fill="white" className="anim-galaxy-1"/>
       <circle cx="142" cy="220" r="0.8" fill="white"/>
-      <circle cx="45" cy="195" r="1" fill="#87CEEB" opacity="0.5"/>
-      <circle cx="155" cy="198" r="1.2" fill="#87CEEB" opacity="0.4"/>
+      <circle cx="45" cy="195" r="1" fill="#87CEEB" className="anim-galaxy-2"/>
+      <circle cx="155" cy="198" r="1.2" fill="#87CEEB" className="anim-galaxy-3"/>
       {/* Constellation lines */}
-      <g stroke="white" strokeWidth="0.3" opacity="0.15">
+      <g stroke="white" strokeWidth="0.3" className="anim-shimmer">
         <line x1="52" y1="170" x2="58" y2="210"/>
         <line x1="148" y1="175" x2="142" y2="220"/>
       </g>
       {/* Stardust particles */}
-      <circle cx="65" cy="160" r="0.8" fill="#C4B5FD" opacity="0.5"/>
-      <circle cx="135" cy="158" r="0.7" fill="#C4B5FD" opacity="0.4"/>
-      <circle cx="48" cy="225" r="0.9" fill="#DDD6FE" opacity="0.4"/>
-      <circle cx="152" cy="230" r="0.8" fill="#DDD6FE" opacity="0.35"/>
+      <circle cx="65" cy="160" r="0.8" fill="#C4B5FD" className="anim-sparkle-1"/>
+      <circle cx="135" cy="158" r="0.7" fill="#C4B5FD" className="anim-sparkle-2"/>
+      <circle cx="48" cy="225" r="0.9" fill="#DDD6FE" className="anim-sparkle-3"/>
+      <circle cx="152" cy="230" r="0.8" fill="#DDD6FE" className="anim-sparkle-1"/>
     </g>
   );
 }
@@ -2890,19 +2896,19 @@ function AccessoryHaloAcc() {
   return (
     <g>
       {/* Outer glow */}
-      <ellipse cx="100" cy="148" rx="34" ry="10" fill="#FBBF24" opacity="0.06"/>
+      <ellipse cx="100" cy="148" rx="34" ry="10" fill="#FBBF24" className="anim-halo"/>
       {/* Main ring */}
       <ellipse cx="100" cy="148" rx="28" ry="6" fill="none" stroke="#FBBF24" strokeWidth="4"/>
       <ellipse cx="100" cy="148" rx="28" ry="6" fill="none" stroke="#FDE68A" strokeWidth="1.5" opacity="0.6"/>
       {/* Inner glow */}
-      <ellipse cx="100" cy="148" rx="24" ry="4" fill="#FDE68A" opacity="0.15"/>
+      <ellipse cx="100" cy="148" rx="24" ry="4" fill="#FDE68A" className="anim-pulse-soft"/>
       {/* Sparkle highlights */}
-      <circle cx="76" cy="146" r="1.5" fill="white" opacity="0.6"/>
-      <circle cx="124" cy="146" r="1.5" fill="white" opacity="0.6"/>
-      <circle cx="100" cy="142" r="1" fill="white" opacity="0.4"/>
+      <circle cx="76" cy="146" r="1.5" fill="white" className="anim-sparkle-1"/>
+      <circle cx="124" cy="146" r="1.5" fill="white" className="anim-sparkle-2"/>
+      <circle cx="100" cy="142" r="1" fill="white" className="anim-sparkle-3"/>
       {/* Light particles */}
-      <circle cx="85" cy="140" r="0.8" fill="#FBBF24" opacity="0.35"/>
-      <circle cx="115" cy="140" r="0.8" fill="#FBBF24" opacity="0.35"/>
+      <circle cx="85" cy="140" r="0.8" fill="#FBBF24" className="anim-sparkle-2"/>
+      <circle cx="115" cy="140" r="0.8" fill="#FBBF24" className="anim-sparkle-3"/>
     </g>
   );
 }
@@ -2910,30 +2916,26 @@ function AccessoryHaloAcc() {
 function AccessoryPhoenixWings() {
   return (
     <g>
-      {/* Left wing - outer feathers */}
-      <path d="M55 170 Q25 135 10 150 Q5 168 28 180 Q15 158 40 166" fill="#DC2626" opacity="0.6"/>
-      {/* Left wing - mid feathers */}
-      <path d="M55 172 Q30 142 18 158 Q14 174 36 184" fill="#F97316" opacity="0.6"/>
-      {/* Left wing - inner feathers */}
-      <path d="M55 175 Q38 152 28 168 Q24 180 42 188" fill="#FBBF24" opacity="0.45"/>
-      {/* Left feather lines */}
-      <path d="M20 158 Q30 160 40 168" fill="none" stroke="#C45D3E" strokeWidth="0.8" opacity="0.3"/>
-      <path d="M25 165 Q35 167 45 172" fill="none" stroke="#D97706" strokeWidth="0.6" opacity="0.25"/>
-      {/* Left ember particles */}
-      <circle cx="18" cy="148" r="1.5" fill="#FBBF24" opacity="0.5"/>
-      <circle cx="12" cy="162" r="1" fill="#F97316" opacity="0.4"/>
-      {/* Right wing - outer feathers */}
-      <path d="M145 170 Q175 135 190 150 Q195 168 172 180 Q185 158 160 166" fill="#DC2626" opacity="0.6"/>
-      {/* Right wing - mid feathers */}
-      <path d="M145 172 Q170 142 182 158 Q186 174 164 184" fill="#F97316" opacity="0.6"/>
-      {/* Right wing - inner feathers */}
-      <path d="M145 175 Q162 152 172 168 Q176 180 158 188" fill="#FBBF24" opacity="0.45"/>
-      {/* Right feather lines */}
-      <path d="M180 158 Q170 160 160 168" fill="none" stroke="#C45D3E" strokeWidth="0.8" opacity="0.3"/>
-      <path d="M175 165 Q165 167 155 172" fill="none" stroke="#D97706" strokeWidth="0.6" opacity="0.25"/>
-      {/* Right ember particles */}
-      <circle cx="182" cy="148" r="1.5" fill="#FBBF24" opacity="0.5"/>
-      <circle cx="188" cy="162" r="1" fill="#F97316" opacity="0.4"/>
+      {/* Left wing */}
+      <g className="anim-wing-l">
+        <path d="M55 170 Q25 135 10 150 Q5 168 28 180 Q15 158 40 166" fill="#DC2626" opacity="0.6"/>
+        <path d="M55 172 Q30 142 18 158 Q14 174 36 184" fill="#F97316" opacity="0.6"/>
+        <path d="M55 175 Q38 152 28 168 Q24 180 42 188" fill="#FBBF24" opacity="0.45"/>
+        <path d="M20 158 Q30 160 40 168" fill="none" stroke="#C45D3E" strokeWidth="0.8" opacity="0.3"/>
+        <path d="M25 165 Q35 167 45 172" fill="none" stroke="#D97706" strokeWidth="0.6" opacity="0.25"/>
+        <circle cx="18" cy="148" r="1.5" fill="#FBBF24" className="anim-ember-1"/>
+        <circle cx="12" cy="162" r="1" fill="#F97316" className="anim-ember-2"/>
+      </g>
+      {/* Right wing */}
+      <g className="anim-wing-r">
+        <path d="M145 170 Q175 135 190 150 Q195 168 172 180 Q185 158 160 166" fill="#DC2626" opacity="0.6"/>
+        <path d="M145 172 Q170 142 182 158 Q186 174 164 184" fill="#F97316" opacity="0.6"/>
+        <path d="M145 175 Q162 152 172 168 Q176 180 158 188" fill="#FBBF24" opacity="0.45"/>
+        <path d="M180 158 Q170 160 160 168" fill="none" stroke="#C45D3E" strokeWidth="0.8" opacity="0.3"/>
+        <path d="M175 165 Q165 167 155 172" fill="none" stroke="#D97706" strokeWidth="0.6" opacity="0.25"/>
+        <circle cx="182" cy="148" r="1.5" fill="#FBBF24" className="anim-ember-1"/>
+        <circle cx="188" cy="162" r="1" fill="#F97316" className="anim-ember-3"/>
+      </g>
     </g>
   );
 }
@@ -2941,32 +2943,28 @@ function AccessoryPhoenixWings() {
 function AccessoryWings() {
   return (
     <g>
-      {/* Left wing - outer */}
-      <path d="M55 168 Q22 132 12 155 Q8 172 32 184 Q18 160 42 168" fill="#E0E0FF" opacity="0.7"/>
-      {/* Left wing - mid layer */}
-      <path d="M55 172 Q30 145 20 163 Q16 178 38 188" fill="#C8C8F0" opacity="0.5"/>
-      {/* Left wing - inner */}
-      <path d="M55 176 Q38 155 28 170 Q25 182 44 190" fill="#D8D8FF" opacity="0.35"/>
-      {/* Left feather lines */}
-      <path d="M18 158 Q28 162 38 170" fill="none" stroke="#A0A0D0" strokeWidth="0.8" opacity="0.4"/>
-      <path d="M22 168 Q32 170 42 176" fill="none" stroke="#B0B0E0" strokeWidth="0.6" opacity="0.3"/>
-      <path d="M16 148 Q24 152 32 160" fill="none" stroke="#9090C0" strokeWidth="0.5" opacity="0.3"/>
-      {/* Left sparkles */}
-      <circle cx="20" cy="150" r="1" fill="white" opacity="0.5"/>
-      <circle cx="15" cy="165" r="0.8" fill="white" opacity="0.4"/>
-      {/* Right wing - outer */}
-      <path d="M145 168 Q178 132 188 155 Q192 172 168 184 Q182 160 158 168" fill="#E0E0FF" opacity="0.7"/>
-      {/* Right wing - mid layer */}
-      <path d="M145 172 Q170 145 180 163 Q184 178 162 188" fill="#C8C8F0" opacity="0.5"/>
-      {/* Right wing - inner */}
-      <path d="M145 176 Q162 155 172 170 Q175 182 156 190" fill="#D8D8FF" opacity="0.35"/>
-      {/* Right feather lines */}
-      <path d="M182 158 Q172 162 162 170" fill="none" stroke="#A0A0D0" strokeWidth="0.8" opacity="0.4"/>
-      <path d="M178 168 Q168 170 158 176" fill="none" stroke="#B0B0E0" strokeWidth="0.6" opacity="0.3"/>
-      <path d="M184 148 Q176 152 168 160" fill="none" stroke="#9090C0" strokeWidth="0.5" opacity="0.3"/>
-      {/* Right sparkles */}
-      <circle cx="180" cy="150" r="1" fill="white" opacity="0.5"/>
-      <circle cx="185" cy="165" r="0.8" fill="white" opacity="0.4"/>
+      {/* Left wing */}
+      <g className="anim-wing-l">
+        <path d="M55 168 Q22 132 12 155 Q8 172 32 184 Q18 160 42 168" fill="#E0E0FF" opacity="0.7"/>
+        <path d="M55 172 Q30 145 20 163 Q16 178 38 188" fill="#C8C8F0" opacity="0.5"/>
+        <path d="M55 176 Q38 155 28 170 Q25 182 44 190" fill="#D8D8FF" opacity="0.35"/>
+        <path d="M18 158 Q28 162 38 170" fill="none" stroke="#A0A0D0" strokeWidth="0.8" opacity="0.4"/>
+        <path d="M22 168 Q32 170 42 176" fill="none" stroke="#B0B0E0" strokeWidth="0.6" opacity="0.3"/>
+        <path d="M16 148 Q24 152 32 160" fill="none" stroke="#9090C0" strokeWidth="0.5" opacity="0.3"/>
+        <circle cx="20" cy="150" r="1" fill="white" className="anim-sparkle-1"/>
+        <circle cx="15" cy="165" r="0.8" fill="white" className="anim-sparkle-2"/>
+      </g>
+      {/* Right wing */}
+      <g className="anim-wing-r">
+        <path d="M145 168 Q178 132 188 155 Q192 172 168 184 Q182 160 158 168" fill="#E0E0FF" opacity="0.7"/>
+        <path d="M145 172 Q170 145 180 163 Q184 178 162 188" fill="#C8C8F0" opacity="0.5"/>
+        <path d="M145 176 Q162 155 172 170 Q175 182 156 190" fill="#D8D8FF" opacity="0.35"/>
+        <path d="M182 158 Q172 162 162 170" fill="none" stroke="#A0A0D0" strokeWidth="0.8" opacity="0.4"/>
+        <path d="M178 168 Q168 170 158 176" fill="none" stroke="#B0B0E0" strokeWidth="0.6" opacity="0.3"/>
+        <path d="M184 148 Q176 152 168 160" fill="none" stroke="#9090C0" strokeWidth="0.5" opacity="0.3"/>
+        <circle cx="180" cy="150" r="1" fill="white" className="anim-sparkle-2"/>
+        <circle cx="185" cy="165" r="0.8" fill="white" className="anim-sparkle-3"/>
+      </g>
     </g>
   );
 }
@@ -3081,23 +3079,23 @@ function AccessoryMagicWand() {
       {/* Handle grip */}
       <line x1="130" y1="126" x2="132" y2="122" stroke="#D4A853" strokeWidth="6" strokeLinecap="round"/>
       <line x1="130" y1="126" x2="132" y2="122" stroke="#E8C860" strokeWidth="3" strokeLinecap="round" opacity="0.4"/>
-      {/* Star ornament at tip */}
-      <circle cx="156" cy="60" r="8" fill="#9370DB" opacity="0.3"/>
+      {/* Star ornament at tip - pulsing glow */}
+      <circle cx="156" cy="60" r="8" fill="#9370DB" className="anim-pulse-soft"/>
       <circle cx="156" cy="60" r="6" fill="#9370DB"/>
       <circle cx="156" cy="60" r="4.5" fill="#A78BFA"/>
       <circle cx="156" cy="60" r="3" fill="#C4B5FD" opacity="0.7"/>
       <circle cx="154" cy="58" r="1.5" fill="white" opacity="0.4"/>
-      {/* Magic sparkles */}
-      <circle cx="162" cy="52" r="2.5" fill="#FFD700" opacity="0.6"/>
-      <circle cx="162" cy="52" r="1" fill="#FEF9C3" opacity="0.5"/>
-      <circle cx="148" cy="54" r="2" fill="#FFD700" opacity="0.5"/>
-      <circle cx="148" cy="54" r="0.8" fill="#FEF9C3" opacity="0.4"/>
-      <circle cx="164" cy="62" r="1.5" fill="#FFD700" opacity="0.4"/>
-      <circle cx="152" cy="48" r="1" fill="#FDE68A" opacity="0.5"/>
+      {/* Magic sparkles - animated */}
+      <circle cx="162" cy="52" r="2.5" fill="#FFD700" className="anim-sparkle-1"/>
+      <circle cx="162" cy="52" r="1" fill="#FEF9C3" className="anim-sparkle-1"/>
+      <circle cx="148" cy="54" r="2" fill="#FFD700" className="anim-sparkle-2"/>
+      <circle cx="148" cy="54" r="0.8" fill="#FEF9C3" className="anim-sparkle-2"/>
+      <circle cx="164" cy="62" r="1.5" fill="#FFD700" className="anim-sparkle-3"/>
+      <circle cx="152" cy="48" r="1" fill="#FDE68A" className="anim-sparkle-1"/>
       {/* Trailing sparkle particles */}
-      <circle cx="160" cy="46" r="0.8" fill="white" opacity="0.5"/>
-      <circle cx="166" cy="56" r="0.6" fill="white" opacity="0.4"/>
-      <circle cx="146" cy="50" r="0.7" fill="white" opacity="0.3"/>
+      <circle cx="160" cy="46" r="0.8" fill="white" className="anim-sparkle-3"/>
+      <circle cx="166" cy="56" r="0.6" fill="white" className="anim-sparkle-2"/>
+      <circle cx="146" cy="50" r="0.7" fill="white" className="anim-sparkle-1"/>
     </g>
   );
 }
@@ -3139,9 +3137,11 @@ function AccessoryDragonPet() {
       {/* Small wings */}
       <path d="M148 162 Q138 152 140 145 Q144 152 150 158" fill="#1B7A1B" opacity="0.6"/>
       <path d="M148 163 Q140 155 142 150" fill="none" stroke="#155A15" strokeWidth="0.5" opacity="0.4"/>
-      {/* Fire breath */}
-      <path d="M170 157 Q176 155 180 158 Q178 160 175 159" fill="#F97316" opacity="0.5"/>
-      <path d="M172 157 Q176 156 178 158" fill="#FBBF24" opacity="0.4"/>
+      {/* Fire breath - animated */}
+      <g className="anim-dragon-breath">
+        <path d="M170 157 Q176 155 180 158 Q178 160 175 159" fill="#F97316" opacity="0.5"/>
+        <path d="M172 157 Q176 156 178 158" fill="#FBBF24" opacity="0.4"/>
+      </g>
     </g>
   );
 }
@@ -3150,37 +3150,45 @@ function AccessoryFloatingOrbs() {
   return (
     <g>
       {/* Red orb - top left */}
-      <circle cx="55" cy="100" r="8" fill="#FF4444" opacity="0.15"/>
-      <circle cx="55" cy="100" r="6" fill="#FF4444" opacity="0.6"/>
-      <circle cx="55" cy="100" r="4.5" fill="#FF6666" opacity="0.5"/>
-      <circle cx="55" cy="100" r="2.5" fill="#FF8888" opacity="0.6"/>
-      <circle cx="53" cy="98" r="1.5" fill="white" opacity="0.3"/>
+      <g className="anim-orbit-1">
+        <circle cx="55" cy="100" r="8" fill="#FF4444" opacity="0.15" className="anim-pulse"/>
+        <circle cx="55" cy="100" r="6" fill="#FF4444" opacity="0.6"/>
+        <circle cx="55" cy="100" r="4.5" fill="#FF6666" opacity="0.5"/>
+        <circle cx="55" cy="100" r="2.5" fill="#FF8888" opacity="0.6"/>
+        <circle cx="53" cy="98" r="1.5" fill="white" opacity="0.3"/>
+      </g>
       {/* Blue orb - top right */}
-      <circle cx="145" cy="95" r="8" fill="#4444FF" opacity="0.15"/>
-      <circle cx="145" cy="95" r="6" fill="#4444FF" opacity="0.6"/>
-      <circle cx="145" cy="95" r="4.5" fill="#6666FF" opacity="0.5"/>
-      <circle cx="145" cy="95" r="2.5" fill="#8888FF" opacity="0.6"/>
-      <circle cx="143" cy="93" r="1.5" fill="white" opacity="0.3"/>
+      <g className="anim-orbit-2">
+        <circle cx="145" cy="95" r="8" fill="#4444FF" opacity="0.15" className="anim-pulse-delayed"/>
+        <circle cx="145" cy="95" r="6" fill="#4444FF" opacity="0.6"/>
+        <circle cx="145" cy="95" r="4.5" fill="#6666FF" opacity="0.5"/>
+        <circle cx="145" cy="95" r="2.5" fill="#8888FF" opacity="0.6"/>
+        <circle cx="143" cy="93" r="1.5" fill="white" opacity="0.3"/>
+      </g>
       {/* Green orb - mid left */}
-      <circle cx="48" cy="142" r="7" fill="#44FF44" opacity="0.12"/>
-      <circle cx="48" cy="142" r="5" fill="#44FF44" opacity="0.6"/>
-      <circle cx="48" cy="142" r="3.5" fill="#66FF66" opacity="0.5"/>
-      <circle cx="48" cy="142" r="2" fill="#88FF88" opacity="0.6"/>
-      <circle cx="46" cy="140" r="1.2" fill="white" opacity="0.3"/>
+      <g className="anim-float">
+        <circle cx="48" cy="142" r="7" fill="#44FF44" opacity="0.12" className="anim-pulse"/>
+        <circle cx="48" cy="142" r="5" fill="#44FF44" opacity="0.6"/>
+        <circle cx="48" cy="142" r="3.5" fill="#66FF66" opacity="0.5"/>
+        <circle cx="48" cy="142" r="2" fill="#88FF88" opacity="0.6"/>
+        <circle cx="46" cy="140" r="1.2" fill="white" opacity="0.3"/>
+      </g>
       {/* Gold orb - mid right */}
-      <circle cx="152" cy="145" r="7" fill="#FFD700" opacity="0.12"/>
-      <circle cx="152" cy="145" r="5" fill="#FFD700" opacity="0.6"/>
-      <circle cx="152" cy="145" r="3.5" fill="#FFE44D" opacity="0.5"/>
-      <circle cx="152" cy="145" r="2" fill="#FFF088" opacity="0.6"/>
-      <circle cx="150" cy="143" r="1.2" fill="white" opacity="0.3"/>
+      <g className="anim-float-delayed">
+        <circle cx="152" cy="145" r="7" fill="#FFD700" opacity="0.12" className="anim-pulse-delayed"/>
+        <circle cx="152" cy="145" r="5" fill="#FFD700" opacity="0.6"/>
+        <circle cx="152" cy="145" r="3.5" fill="#FFE44D" opacity="0.5"/>
+        <circle cx="152" cy="145" r="2" fill="#FFF088" opacity="0.6"/>
+        <circle cx="150" cy="143" r="1.2" fill="white" opacity="0.3"/>
+      </g>
       {/* Energy arcs between orbs */}
-      <path d="M55 106 Q50 120 48 136" fill="none" stroke="#44FF44" strokeWidth="0.5" opacity="0.2" strokeDasharray="2,2"/>
-      <path d="M145 101 Q150 120 152 139" fill="none" stroke="#FFD700" strokeWidth="0.5" opacity="0.2" strokeDasharray="2,2"/>
+      <path d="M55 106 Q50 120 48 136" fill="none" stroke="#44FF44" strokeWidth="0.5" opacity="0.2" strokeDasharray="2,2" className="anim-shimmer"/>
+      <path d="M145 101 Q150 120 152 139" fill="none" stroke="#FFD700" strokeWidth="0.5" opacity="0.2" strokeDasharray="2,2" className="anim-shimmer-delayed"/>
       {/* Tiny orbit particles */}
-      <circle cx="62" cy="98" r="0.8" fill="#FF8888" opacity="0.5"/>
-      <circle cx="138" cy="92" r="0.8" fill="#8888FF" opacity="0.5"/>
-      <circle cx="42" cy="138" r="0.7" fill="#88FF88" opacity="0.4"/>
-      <circle cx="158" cy="148" r="0.7" fill="#FFE44D" opacity="0.4"/>
+      <circle cx="62" cy="98" r="0.8" fill="#FF8888" className="anim-sparkle-1"/>
+      <circle cx="138" cy="92" r="0.8" fill="#8888FF" className="anim-sparkle-2"/>
+      <circle cx="42" cy="138" r="0.7" fill="#88FF88" className="anim-sparkle-3"/>
+      <circle cx="158" cy="148" r="0.7" fill="#FFE44D" className="anim-sparkle-1"/>
     </g>
   );
 }
@@ -3213,15 +3221,19 @@ function AccessoryFlamingSword() {
       {/* Pommel */}
       <circle cx="129" cy="130" r="3" fill="#8B6914"/>
       <circle cx="129" cy="130" r="2" fill="#D4A853" opacity="0.5"/>
-      {/* Fire effect - multilayer */}
-      <path d="M155 52 Q165 36 161 16 Q157 30 153 34 Q161 20 157 5" fill="#FF4500" opacity="0.6"/>
-      <path d="M157 48 Q167 30 163 10 Q159 24 155 28 Q163 14 159 0" fill="#FF6B00" opacity="0.45"/>
-      <path d="M153 54 Q161 38 157 23 Q154 33 151 36" fill="#FBBF24" opacity="0.5"/>
-      <path d="M156 50 Q163 36 160 18 Q157 28 154 32" fill="#FDE68A" opacity="0.3"/>
-      {/* Ember particles */}
-      <circle cx="167" cy="20" r="1.5" fill="#FF4500" opacity="0.5"/>
-      <circle cx="152" cy="8" r="1" fill="#FBBF24" opacity="0.4"/>
-      <circle cx="163" cy="3" r="1.2" fill="#FF6B00" opacity="0.35"/>
+      {/* Fire effect - multilayer animated */}
+      <g className="anim-flicker">
+        <path d="M155 52 Q165 36 161 16 Q157 30 153 34 Q161 20 157 5" fill="#FF4500" opacity="0.6"/>
+        <path d="M153 54 Q161 38 157 23 Q154 33 151 36" fill="#FBBF24" opacity="0.5"/>
+      </g>
+      <g className="anim-flicker-delayed">
+        <path d="M157 48 Q167 30 163 10 Q159 24 155 28 Q163 14 159 0" fill="#FF6B00" opacity="0.45"/>
+        <path d="M156 50 Q163 36 160 18 Q157 28 154 32" fill="#FDE68A" opacity="0.3"/>
+      </g>
+      {/* Ember particles - rising */}
+      <circle cx="167" cy="20" r="1.5" fill="#FF4500" className="anim-ember-1"/>
+      <circle cx="152" cy="8" r="1" fill="#FBBF24" className="anim-ember-2"/>
+      <circle cx="163" cy="3" r="1.2" fill="#FF6B00" className="anim-ember-3"/>
     </g>
   );
 }
@@ -3240,28 +3252,28 @@ function AccessoryGalaxyCloak() {
       <path d="M112 195 Q126 186 140 198 Q134 210 120 206" fill="#7C3AED" opacity="0.12"/>
       <path d="M80 215 Q94 208 108 220 Q102 232 88 228" fill="#6366F1" opacity="0.1"/>
       <path d="M95 170 Q108 164 118 175 Q112 184 100 180" fill="#312E81" opacity="0.1"/>
-      {/* Stars - bright with glow */}
-      <circle cx="62" cy="188" r="2" fill="white" opacity="0.8"/>
+      {/* Stars - bright with glow - twinkling */}
+      <circle cx="62" cy="188" r="2" fill="white" className="anim-galaxy-1"/>
       <circle cx="62" cy="188" r="0.8" fill="white"/>
-      <circle cx="92" cy="208" r="2" fill="white" opacity="0.85"/>
+      <circle cx="92" cy="208" r="2" fill="white" className="anim-galaxy-2"/>
       <circle cx="92" cy="208" r="0.8" fill="white"/>
-      <circle cx="135" cy="204" r="1.8" fill="white" opacity="0.7"/>
+      <circle cx="135" cy="204" r="1.8" fill="white" className="anim-galaxy-3"/>
       <circle cx="135" cy="204" r="0.7" fill="white"/>
-      <circle cx="108" cy="178" r="1.5" fill="white" opacity="0.75"/>
+      <circle cx="108" cy="178" r="1.5" fill="white" className="anim-galaxy-1"/>
       <circle cx="108" cy="178" r="0.6" fill="white"/>
       {/* Stars - medium colored */}
-      <circle cx="75" cy="172" r="1.2" fill="#FFD700" opacity="0.7"/>
-      <circle cx="128" cy="220" r="1" fill="#7B68EE" opacity="0.7"/>
-      <circle cx="118" cy="170" r="1" fill="#87CEEB" opacity="0.6"/>
-      <circle cx="100" cy="232" r="1.2" fill="white" opacity="0.5"/>
-      <circle cx="56" cy="210" r="1" fill="#A78BFA" opacity="0.6"/>
-      <circle cx="145" cy="228" r="1" fill="#87CEEB" opacity="0.5"/>
+      <circle cx="75" cy="172" r="1.2" fill="#FFD700" className="anim-galaxy-2"/>
+      <circle cx="128" cy="220" r="1" fill="#7B68EE" className="anim-galaxy-3"/>
+      <circle cx="118" cy="170" r="1" fill="#87CEEB" className="anim-galaxy-1"/>
+      <circle cx="100" cy="232" r="1.2" fill="white" className="anim-galaxy-2"/>
+      <circle cx="56" cy="210" r="1" fill="#A78BFA" className="anim-galaxy-3"/>
+      <circle cx="145" cy="228" r="1" fill="#87CEEB" className="anim-galaxy-1"/>
       {/* Stars - small */}
-      <circle cx="68" cy="200" r="0.7" fill="white" opacity="0.5"/>
-      <circle cx="140" cy="195" r="0.7" fill="white" opacity="0.4"/>
-      <circle cx="80" cy="238" r="0.6" fill="white" opacity="0.4"/>
-      <circle cx="120" cy="240" r="0.8" fill="#C4B5FD" opacity="0.5"/>
-      <circle cx="52" cy="230" r="0.5" fill="white" opacity="0.35"/>
+      <circle cx="68" cy="200" r="0.7" fill="white" className="anim-sparkle-1"/>
+      <circle cx="140" cy="195" r="0.7" fill="white" className="anim-sparkle-2"/>
+      <circle cx="80" cy="238" r="0.6" fill="white" className="anim-sparkle-3"/>
+      <circle cx="120" cy="240" r="0.8" fill="#C4B5FD" className="anim-sparkle-1"/>
+      <circle cx="52" cy="230" r="0.5" fill="white" className="anim-sparkle-2"/>
       <circle cx="148" cy="238" r="0.6" fill="white" opacity="0.3"/>
       {/* Shooting star */}
       <line x1="110" y1="185" x2="102" y2="190" stroke="white" strokeWidth="0.7" opacity="0.4"/>
@@ -3883,6 +3895,112 @@ export default function Mascot({
         .mascot-svg:hover .mascot-pupils {
           transform: translate(5px, 0px);
         }
+
+        /* ── Item Animations ── */
+
+        @keyframes flicker {
+          0%, 100% { opacity: 0.6; transform: translateY(0px) scaleY(1); }
+          25% { opacity: 0.8; transform: translateY(-1px) scaleY(1.04); }
+          50% { opacity: 0.5; transform: translateY(0.5px) scaleY(0.97); }
+          75% { opacity: 0.75; transform: translateY(-0.5px) scaleY(1.02); }
+        }
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
+        @keyframes pulse-soft {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.6; }
+        }
+        @keyframes float-y {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-3px); }
+        }
+        @keyframes orbit-1 {
+          0% { transform: translate(0px, 0px); }
+          25% { transform: translate(2px, -2px); }
+          50% { transform: translate(0px, -3px); }
+          75% { transform: translate(-2px, -1px); }
+          100% { transform: translate(0px, 0px); }
+        }
+        @keyframes orbit-2 {
+          0% { transform: translate(0px, 0px); }
+          25% { transform: translate(-2px, 1px); }
+          50% { transform: translate(0px, 3px); }
+          75% { transform: translate(2px, 1px); }
+          100% { transform: translate(0px, 0px); }
+        }
+        @keyframes shimmer {
+          0%, 100% { opacity: 0.3; }
+          50% { opacity: 0.8; }
+        }
+        @keyframes sparkle {
+          0%, 100% { opacity: 0; transform: scale(0.5); }
+          50% { opacity: 1; transform: scale(1.2); }
+        }
+        @keyframes wing-left {
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(-4deg); }
+        }
+        @keyframes wing-right {
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(4deg); }
+        }
+        @keyframes rotate-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes lightning-flash {
+          0%, 18%, 22%, 100% { opacity: 1; }
+          20% { opacity: 0.4; }
+          90% { opacity: 1; }
+          92% { opacity: 0.5; }
+          94% { opacity: 1; }
+        }
+        @keyframes dragon-breathe {
+          0%, 100% { opacity: 0.5; transform: scaleX(1); }
+          50% { opacity: 0.8; transform: scaleX(1.3); }
+        }
+        @keyframes galaxy-twinkle {
+          0%, 100% { opacity: 0.5; }
+          30% { opacity: 1; }
+          60% { opacity: 0.3; }
+        }
+        @keyframes halo-glow {
+          0%, 100% { opacity: 0.06; }
+          50% { opacity: 0.15; }
+        }
+        @keyframes ember-rise {
+          0% { opacity: 0.5; transform: translateY(0px); }
+          100% { opacity: 0; transform: translateY(-8px); }
+        }
+
+        .anim-flicker { animation: flicker 1.5s ease-in-out infinite; }
+        .anim-flicker-delayed { animation: flicker 1.8s ease-in-out 0.4s infinite; }
+        .anim-pulse { animation: pulse-glow 2s ease-in-out infinite; }
+        .anim-pulse-delayed { animation: pulse-glow 2s ease-in-out 0.7s infinite; }
+        .anim-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+        .anim-float { animation: float-y 3s ease-in-out infinite; }
+        .anim-float-delayed { animation: float-y 3s ease-in-out 1s infinite; }
+        .anim-orbit-1 { animation: orbit-1 4s ease-in-out infinite; }
+        .anim-orbit-2 { animation: orbit-2 4s ease-in-out infinite; }
+        .anim-shimmer { animation: shimmer 2s ease-in-out infinite; }
+        .anim-shimmer-delayed { animation: shimmer 2s ease-in-out 0.5s infinite; }
+        .anim-sparkle-1 { animation: sparkle 2s ease-in-out infinite; }
+        .anim-sparkle-2 { animation: sparkle 2s ease-in-out 0.6s infinite; }
+        .anim-sparkle-3 { animation: sparkle 2s ease-in-out 1.2s infinite; }
+        .anim-wing-l { animation: wing-left 2s ease-in-out infinite; transform-origin: 100px 152px; }
+        .anim-wing-r { animation: wing-right 2s ease-in-out infinite; transform-origin: 100px 152px; }
+        .anim-rotate-slow { animation: rotate-slow 20s linear infinite; transform-origin: center; }
+        .anim-lightning { animation: lightning-flash 3s ease-in-out infinite; }
+        .anim-dragon-breath { animation: dragon-breathe 2s ease-in-out infinite; transform-origin: 170px 157px; }
+        .anim-galaxy-1 { animation: galaxy-twinkle 3s ease-in-out infinite; }
+        .anim-galaxy-2 { animation: galaxy-twinkle 3s ease-in-out 1s infinite; }
+        .anim-galaxy-3 { animation: galaxy-twinkle 3s ease-in-out 2s infinite; }
+        .anim-halo { animation: halo-glow 3s ease-in-out infinite; }
+        .anim-ember-1 { animation: ember-rise 2s ease-out infinite; }
+        .anim-ember-2 { animation: ember-rise 2.5s ease-out 0.5s infinite; }
+        .anim-ember-3 { animation: ember-rise 1.8s ease-out 1s infinite; }
       `}</style>
     </svg>
   );
