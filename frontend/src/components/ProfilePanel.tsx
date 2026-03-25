@@ -70,6 +70,7 @@ export default function ProfilePanel({
   const [sharingFavs, setSharingFavs] = useState(false);
   const [mascotCustom, setMascotCustom] = useState<MascotCustomization>(loadMascotCustomization);
   const [showCustomizer, setShowCustomizer] = useState(false);
+  const [previewCustom, setPreviewCustom] = useState<MascotCustomization | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -188,7 +189,7 @@ export default function ProfilePanel({
               className="relative group rounded-xl p-1 transition-all hover:bg-white/30"
               title={t("mascot.customize")}
             >
-              <Mascot size={100} customization={mascotCustom} />
+              <Mascot size={100} customization={previewCustom || mascotCustom} />
               <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-sf-accent text-white
                               flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity">
                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -310,6 +311,7 @@ export default function ProfilePanel({
               customization={mascotCustom}
               userTier={rank.palier}
               onChange={handleMascotChange}
+              onPreview={setPreviewCustom}
             />
           </div>
         )}
