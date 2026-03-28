@@ -27,7 +27,7 @@ import {
   type PendingRequest,
   type FriendUser,
 } from "@/lib/api";
-import Mascot from "@/components/Mascot";
+import Mascot, { MiniItemPreview } from "@/components/Mascot";
 import MascotCustomizer from "@/components/MascotCustomizer";
 import type { MascotCustomization, ItemCategory } from "@/lib/mascotItems";
 import { loadMascotCustomization, saveMascotCustomization, getItemsByTier, isItemUnlocked } from "@/lib/mascotItems";
@@ -643,7 +643,7 @@ export default function ProfilePage() {
                                       className={`flex items-center gap-2 px-2.5 py-1.5 rounded-sf-sm text-xs
                                         ${unlocked ? "bg-sf-bg text-sf-text" : "bg-sf-bg/50 text-sf-text-light"}`}
                                     >
-                                      <span className={`text-base ${unlocked ? "" : "grayscale opacity-50"}`}>{item.preview}</span>
+                                      <span className={`flex-shrink-0 ${unlocked ? "" : "grayscale opacity-50"}`}><MiniItemPreview itemId={item.id} category={cat} size={22} /></span>
                                       <span className={`truncate ${unlocked ? "font-medium" : ""}`}>{t(item.nameKey)}</span>
                                       {!unlocked && (
                                         <svg className="w-3 h-3 ml-auto flex-shrink-0 opacity-40" viewBox="0 0 20 20" fill="currentColor">

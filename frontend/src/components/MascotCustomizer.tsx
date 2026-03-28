@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { MascotCustomization, ItemCategory } from "@/lib/mascotItems";
 import { getItemsByCategory, isItemUnlocked } from "@/lib/mascotItems";
 import { useT } from "@/lib/i18n";
+import { MiniItemPreview } from "@/components/Mascot";
 
 interface MascotCustomizerProps {
   customization: MascotCustomization;
@@ -137,7 +138,9 @@ export default function MascotCustomizer({
                                     : "border-sf-border bg-sf-bg opacity-50 cursor-not-allowed"}`}
                 title={unlocked ? t(item.nameKey) : isPremium ? `${item.price?.toFixed(2)} EUR` : t("mascot.locked", { tier: item.tier || 0 })}
               >
-                <div className="text-lg leading-none relative z-[2]">{item.preview}</div>
+                <div className="flex items-center justify-center h-7 relative z-[2]">
+                  <MiniItemPreview itemId={item.id} category={activeCategory} size={28} />
+                </div>
                 <div className={`text-[9px] mt-0.5 leading-tight truncate relative z-[2] ${isPremium && !unlocked ? "text-sf-gold font-semibold" : isHighTier && !unlocked ? "text-sf-accent font-medium" : "text-sf-text-secondary"}`}>
                   {t(item.nameKey)}
                 </div>

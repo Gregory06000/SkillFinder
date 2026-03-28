@@ -4487,6 +4487,108 @@ function renderBackground(bgId: string) {
 }
 
 // ══════════════════════════════════════════════
+// ── Mini Item Preview (for shop grid) ──
+// ══════════════════════════════════════════════
+
+const CATEGORY_VIEWBOX: Record<string, string> = {
+  hair:       "40 15 120 80",
+  hat:        "35 -5 130 85",
+  outfit:     "50 138 100 90",
+  scarf:      "50 125 100 60",
+  accessory:  "20 60 170 170",
+  boots:      "55 212 90 60",
+  background: "0 0 200 280",
+};
+
+export function MiniItemPreview({ itemId, category, size = 32 }: {
+  itemId: string; category: string; size?: number;
+}) {
+  // "none" items → show empty slash icon
+  if (itemId.startsWith("none_")) {
+    return (
+      <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" opacity="0.3">
+        <circle cx="12" cy="12" r="10" /><line x1="4" y1="4" x2="20" y2="20" />
+      </svg>
+    );
+  }
+
+  const vb = CATEGORY_VIEWBOX[category] || "0 0 200 280";
+
+  let content: React.ReactNode = null;
+
+  switch (category) {
+    case "hat":
+      content = renderHat(itemId);
+      break;
+    case "hair":
+      content = renderHair(itemId);
+      break;
+    case "outfit":
+      content = itemId === "explorer_jacket" ? (
+        <g>
+          <ellipse cx="100" cy="190" rx="44" ry="48" fill="#A89070"/>
+          <ellipse cx="100" cy="190" rx="40" ry="44" fill="#C4AC8A"/>
+          <path d="M70 148 Q75 142 85 140 L85 152 Q78 154 72 155Z" fill="#B89A72"/>
+          <path d="M130 148 Q125 142 115 140 L115 152 Q122 154 128 155Z" fill="#B89A72"/>
+          <line x1="100" y1="148" x2="100" y2="210" stroke="#9A8060" strokeWidth="0.8" opacity="0.4"/>
+          <circle cx="100" cy="162" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+          <circle cx="100" cy="175" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+          <circle cx="100" cy="188" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+          <rect x="72" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
+          <rect x="110" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
+          <rect x="60" y="207" width="80" height="9" rx="3" fill="#6B4226"/>
+          <rect x="92" y="206" width="16" height="11" rx="2" fill="#D4A853" stroke="#B8860B" strokeWidth="1"/>
+        </g>
+      ) : renderOutfit(itemId);
+      break;
+    case "accessory":
+      content = renderAccessory(itemId, false);
+      break;
+    case "background":
+      content = renderBackground(itemId);
+      break;
+    case "scarf": {
+      const sc = SCARF_COLORS[itemId] || "#C45D3E";
+      content = (
+        <g>
+          <path d={`M65 140 Q75 132 100 130 Q125 132 135 140 Q138 145 135 150 Q125 152 100 150 Q75 152 65 150 Q62 145 65 140Z`} fill={sc}/>
+          <path d={`M75 148 Q78 155 80 170 Q82 180 78 185 Q74 180 72 170 Q70 155 75 148Z`} fill={sc}/>
+          <path d={`M85 150 Q87 158 88 172 Q89 180 86 183 Q83 178 82 168 Q81 155 85 150Z`} fill={adjustColor(sc, -20)}/>
+          <ellipse cx="100" cy="138" rx="30" ry="6" fill={adjustColor(sc, -15)} opacity="0.3"/>
+        </g>
+      );
+      break;
+    }
+    case "boots": {
+      const bc = BOOT_COLORS[itemId] || BOOT_COLORS.brown;
+      content = (
+        <g>
+          <g>
+            <path d={`M72 218 L72 248 Q72 258 82 258 Q92 258 92 248 L92 218Z`} fill={bc.main}/>
+            <path d={`M68 248 Q68 260 82 260 Q96 260 96 248 L92 248 Q92 256 82 256 Q72 256 72 248Z`} fill={bc.main}/>
+            <path d={`M66 256 Q66 264 82 264 Q98 264 98 256 Q96 260 82 260 Q68 260 66 256Z`} fill={bc.sole}/>
+          </g>
+          <g>
+            <path d={`M108 218 L108 248 Q108 258 118 258 Q128 258 128 248 L128 218Z`} fill={bc.main}/>
+            <path d={`M104 248 Q104 260 118 260 Q132 260 132 248 L128 248 Q128 256 118 256 Q108 256 108 248Z`} fill={bc.main}/>
+            <path d={`M102 256 Q102 264 118 264 Q134 264 134 256 Q132 260 118 260 Q104 260 102 256Z`} fill={bc.sole}/>
+          </g>
+        </g>
+      );
+      break;
+    }
+  }
+
+  if (!content) return null;
+
+  return (
+    <svg viewBox={vb} width={size} height={size} xmlns="http://www.w3.org/2000/svg">
+      {content}
+    </svg>
+  );
+}
+
+// ══════════════════════════════════════════════
 // ── Main Component ──
 // ══════════════════════════════════════════════
 
