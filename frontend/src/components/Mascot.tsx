@@ -14,6 +14,312 @@ interface MascotProps {
 }
 
 // ══════════════════════════════════════════════
+// ── Hair Variants ──
+// ══════════════════════════════════════════════
+
+function HairShortMessy() {
+  return (
+    <g>
+      {/* Messy tufts of hair on top/sides of head */}
+      <path d="M60 80 Q55 60 65 50 Q75 42 85 48 Q80 55 68 65 Q62 72 60 80Z" fill="#6B4226"/>
+      <path d="M80 50 Q85 35 100 32 Q105 38 95 48 Q88 52 80 50Z" fill="#7A5232"/>
+      <path d="M95 34 Q110 28 125 35 Q130 42 120 48 Q110 44 100 38Z" fill="#6B4226"/>
+      <path d="M120 40 Q135 38 142 52 Q145 65 140 78 Q138 68 132 58 Q126 48 120 40Z" fill="#7A5232"/>
+      {/* Highlight streaks */}
+      <path d="M70 55 Q75 45 85 42" fill="none" stroke="#8B6B4F" strokeWidth="1.5" opacity="0.4"/>
+      <path d="M105 35 Q115 32 125 38" fill="none" stroke="#8B6B4F" strokeWidth="1.5" opacity="0.4"/>
+    </g>
+  );
+}
+
+function HairBuzzCut() {
+  return (
+    <g>
+      {/* Very short hair — subtle texture over the head */}
+      <ellipse cx="100" cy="72" rx="46" ry="30" fill="#5A3A1A" opacity="0.6"/>
+      {/* Stubble texture dots */}
+      <g fill="#4A2E1A" opacity="0.3">
+        <circle cx="70" cy="65" r="0.8"/><circle cx="78" cy="58" r="0.8"/><circle cx="86" cy="54" r="0.8"/>
+        <circle cx="95" cy="52" r="0.8"/><circle cx="105" cy="52" r="0.8"/><circle cx="114" cy="54" r="0.8"/>
+        <circle cx="122" cy="58" r="0.8"/><circle cx="130" cy="65" r="0.8"/><circle cx="90" cy="56" r="0.8"/>
+        <circle cx="110" cy="56" r="0.8"/><circle cx="100" cy="50" r="0.8"/>
+      </g>
+    </g>
+  );
+}
+
+function HairSpiky() {
+  return (
+    <g>
+      {/* Spiky upward tufts */}
+      <path d="M68 68 Q62 40 72 30 Q78 42 75 60Z" fill="#5A3A1A"/>
+      <path d="M80 58 Q78 28 88 18 Q92 32 86 52Z" fill="#6B4226"/>
+      <path d="M92 52 Q94 20 104 12 Q108 26 100 48Z" fill="#5A3A1A"/>
+      <path d="M108 52 Q112 22 120 16 Q122 32 114 50Z" fill="#6B4226"/>
+      <path d="M122 58 Q128 34 136 30 Q134 48 128 62Z" fill="#5A3A1A"/>
+      {/* Hair base */}
+      <path d="M58 78 Q60 60 68 55 Q80 48 100 46 Q120 48 132 55 Q140 60 142 78 Q130 72 100 70 Q70 72 58 78Z" fill="#5A3A1A"/>
+      {/* Highlight */}
+      <path d="M90 20 Q95 14 104 12" fill="none" stroke="#8B6B4F" strokeWidth="1" opacity="0.5"/>
+    </g>
+  );
+}
+
+function HairSidePart() {
+  return (
+    <g>
+      {/* Neat side-parted hair */}
+      <path d="M55 82 Q54 60 62 50 Q72 40 90 38 Q80 42 70 52 Q60 62 58 82Z" fill="#4A2E1A"/>
+      <path d="M90 38 Q110 36 130 42 Q142 50 145 70 Q144 80 142 85 Q140 70 132 58 Q120 46 100 42 Q92 40 90 38Z" fill="#5A3A1A"/>
+      {/* Part line */}
+      <path d="M90 38 Q88 50 85 65" fill="none" stroke="#3A1E0A" strokeWidth="1" opacity="0.5"/>
+      {/* Hair volume on the right side */}
+      <path d="M130 42 Q145 55 148 75 Q147 82 144 85" fill="none" stroke="#4A2E1A" strokeWidth="8" strokeLinecap="round" opacity="0.4"/>
+    </g>
+  );
+}
+
+function HairCurly() {
+  return (
+    <g>
+      {/* Bouncy curly hair made of overlapping circles */}
+      <circle cx="68" cy="60" r="12" fill="#5A3A1A"/><circle cx="82" cy="50" r="13" fill="#6B4226"/>
+      <circle cx="100" cy="46" r="14" fill="#5A3A1A"/><circle cx="118" cy="50" r="13" fill="#6B4226"/>
+      <circle cx="132" cy="60" r="12" fill="#5A3A1A"/>
+      <circle cx="60" cy="72" r="10" fill="#6B4226"/><circle cx="140" cy="72" r="10" fill="#6B4226"/>
+      {/* Highlight curls */}
+      <circle cx="80" cy="48" r="4" fill="#8B6B4F" opacity="0.25"/>
+      <circle cx="105" cy="44" r="4" fill="#8B6B4F" opacity="0.25"/>
+    </g>
+  );
+}
+
+function HairPonytail() {
+  return (
+    <g>
+      {/* Hair on top, pulled back */}
+      <path d="M58 80 Q56 58 68 48 Q82 38 100 36 Q118 38 132 48 Q144 58 142 80 Q130 72 100 68 Q70 72 58 80Z" fill="#6B4226"/>
+      {/* Ponytail hanging behind — rendered as a tail in back */}
+      <path d="M120 55 Q135 60 140 80 Q142 110 135 140 Q130 155 125 150 Q132 130 134 105 Q136 80 125 62Z" fill="#6B4226"/>
+      <path d="M130 80 Q133 100 130 130" fill="none" stroke="#5A3A1A" strokeWidth="2" opacity="0.4"/>
+      {/* Hair tie */}
+      <ellipse cx="130" cy="65" rx="5" ry="4" fill="#C45D3E"/>
+    </g>
+  );
+}
+
+function HairMohawk() {
+  return (
+    <g>
+      {/* Shaved sides */}
+      <path d="M56 85 Q55 70 62 62 Q70 56 80 54" fill="none" stroke="#3A1E0A" strokeWidth="3" opacity="0.3"/>
+      <path d="M144 85 Q145 70 138 62 Q130 56 120 54" fill="none" stroke="#3A1E0A" strokeWidth="3" opacity="0.3"/>
+      {/* Tall mohawk ridge */}
+      <path d="M82 54 Q84 20 90 8 Q100 2 110 8 Q116 20 118 54 Q110 50 100 48 Q90 50 82 54Z" fill="#C45D3E"/>
+      {/* Mohawk highlight */}
+      <path d="M92 12 Q100 6 108 12 Q105 10 100 8 Q95 10 92 12Z" fill="#E87060" opacity="0.5"/>
+      {/* Texture lines */}
+      <path d="M90 30 Q100 26 110 30" fill="none" stroke="#A03828" strokeWidth="1" opacity="0.5"/>
+      <path d="M88 42 Q100 38 112 42" fill="none" stroke="#A03828" strokeWidth="1" opacity="0.5"/>
+    </g>
+  );
+}
+
+function HairBobCut() {
+  return (
+    <g>
+      {/* Full bob cut around head */}
+      <path d="M52 95 Q48 60 62 45 Q80 32 100 30 Q120 32 138 45 Q152 60 148 95 Q145 110 140 115 Q138 100 140 80 Q140 60 130 50 Q118 40 100 38 Q82 40 70 50 Q60 60 60 80 Q62 100 55 115 Q52 110 52 95Z" fill="#2D2D2D"/>
+      {/* Hair volume highlight */}
+      <path d="M62 55 Q70 42 85 36 Q80 44 72 56 Q66 65 62 75Z" fill="#404040" opacity="0.4"/>
+      {/* Ends curl inward */}
+      <path d="M55 110 Q52 115 55 118 Q58 115 56 110Z" fill="#2D2D2D"/>
+      <path d="M145 110 Q148 115 145 118 Q142 115 144 110Z" fill="#2D2D2D"/>
+    </g>
+  );
+}
+
+function HairLongStraight() {
+  return (
+    <g>
+      {/* Long straight hair flowing down */}
+      <path d="M52 85 Q48 55 65 42 Q82 32 100 30 Q118 32 135 42 Q152 55 148 85 Q148 140 145 165 Q142 175 138 170 Q140 145 142 100 Q142 70 132 55 Q120 42 100 38 Q80 42 68 55 Q58 70 58 100 Q60 145 55 170 Q52 175 50 165 Q48 140 52 85Z" fill="#6B4226"/>
+      {/* Highlight */}
+      <path d="M65 50 Q75 38 90 34" fill="none" stroke="#8B6B4F" strokeWidth="2" opacity="0.35"/>
+      {/* Hair strand lines */}
+      <path d="M60 90 Q58 130 55 160" fill="none" stroke="#5A3A1A" strokeWidth="0.8" opacity="0.3"/>
+      <path d="M140 90 Q142 130 142 160" fill="none" stroke="#5A3A1A" strokeWidth="0.8" opacity="0.3"/>
+    </g>
+  );
+}
+
+function HairAfro() {
+  return (
+    <g>
+      {/* Big voluminous afro */}
+      <ellipse cx="100" cy="62" rx="58" ry="48" fill="#2D2D2D"/>
+      {/* Texture - small curly lines */}
+      <g stroke="#404040" strokeWidth="1.2" fill="none" opacity="0.4">
+        <path d="M60 50 Q63 46 66 50"/><path d="M72 38 Q75 34 78 38"/>
+        <path d="M88 32 Q91 28 94 32"/><path d="M106 30 Q109 26 112 30"/>
+        <path d="M122 34 Q125 30 128 34"/><path d="M134 44 Q137 40 140 44"/>
+        <path d="M50 65 Q53 61 56 65"/><path d="M144 62 Q147 58 150 62"/>
+        <path d="M55 78 Q58 74 61 78"/><path d="M139 76 Q142 72 145 76"/>
+      </g>
+      {/* Shine spot */}
+      <ellipse cx="82" cy="42" rx="8" ry="6" fill="#404040" opacity="0.2"/>
+    </g>
+  );
+}
+
+function HairBraids() {
+  return (
+    <g>
+      {/* Hair base on top */}
+      <path d="M55 80 Q54 58 66 48 Q80 38 100 36 Q120 38 134 48 Q146 58 145 80 Q132 72 100 68 Q68 72 55 80Z" fill="#2D2D2D"/>
+      {/* Left braid */}
+      <g>
+        <ellipse cx="62" cy="90" rx="5" ry="6" fill="#2D2D2D"/>
+        <ellipse cx="60" cy="102" rx="4.5" ry="5.5" fill="#333"/>
+        <ellipse cx="62" cy="114" rx="4" ry="5" fill="#2D2D2D"/>
+        <ellipse cx="60" cy="125" rx="3.5" ry="4.5" fill="#333"/>
+        <ellipse cx="62" cy="135" rx="3" ry="4" fill="#2D2D2D"/>
+        <circle cx="61" cy="142" r="3" fill="#D4A853"/>
+      </g>
+      {/* Right braid */}
+      <g>
+        <ellipse cx="138" cy="90" rx="5" ry="6" fill="#2D2D2D"/>
+        <ellipse cx="140" cy="102" rx="4.5" ry="5.5" fill="#333"/>
+        <ellipse cx="138" cy="114" rx="4" ry="5" fill="#2D2D2D"/>
+        <ellipse cx="140" cy="125" rx="3.5" ry="4.5" fill="#333"/>
+        <ellipse cx="138" cy="135" rx="3" ry="4" fill="#2D2D2D"/>
+        <circle cx="139" cy="142" r="3" fill="#D4A853"/>
+      </g>
+    </g>
+  );
+}
+
+function HairSamuraiBun() {
+  return (
+    <g>
+      {/* Slicked back hair */}
+      <path d="M56 82 Q54 58 66 48 Q82 38 100 36 Q118 38 134 48 Q146 58 144 82 Q130 72 100 68 Q70 72 56 82Z" fill="#1A1A2E"/>
+      {/* Top-knot bun */}
+      <ellipse cx="100" cy="30" rx="14" ry="12" fill="#1A1A2E"/>
+      <ellipse cx="100" cy="28" rx="10" ry="8" fill="#2D2D3D"/>
+      {/* Hair tie */}
+      <rect x="94" y="38" width="12" height="5" rx="2" fill="#C45D3E"/>
+      {/* Shine */}
+      <path d="M92 25 Q100 20 108 25" fill="none" stroke="#404050" strokeWidth="1" opacity="0.4"/>
+    </g>
+  );
+}
+
+function HairPigtails() {
+  return (
+    <g>
+      {/* Hair on top */}
+      <path d="M56 82 Q54 58 66 48 Q82 38 100 36 Q118 38 134 48 Q146 58 144 82 Q130 72 100 68 Q70 72 56 82Z" fill="#D4A853"/>
+      {/* Center part */}
+      <line x1="100" y1="36" x2="100" y2="68" stroke="#B8860B" strokeWidth="1" opacity="0.4"/>
+      {/* Left pigtail */}
+      <path d="M62 72 Q48 80 45 100 Q44 120 48 135 Q50 140 52 135 Q50 118 50 100 Q52 85 62 78Z" fill="#D4A853"/>
+      <circle cx="48" cy="138" r="4" fill="#EC4899"/>
+      {/* Right pigtail */}
+      <path d="M138 72 Q152 80 155 100 Q156 120 152 135 Q150 140 148 135 Q150 118 150 100 Q148 85 138 78Z" fill="#D4A853"/>
+      <circle cx="152" cy="138" r="4" fill="#EC4899"/>
+    </g>
+  );
+}
+
+function HairWavy() {
+  return (
+    <g>
+      {/* Wavy medium-length hair */}
+      <path d="M52 90 Q48 60 65 45 Q82 34 100 32 Q118 34 135 45 Q152 60 148 90 Q146 110 142 120 Q140 110 142 90 Q142 65 130 52 Q118 42 100 40 Q82 42 70 52 Q58 65 58 90 Q60 110 55 120 Q52 110 52 90Z" fill="#8B5E3C"/>
+      {/* Wave lines */}
+      <path d="M58 95 Q55 105 58 115" fill="none" stroke="#6B4226" strokeWidth="1.5" opacity="0.4"/>
+      <path d="M142 95 Q145 105 142 115" fill="none" stroke="#6B4226" strokeWidth="1.5" opacity="0.4"/>
+      {/* Highlight */}
+      <path d="M68 50 Q78 38 92 35" fill="none" stroke="#A67B4F" strokeWidth="2" opacity="0.3"/>
+    </g>
+  );
+}
+
+function HairFlame() {
+  return (
+    <g>
+      {/* Flame-shaped hair */}
+      <path d="M55 85 Q50 60 60 45 Q70 30 80 25 Q75 40 72 55 Q70 70 68 80Z" fill="#FF6347" className="anim-flicker"/>
+      <path d="M75 70 Q70 40 80 20 Q90 5 100 0 Q95 20 92 40 Q90 55 88 65Z" fill="#FF4500" className="anim-flicker"/>
+      <path d="M90 60 Q88 30 98 10 Q108 0 115 5 Q108 20 105 40 Q102 55 100 62Z" fill="#FFD700" className="anim-flicker"/>
+      <path d="M110 65 Q112 35 122 20 Q130 10 135 18 Q128 35 125 50 Q122 60 118 68Z" fill="#FF6347" className="anim-flicker"/>
+      <path d="M128 75 Q132 55 140 42 Q148 35 150 45 Q145 58 140 70 Q136 78 132 82Z" fill="#FF4500" className="anim-flicker"/>
+      {/* Base */}
+      <path d="M55 85 Q60 75 70 72 Q85 68 100 66 Q115 68 130 72 Q140 75 145 85 Q130 78 100 76 Q70 78 55 85Z" fill="#CC3700"/>
+    </g>
+  );
+}
+
+function HairGalaxy() {
+  return (
+    <g>
+      {/* Galaxy-themed hair */}
+      <path d="M52 90 Q48 55 65 42 Q82 32 100 30 Q118 32 135 42 Q152 55 148 90 Q146 115 142 130 Q140 115 142 85 Q142 60 130 50 Q118 40 100 38 Q82 40 70 50 Q58 60 58 85 Q60 115 55 130 Q52 115 52 90Z" fill="#1A1A3E"/>
+      {/* Nebula swirls */}
+      <ellipse cx="80" cy="50" rx="12" ry="8" fill="#7C3AED" opacity="0.4"/>
+      <ellipse cx="120" cy="55" rx="10" ry="7" fill="#4F46E5" opacity="0.35"/>
+      <ellipse cx="100" cy="40" rx="8" ry="5" fill="#EC4899" opacity="0.3"/>
+      {/* Stars */}
+      <circle cx="75" cy="45" r="1.2" fill="white" className="anim-galaxy-1"/>
+      <circle cx="90" cy="38" r="1" fill="white" className="anim-galaxy-2"/>
+      <circle cx="110" cy="36" r="1.2" fill="white" className="anim-galaxy-3"/>
+      <circle cx="125" cy="48" r="0.8" fill="white" className="anim-galaxy-1"/>
+      <circle cx="68" cy="60" r="0.8" fill="white" className="anim-galaxy-2"/>
+      <circle cx="132" cy="62" r="1" fill="white" className="anim-galaxy-3"/>
+    </g>
+  );
+}
+
+function HairRainbow() {
+  return (
+    <g>
+      {/* Rainbow layered hair */}
+      <path d="M52 90 Q48 55 65 42 Q82 32 100 30 Q118 32 135 42 Q152 55 148 90 Q146 110 142 120 Q140 105 142 80 Q142 60 130 50 Q118 40 100 38 Q82 40 70 50 Q58 60 58 80 Q60 105 55 120 Q52 110 52 90Z" fill="#EF4444"/>
+      {/* Stripes */}
+      <path d="M56 85 Q58 65 70 54 Q85 44 100 42 Q115 44 130 54 Q142 65 144 85" fill="none" stroke="#F97316" strokeWidth="4" opacity="0.7"/>
+      <path d="M54 78 Q58 58 72 48 Q87 38 100 36 Q113 38 128 48 Q142 58 146 78" fill="none" stroke="#EAB308" strokeWidth="4" opacity="0.7"/>
+      <path d="M56 70 Q62 50 76 42 Q90 34 100 32 Q110 34 124 42 Q138 50 144 70" fill="none" stroke="#22C55E" strokeWidth="4" opacity="0.7"/>
+      <path d="M60 62 Q68 44 80 38 Q92 32 100 30 Q108 32 120 38 Q132 44 140 62" fill="none" stroke="#3B82F6" strokeWidth="4" opacity="0.7"/>
+      <path d="M66 55 Q76 40 88 35 Q96 32 100 30 Q104 32 112 35 Q124 40 134 55" fill="none" stroke="#8B5CF6" strokeWidth="4" opacity="0.7"/>
+    </g>
+  );
+}
+
+function renderHair(hairId: string) {
+  switch (hairId) {
+    case "short_messy": return <HairShortMessy />;
+    case "buzz_cut": return <HairBuzzCut />;
+    case "spiky": return <HairSpiky />;
+    case "side_part": return <HairSidePart />;
+    case "curly": return <HairCurly />;
+    case "ponytail": return <HairPonytail />;
+    case "mohawk": return <HairMohawk />;
+    case "bob_cut": return <HairBobCut />;
+    case "long_straight": return <HairLongStraight />;
+    case "afro": return <HairAfro />;
+    case "braids": return <HairBraids />;
+    case "samurai_bun": return <HairSamuraiBun />;
+    case "pigtails": return <HairPigtails />;
+    case "wavy": return <HairWavy />;
+    case "flame_hair": return <HairFlame />;
+    case "galaxy_hair": return <HairGalaxy />;
+    case "rainbow_hair": return <HairRainbow />;
+    default: return null;
+  }
+}
+
+// ══════════════════════════════════════════════
 // ── Hat Variants ──
 // ══════════════════════════════════════════════
 
@@ -3438,6 +3744,749 @@ function renderAccessory(accId: string, isSad: boolean) {
 }
 
 // ══════════════════════════════════════════════
+// ── Outfit Variants ──
+// ══════════════════════════════════════════════
+
+// helper: darken/lighten hex color
+function adjustColor(hex: string, amt: number) {
+  const n = parseInt(hex.replace("#",""), 16);
+  const r = Math.max(0, Math.min(255, (n >> 16) + amt));
+  const g = Math.max(0, Math.min(255, ((n >> 8) & 0xff) + amt));
+  const b = Math.max(0, Math.min(255, (n & 0xff) + amt));
+  return `#${(r<<16|g<<8|b).toString(16).padStart(6,"0")}`;
+}
+
+function OutfitBase({ main, accent, hasCollar = true, hasButtons = true, hasPockets = false, hasBelt = true }: {
+  main: string; accent: string; hasCollar?: boolean; hasButtons?: boolean; hasPockets?: boolean; hasBelt?: boolean;
+}) {
+  const dark = adjustColor(main, -30);
+  const light = adjustColor(main, 25);
+  return (
+    <g>
+      {/* Body base */}
+      <ellipse cx="100" cy="190" rx="44" ry="48" fill={dark}/>
+      <ellipse cx="100" cy="190" rx="40" ry="44" fill={main}/>
+      {/* Highlight */}
+      <path d="M65 175 Q70 160 85 155 Q90 165 80 185 Q72 195 65 195Z" fill={light} opacity="0.3"/>
+      {/* Collar */}
+      {hasCollar && <>
+        <path d="M70 148 Q75 142 85 140 L85 152 Q78 154 72 155Z" fill={accent}/>
+        <path d="M130 148 Q125 142 115 140 L115 152 Q122 154 128 155Z" fill={accent}/>
+      </>}
+      {/* Center seam */}
+      <line x1="100" y1="148" x2="100" y2="210" stroke={dark} strokeWidth="0.8" opacity="0.4"/>
+      {/* Buttons */}
+      {hasButtons && <>
+        <circle cx="100" cy="162" r="2.5" fill={accent} stroke={dark} strokeWidth="0.8"/>
+        <circle cx="100" cy="175" r="2.5" fill={accent} stroke={dark} strokeWidth="0.8"/>
+        <circle cx="100" cy="188" r="2.5" fill={accent} stroke={dark} strokeWidth="0.8"/>
+        <circle cx="100" cy="200" r="2.5" fill={accent} stroke={dark} strokeWidth="0.8"/>
+      </>}
+      {/* Pockets */}
+      {hasPockets && <>
+        <rect x="72" y="166" width="18" height="16" rx="2" fill={accent} stroke={dark} strokeWidth="0.8"/>
+        <path d="M71 166 L91 166 L91 171 Q82 173 71 171Z" fill={dark} stroke={dark} strokeWidth="0.5"/>
+        <rect x="110" y="166" width="18" height="16" rx="2" fill={accent} stroke={dark} strokeWidth="0.8"/>
+        <path d="M109 166 L129 166 L129 171 Q120 173 109 171Z" fill={dark} stroke={dark} strokeWidth="0.5"/>
+      </>}
+      {/* Belt */}
+      {hasBelt && <>
+        <rect x="60" y="207" width="80" height="9" rx="3" fill="#6B4226"/>
+        <line x1="64" y1="209" x2="136" y2="209" stroke="#4A2E1A" strokeWidth="0.4" strokeDasharray="2,1.5" opacity="0.5"/>
+        <rect x="92" y="206" width="16" height="11" rx="2" fill="#D4A853" stroke="#B8860B" strokeWidth="1"/>
+        <rect x="95" y="208" width="10" height="7" rx="1" fill="#6B4226"/>
+        <line x1="100" y1="207" x2="100" y2="216" stroke="#D4A853" strokeWidth="1.2"/>
+      </>}
+    </g>
+  );
+}
+
+function OutfitTshirt() {
+  return <OutfitBase main="#4A7FC4" accent="#3A6FB4" hasCollar={false} hasButtons={false} hasBelt={false} />;
+}
+
+function OutfitHoodie() {
+  return (
+    <g>
+      <OutfitBase main="#6B7280" accent="#4B5563" hasButtons={false} hasBelt={false} />
+      {/* Hood */}
+      <path d="M68 148 Q72 132 85 128 Q100 125 115 128 Q128 132 132 148" fill="#4B5563"/>
+      <path d="M72 148 Q76 136 88 133 Q100 130 112 133 Q124 136 128 148" fill="#6B7280"/>
+      {/* Drawstrings */}
+      <line x1="92" y1="148" x2="90" y2="168" stroke="#9CA3AF" strokeWidth="1" strokeLinecap="round"/>
+      <line x1="108" y1="148" x2="110" y2="168" stroke="#9CA3AF" strokeWidth="1" strokeLinecap="round"/>
+      {/* Kangaroo pocket */}
+      <path d="M78 188 Q78 195 85 198 Q100 202 115 198 Q122 195 122 188" fill="none" stroke="#4B5563" strokeWidth="1.5"/>
+    </g>
+  );
+}
+
+function OutfitPolo() {
+  return (
+    <g>
+      <OutfitBase main="#FEFCE8" accent="#EAB308" hasButtons={false} hasPockets={false} hasBelt={false} />
+      {/* Polo collar */}
+      <path d="M75 145 Q80 138 90 142 L90 150 Q82 150 76 150Z" fill="#EAB308"/>
+      <path d="M125 145 Q120 138 110 142 L110 150 Q118 150 124 150Z" fill="#EAB308"/>
+      {/* 2-button placket */}
+      <rect x="97" y="148" width="6" height="22" rx="1" fill="#F3F4F6"/>
+      <circle cx="100" cy="155" r="1.5" fill="#EAB308"/>
+      <circle cx="100" cy="164" r="1.5" fill="#EAB308"/>
+    </g>
+  );
+}
+
+function OutfitSweater() {
+  return (
+    <g>
+      <OutfitBase main="#7C3AED" accent="#6D28D9" hasCollar={false} hasButtons={false} hasBelt={false} />
+      {/* Ribbed texture */}
+      <g stroke="#6D28D9" strokeWidth="0.6" opacity="0.3">
+        <line x1="65" y1="160" x2="135" y2="160"/><line x1="64" y1="166" x2="136" y2="166"/>
+        <line x1="63" y1="172" x2="137" y2="172"/><line x1="62" y1="178" x2="138" y2="178"/>
+        <line x1="62" y1="184" x2="138" y2="184"/><line x1="63" y1="190" x2="137" y2="190"/>
+        <line x1="64" y1="196" x2="136" y2="196"/><line x1="65" y1="202" x2="135" y2="202"/>
+      </g>
+      {/* Crew neck */}
+      <ellipse cx="100" cy="147" rx="18" ry="6" fill="#6D28D9"/>
+      <ellipse cx="100" cy="146" rx="15" ry="4" fill="#7C3AED"/>
+    </g>
+  );
+}
+
+function OutfitVest() {
+  return (
+    <g>
+      <OutfitBase main="#F97316" accent="#EA580C" hasButtons={false} hasBelt={false} />
+      {/* Vest front panels */}
+      <path d="M65 150 L65 210 Q80 218 100 220 L100 148 L85 140 Q72 142 65 150Z" fill="#EA580C"/>
+      <path d="M135 150 L135 210 Q120 218 100 220 L100 148 L115 140 Q128 142 135 150Z" fill="#EA580C"/>
+      {/* Zipper */}
+      <line x1="100" y1="148" x2="100" y2="218" stroke="#D4A853" strokeWidth="2"/>
+      <rect x="97" y="155" width="6" height="5" rx="1" fill="#D4A853"/>
+    </g>
+  );
+}
+
+function OutfitLeatherJacket() {
+  return (
+    <g>
+      <OutfitBase main="#2D2D2D" accent="#1A1A1A" hasCollar={true} hasButtons={false} hasPockets={true} hasBelt={true} />
+      {/* Lapels */}
+      <path d="M72 148 L85 140 L100 160 L88 158Z" fill="#3D3D3D"/>
+      <path d="M128 148 L115 140 L100 160 L112 158Z" fill="#3D3D3D"/>
+      {/* Diagonal zipper */}
+      <line x1="100" y1="148" x2="80" y2="207" stroke="#C0C0C0" strokeWidth="1.5"/>
+      {/* Studs */}
+      <circle cx="75" cy="152" r="1" fill="#C0C0C0"/><circle cx="125" cy="152" r="1" fill="#C0C0C0"/>
+    </g>
+  );
+}
+
+function OutfitLabCoat() {
+  return (
+    <g>
+      <OutfitBase main="#F8FAFC" accent="#E2E8F0" hasCollar={true} hasButtons={true} hasPockets={true} hasBelt={false} />
+      {/* Lapels */}
+      <path d="M72 148 L85 140 L88 155 L76 155Z" fill="#E2E8F0"/>
+      <path d="M128 148 L115 140 L112 155 L124 155Z" fill="#E2E8F0"/>
+      {/* Pen in pocket */}
+      <rect x="122" y="162" width="2" height="12" rx="0.5" fill="#3B82F6"/>
+      <rect x="121.5" y="163" width="3" height="2" rx="0.5" fill="#D4A853"/>
+    </g>
+  );
+}
+
+function OutfitDenimJacket() {
+  return (
+    <g>
+      <OutfitBase main="#4A6FA5" accent="#3B5E94" hasCollar={true} hasButtons={true} hasPockets={true} hasBelt={false} />
+      {/* Denim stitching */}
+      <line x1="72" y1="150" x2="72" y2="215" stroke="#6B8FC4" strokeWidth="0.5" strokeDasharray="2,1.5" opacity="0.5"/>
+      <line x1="128" y1="150" x2="128" y2="215" stroke="#6B8FC4" strokeWidth="0.5" strokeDasharray="2,1.5" opacity="0.5"/>
+    </g>
+  );
+}
+
+function OutfitSuit() {
+  return (
+    <g>
+      <OutfitBase main="#1E293B" accent="#0F172A" hasCollar={false} hasButtons={true} hasPockets={false} hasBelt={false} />
+      {/* Suit lapels */}
+      <path d="M70 148 L88 140 L95 165 L80 160Z" fill="#334155"/>
+      <path d="M130 148 L112 140 L105 165 L120 160Z" fill="#334155"/>
+      {/* Shirt collar & tie */}
+      <path d="M88 140 L100 148 L112 140 L108 145 L100 150 L92 145Z" fill="white"/>
+      <path d="M97 148 L100 150 L103 148 L102 180 Q100 183 98 180Z" fill="#DC2626"/>
+      {/* Tie knot */}
+      <circle cx="100" cy="150" r="2.5" fill="#DC2626"/>
+      {/* Breast pocket square */}
+      <path d="M74 164 L78 160 L82 164Z" fill="white" opacity="0.8"/>
+    </g>
+  );
+}
+
+function OutfitKimono() {
+  return (
+    <g>
+      {/* Base */}
+      <ellipse cx="100" cy="190" rx="44" ry="48" fill="#5B1A1A"/>
+      <ellipse cx="100" cy="190" rx="40" ry="44" fill="#8B2252"/>
+      {/* Wrap-over front */}
+      <path d="M100 145 L65 160 L60 215 L100 225 L140 215 L135 160Z" fill="#8B2252"/>
+      <path d="M100 145 L70 158 L68 210 L100 218" fill="#9B3262"/>
+      {/* Obi belt */}
+      <rect x="58" y="190" width="84" height="18" rx="3" fill="#D4A853"/>
+      <rect x="90" y="188" width="20" height="22" rx="3" fill="#B8860B"/>
+      {/* Flower pattern */}
+      <circle cx="78" cy="170" r="3" fill="#EC4899" opacity="0.5"/>
+      <circle cx="120" cy="175" r="2.5" fill="#EC4899" opacity="0.4"/>
+      <circle cx="85" cy="200" r="2" fill="#EC4899" opacity="0.3"/>
+    </g>
+  );
+}
+
+function OutfitSportJersey() {
+  return (
+    <g>
+      <OutfitBase main="#DC2626" accent="#B91C1C" hasCollar={false} hasButtons={false} hasBelt={false} />
+      {/* V-neck */}
+      <path d="M88 144 L100 158 L112 144" fill="none" stroke="white" strokeWidth="2"/>
+      {/* Number */}
+      <text x="100" y="190" textAnchor="middle" fill="white" fontSize="28" fontWeight="bold" fontFamily="sans-serif" opacity="0.9">7</text>
+      {/* Stripe on shoulders */}
+      <path d="M62 155 Q62 150 70 148" fill="none" stroke="white" strokeWidth="3"/>
+      <path d="M138 155 Q138 150 130 148" fill="none" stroke="white" strokeWidth="3"/>
+    </g>
+  );
+}
+
+function OutfitTrenchCoat() {
+  return (
+    <g>
+      <OutfitBase main="#B89A72" accent="#9A8060" hasCollar={true} hasButtons={true} hasPockets={true} hasBelt={true} />
+      {/* Double-breasted buttons */}
+      <circle cx="92" cy="162" r="2" fill="#D4A853"/><circle cx="108" cy="162" r="2" fill="#D4A853"/>
+      <circle cx="92" cy="178" r="2" fill="#D4A853"/><circle cx="108" cy="178" r="2" fill="#D4A853"/>
+      {/* Shoulder epaulettes */}
+      <rect x="58" y="150" width="12" height="5" rx="1" fill="#9A8060"/>
+      <rect x="130" y="150" width="12" height="5" rx="1" fill="#9A8060"/>
+    </g>
+  );
+}
+
+function OutfitPirateCoat() {
+  return (
+    <g>
+      <OutfitBase main="#4A2E1A" accent="#6B4226" hasCollar={true} hasButtons={true} hasPockets={false} hasBelt={true} />
+      {/* Gold trim */}
+      <path d="M70 148 L70 218" fill="none" stroke="#D4A853" strokeWidth="2"/>
+      <path d="M130 148 L130 218" fill="none" stroke="#D4A853" strokeWidth="2"/>
+      {/* Gold buttons */}
+      <circle cx="100" cy="162" r="3" fill="#D4A853"/><circle cx="100" cy="178" r="3" fill="#D4A853"/>
+      <circle cx="100" cy="194" r="3" fill="#D4A853"/>
+      {/* Skull crossbones on belt */}
+      <circle cx="100" cy="212" r="4" fill="#E8E8E8"/>
+      <circle cx="98" cy="211" r="1" fill="#333"/><circle cx="102" cy="211" r="1" fill="#333"/>
+    </g>
+  );
+}
+
+function OutfitMilitary() {
+  return (
+    <g>
+      <OutfitBase main="#556B2F" accent="#3E4F22" hasCollar={true} hasButtons={true} hasPockets={true} hasBelt={true} />
+      {/* Shoulder patches */}
+      <rect x="60" y="150" width="10" height="8" rx="1" fill="#3E4F22"/>
+      <rect x="130" y="150" width="10" height="8" rx="1" fill="#3E4F22"/>
+      {/* Medal ribbons */}
+      <rect x="75" y="158" width="4" height="6" rx="0.5" fill="#DC2626"/>
+      <rect x="80" y="158" width="4" height="6" rx="0.5" fill="#3B82F6"/>
+      <rect x="85" y="158" width="4" height="6" rx="0.5" fill="#22C55E"/>
+    </g>
+  );
+}
+
+function OutfitRoyalRobe() {
+  return (
+    <g>
+      {/* Rich purple robe */}
+      <ellipse cx="100" cy="190" rx="48" ry="52" fill="#4C1D95"/>
+      <ellipse cx="100" cy="190" rx="44" ry="48" fill="#6D28D9"/>
+      {/* Ermine trim */}
+      <path d="M60 155 Q62 150 70 148 L85 140 Q100 136 115 140 L130 148 Q138 150 140 155" fill="none" stroke="#F5F5F0" strokeWidth="8"/>
+      <g fill="#1A1A1A" opacity="0.6">
+        <circle cx="65" cy="153" r="1.5"/><circle cx="78" cy="148" r="1.5"/><circle cx="92" cy="144" r="1.5"/>
+        <circle cx="108" cy="144" r="1.5"/><circle cx="122" cy="148" r="1.5"/><circle cx="135" cy="153" r="1.5"/>
+      </g>
+      {/* Gold chain */}
+      <path d="M72 155 Q100 170 128 155" fill="none" stroke="#D4A853" strokeWidth="2"/>
+      {/* Central gem */}
+      <circle cx="100" cy="164" r="5" fill="#DC2626"/><circle cx="100" cy="164" r="3" fill="#EF4444"/>
+      <circle cx="99" cy="163" r="1" fill="white" opacity="0.5"/>
+      {/* Gold belt/sash */}
+      <rect x="58" y="205" width="84" height="10" rx="3" fill="#D4A853"/>
+      <rect x="92" y="204" width="16" height="12" rx="2" fill="#B8860B"/>
+    </g>
+  );
+}
+
+function OutfitSpaceSuit() {
+  return (
+    <g>
+      {/* White suit base */}
+      <ellipse cx="100" cy="190" rx="46" ry="50" fill="#D0D0D8"/>
+      <ellipse cx="100" cy="190" rx="42" ry="46" fill="#E8E8F0"/>
+      {/* Panel lines */}
+      <line x1="100" y1="148" x2="100" y2="220" stroke="#B0B0B8" strokeWidth="1" opacity="0.5"/>
+      <line x1="70" y1="170" x2="130" y2="170" stroke="#B0B0B8" strokeWidth="1" opacity="0.5"/>
+      {/* Chest panel */}
+      <rect x="82" y="155" width="36" height="22" rx="3" fill="#C0C0C8"/>
+      <rect x="85" y="158" width="10" height="5" rx="1" fill="#3B82F6"/><rect x="97" y="158" width="10" height="5" rx="1" fill="#EF4444"/>
+      <rect x="85" y="165" width="10" height="5" rx="1" fill="#22C55E"/><rect x="97" y="165" width="10" height="5" rx="1" fill="#EAB308"/>
+      {/* NASA-style logo circle */}
+      <circle cx="78" cy="165" r="6" fill="#1E40AF"/><circle cx="78" cy="165" r="4" fill="#3B82F6"/>
+      {/* Flag patch */}
+      <rect x="118" y="160" width="10" height="7" rx="1" fill="#DC2626"/>
+      <rect x="118" y="160" width="5" height="4" rx="0.5" fill="#1E3A8A"/>
+    </g>
+  );
+}
+
+function OutfitSamuraiArmor() {
+  return (
+    <g>
+      {/* Do (chest armor) */}
+      <ellipse cx="100" cy="190" rx="46" ry="50" fill="#4A2E1A"/>
+      <ellipse cx="100" cy="190" rx="42" ry="46" fill="#8B0000"/>
+      {/* Laced plates (kusazuri) */}
+      <g>
+        <rect x="62" y="195" width="18" height="20" rx="2" fill="#6B0000" stroke="#D4A853" strokeWidth="0.5"/>
+        <rect x="82" y="195" width="16" height="22" rx="2" fill="#8B0000" stroke="#D4A853" strokeWidth="0.5"/>
+        <rect x="100" y="195" width="16" height="22" rx="2" fill="#6B0000" stroke="#D4A853" strokeWidth="0.5"/>
+        <rect x="118" y="195" width="18" height="20" rx="2" fill="#8B0000" stroke="#D4A853" strokeWidth="0.5"/>
+      </g>
+      {/* Shoulder guards (sode) */}
+      <path d="M55 155 Q50 160 48 172 Q50 178 55 180 L68 175 L65 152Z" fill="#8B0000" stroke="#D4A853" strokeWidth="0.8"/>
+      <path d="M145 155 Q150 160 152 172 Q150 178 145 180 L132 175 L135 152Z" fill="#8B0000" stroke="#D4A853" strokeWidth="0.8"/>
+      {/* Chest emblem */}
+      <circle cx="100" cy="172" r="8" fill="#D4A853" opacity="0.8"/>
+      <circle cx="100" cy="172" r="5" fill="#8B0000"/>
+      <path d="M97 172 L100 168 L103 172 L100 176Z" fill="#D4A853"/>
+    </g>
+  );
+}
+
+function renderOutfit(outfitId: string) {
+  switch (outfitId) {
+    case "explorer_jacket": return null; // default jacket is drawn inline
+    case "tshirt": return <OutfitTshirt />;
+    case "hoodie": return <OutfitHoodie />;
+    case "polo": return <OutfitPolo />;
+    case "sweater": return <OutfitSweater />;
+    case "vest": return <OutfitVest />;
+    case "leather_jacket": return <OutfitLeatherJacket />;
+    case "lab_coat": return <OutfitLabCoat />;
+    case "denim_jacket": return <OutfitDenimJacket />;
+    case "suit": return <OutfitSuit />;
+    case "kimono": return <OutfitKimono />;
+    case "sport_jersey": return <OutfitSportJersey />;
+    case "trench_coat": return <OutfitTrenchCoat />;
+    case "pirate_coat": return <OutfitPirateCoat />;
+    case "military": return <OutfitMilitary />;
+    case "royal_robe": return <OutfitRoyalRobe />;
+    case "space_suit": return <OutfitSpaceSuit />;
+    case "samurai_armor": return <OutfitSamuraiArmor />;
+    default: return null;
+  }
+}
+
+// ══════════════════════════════════════════════
+// ── Background Variants ──
+// ══════════════════════════════════════════════
+
+function BgMeadow() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#E8F5E9"/>
+      {/* Sky gradient */}
+      <rect x="0" y="0" width="200" height="140" rx="12" fill="#B3E5FC" opacity="0.5"/>
+      {/* Rolling hills */}
+      <path d="M0 250 Q50 230 100 240 Q150 250 200 235 L200 280 L0 280Z" fill="#81C784" opacity="0.4"/>
+      <path d="M0 260 Q60 245 120 255 Q170 260 200 250 L200 280 L0 280Z" fill="#66BB6A" opacity="0.3"/>
+      {/* Small flowers */}
+      <circle cx="30" cy="255" r="2" fill="#F48FB1" opacity="0.6"/>
+      <circle cx="85" cy="248" r="2" fill="#FFD54F" opacity="0.6"/>
+      <circle cx="155" cy="252" r="2" fill="#CE93D8" opacity="0.6"/>
+    </g>
+  );
+}
+
+function BgSky() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#87CEEB"/>
+      {/* Clouds */}
+      <g opacity="0.6" fill="white">
+        <ellipse cx="40" cy="40" rx="20" ry="10"/><ellipse cx="55" cy="38" rx="15" ry="8"/>
+        <ellipse cx="150" cy="60" rx="25" ry="12"/><ellipse cx="170" cy="58" rx="18" ry="9"/>
+        <ellipse cx="90" cy="25" rx="18" ry="8"/>
+      </g>
+      {/* Sun */}
+      <circle cx="165" cy="30" r="15" fill="#FFD54F" opacity="0.7"/>
+      <circle cx="165" cy="30" r="10" fill="#FFEB3B" opacity="0.5"/>
+    </g>
+  );
+}
+
+function BgForest() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#2E7D32"/>
+      {/* Dark canopy */}
+      <rect x="0" y="0" width="200" height="100" rx="12" fill="#1B5E20" opacity="0.6"/>
+      {/* Trees silhouettes */}
+      <path d="M10 260 L20 180 L30 260Z" fill="#1B5E20" opacity="0.5"/>
+      <path d="M40 260 L55 160 L70 260Z" fill="#2E7D32" opacity="0.4"/>
+      <path d="M130 260 L145 170 L160 260Z" fill="#1B5E20" opacity="0.5"/>
+      <path d="M170 260 L180 190 L190 260Z" fill="#2E7D32" opacity="0.4"/>
+      {/* Light rays */}
+      <path d="M80 0 L90 140 L100 0Z" fill="#FFEB3B" opacity="0.05"/>
+      <path d="M110 0 L115 120 L120 0Z" fill="#FFEB3B" opacity="0.04"/>
+    </g>
+  );
+}
+
+function BgBeach() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#87CEEB"/>
+      {/* Ocean */}
+      <path d="M0 140 Q50 135 100 140 Q150 145 200 140 L200 210 Q150 205 100 210 Q50 215 0 210Z" fill="#4FC3F7" opacity="0.5"/>
+      <path d="M0 160 Q60 155 120 160 Q180 165 200 158 L200 210 L0 210Z" fill="#29B6F6" opacity="0.4"/>
+      {/* Sand */}
+      <path d="M0 210 Q50 205 100 210 Q150 215 200 210 L200 280 L0 280Z" fill="#FFE082"/>
+      {/* Waves */}
+      <path d="M0 208 Q25 202 50 208 Q75 214 100 208 Q125 202 150 208 Q175 214 200 208" fill="none" stroke="white" strokeWidth="1.5" opacity="0.5"/>
+      {/* Sun */}
+      <circle cx="160" cy="35" r="18" fill="#FFD54F" opacity="0.6"/>
+    </g>
+  );
+}
+
+function BgMountain() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#90CAF9"/>
+      {/* Mountains */}
+      <path d="M-10 200 L50 80 L110 200Z" fill="#78909C"/>
+      <path d="M80 200 L140 60 L200 200Z" fill="#607D8B"/>
+      <path d="M150 200 L190 100 L220 200Z" fill="#78909C"/>
+      {/* Snow caps */}
+      <path d="M35 100 L50 80 L65 100 Q50 110 35 100Z" fill="white" opacity="0.8"/>
+      <path d="M125 80 L140 60 L155 80 Q140 90 125 80Z" fill="white" opacity="0.8"/>
+      {/* Ground */}
+      <path d="M0 230 Q100 220 200 230 L200 280 L0 280Z" fill="#4CAF50" opacity="0.3"/>
+    </g>
+  );
+}
+
+function BgCity() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#263238"/>
+      {/* Sky gradient */}
+      <rect x="0" y="0" width="200" height="120" rx="12" fill="#37474F"/>
+      {/* Buildings */}
+      <rect x="10" y="100" width="25" height="160" fill="#455A64"/>
+      <rect x="40" y="80" width="20" height="180" fill="#546E7A"/>
+      <rect x="65" y="120" width="30" height="140" fill="#37474F"/>
+      <rect x="100" y="70" width="22" height="190" fill="#455A64"/>
+      <rect x="128" y="90" width="28" height="170" fill="#546E7A"/>
+      <rect x="162" y="110" width="25" height="150" fill="#37474F"/>
+      {/* Windows */}
+      <g fill="#FFEB3B" opacity="0.4">
+        <rect x="14" y="110" width="4" height="4" rx="0.5"/><rect x="22" y="115" width="4" height="4" rx="0.5"/>
+        <rect x="44" y="90" width="4" height="4" rx="0.5"/><rect x="50" y="100" width="4" height="4" rx="0.5"/>
+        <rect x="104" y="80" width="4" height="4" rx="0.5"/><rect x="112" y="90" width="4" height="4" rx="0.5"/>
+        <rect x="134" y="100" width="4" height="4" rx="0.5"/><rect x="145" y="110" width="4" height="4" rx="0.5"/>
+        <rect x="166" y="120" width="4" height="4" rx="0.5"/>
+      </g>
+    </g>
+  );
+}
+
+function BgDesert() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#FFE0B2"/>
+      {/* Hot sky */}
+      <rect x="0" y="0" width="200" height="150" rx="12" fill="#FF8A65" opacity="0.3"/>
+      {/* Sun */}
+      <circle cx="150" cy="40" r="20" fill="#FF7043" opacity="0.5"/>
+      {/* Sand dunes */}
+      <path d="M0 200 Q50 170 100 190 Q150 210 200 185 L200 280 L0 280Z" fill="#FFCC80" opacity="0.6"/>
+      <path d="M0 220 Q70 200 130 215 Q180 225 200 210 L200 280 L0 280Z" fill="#FFB74D" opacity="0.5"/>
+      {/* Cactus */}
+      <rect x="40" y="200" width="6" height="30" rx="3" fill="#66BB6A" opacity="0.5"/>
+      <path d="M43 210 Q50 208 50 200 Q50 196 48 198" fill="none" stroke="#66BB6A" strokeWidth="4" opacity="0.5" strokeLinecap="round"/>
+    </g>
+  );
+}
+
+function BgUnderwater() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#0277BD"/>
+      {/* Light rays from above */}
+      <path d="M60 0 L70 100 L80 0Z" fill="white" opacity="0.05"/>
+      <path d="M120 0 L125 80 L130 0Z" fill="white" opacity="0.04"/>
+      {/* Bubbles */}
+      <g fill="white" opacity="0.2">
+        <circle cx="30" cy="50" r="4"/><circle cx="35" cy="80" r="2.5"/>
+        <circle cx="160" cy="40" r="3"/><circle cx="155" cy="70" r="2"/>
+        <circle cx="80" cy="30" r="2.5"/><circle cx="120" cy="55" r="3"/>
+      </g>
+      {/* Seaweed */}
+      <path d="M20 280 Q15 250 22 230 Q28 210 20 190" fill="none" stroke="#4CAF50" strokeWidth="4" opacity="0.4"/>
+      <path d="M175 280 Q180 255 173 235 Q168 215 175 195" fill="none" stroke="#66BB6A" strokeWidth="3" opacity="0.35"/>
+      {/* Sandy bottom */}
+      <path d="M0 265 Q50 260 100 265 Q150 270 200 265 L200 280 L0 280Z" fill="#FFE082" opacity="0.3"/>
+    </g>
+  );
+}
+
+function BgVolcano() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#4E342E"/>
+      {/* Red sky */}
+      <rect x="0" y="0" width="200" height="140" rx="12" fill="#BF360C" opacity="0.4"/>
+      {/* Volcano */}
+      <path d="M40 260 L85 100 L115 100 L160 260Z" fill="#5D4037"/>
+      {/* Crater */}
+      <ellipse cx="100" cy="100" rx="18" ry="8" fill="#BF360C"/>
+      {/* Lava glow */}
+      <ellipse cx="100" cy="98" rx="12" ry="5" fill="#FF6D00" opacity="0.7"/>
+      {/* Lava streams */}
+      <path d="M95 108 Q88 160 80 220" fill="none" stroke="#FF6D00" strokeWidth="3" opacity="0.5"/>
+      <path d="M105 108 Q112 170 120 230" fill="none" stroke="#FF3D00" strokeWidth="2" opacity="0.4"/>
+      {/* Ground */}
+      <path d="M0 250 L200 250 L200 280 L0 280Z" fill="#3E2723" opacity="0.5"/>
+    </g>
+  );
+}
+
+function BgAurora() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#1A237E"/>
+      {/* Aurora bands */}
+      <path d="M0 40 Q50 20 100 50 Q150 80 200 40 L200 100 Q150 130 100 90 Q50 60 0 100Z" fill="#00E676" opacity="0.2"/>
+      <path d="M0 60 Q60 30 120 70 Q170 100 200 60 L200 110 Q160 140 110 100 Q50 65 0 110Z" fill="#69F0AE" opacity="0.15"/>
+      <path d="M0 50 Q40 80 80 40 Q130 10 200 70 L200 90 Q140 30 90 60 Q40 90 0 70Z" fill="#7C4DFF" opacity="0.12"/>
+      {/* Stars */}
+      <g fill="white" opacity="0.5">
+        <circle cx="20" cy="20" r="1"/><circle cx="60" cy="15" r="0.8"/>
+        <circle cx="140" cy="25" r="1"/><circle cx="180" cy="18" r="0.8"/>
+        <circle cx="100" cy="10" r="1.2"/><circle cx="30" cy="120" r="0.8"/>
+        <circle cx="170" cy="110" r="1"/>
+      </g>
+      {/* Snow ground */}
+      <path d="M0 255 Q100 248 200 255 L200 280 L0 280Z" fill="white" opacity="0.2"/>
+    </g>
+  );
+}
+
+function BgCherryBlossom() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#FCE4EC"/>
+      {/* Sky */}
+      <rect x="0" y="0" width="200" height="140" rx="12" fill="#F8BBD0" opacity="0.3"/>
+      {/* Tree trunk */}
+      <path d="M155 280 Q150 220 148 180 Q145 140 155 120 Q158 110 162 120 Q165 140 160 180 Q158 220 160 280Z" fill="#795548"/>
+      {/* Branches */}
+      <path d="M155 140 Q130 120 110 125" fill="none" stroke="#795548" strokeWidth="3"/>
+      <path d="M158 160 Q135 150 115 155" fill="none" stroke="#795548" strokeWidth="2.5"/>
+      {/* Blossoms clusters */}
+      <g fill="#F48FB1" opacity="0.6">
+        <circle cx="108" cy="122" r="6"/><circle cx="115" cy="118" r="5"/><circle cx="105" cy="128" r="4"/>
+        <circle cx="112" cy="152" r="5"/><circle cx="118" cy="148" r="4"/>
+        <circle cx="155" cy="115" r="5"/><circle cx="148" cy="120" r="4"/>
+      </g>
+      {/* Falling petals */}
+      <ellipse cx="40" cy="80" rx="3" ry="1.5" fill="#F48FB1" opacity="0.4" transform="rotate(30 40 80)"/>
+      <ellipse cx="80" cy="50" rx="2.5" ry="1.2" fill="#F48FB1" opacity="0.35" transform="rotate(-15 80 50)"/>
+      <ellipse cx="60" cy="180" rx="2" ry="1" fill="#F48FB1" opacity="0.3" transform="rotate(45 60 180)"/>
+    </g>
+  );
+}
+
+function BgStorm() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#37474F"/>
+      {/* Dark clouds */}
+      <g fill="#263238" opacity="0.6">
+        <ellipse cx="50" cy="35" rx="40" ry="20"/><ellipse cx="100" cy="30" rx="45" ry="22"/>
+        <ellipse cx="150" cy="38" rx="38" ry="18"/>
+      </g>
+      {/* Lightning bolt */}
+      <path d="M105 55 L95 85 L108 82 L92 120" fill="none" stroke="#FFEB3B" strokeWidth="3" strokeLinecap="round" opacity="0.7"/>
+      {/* Rain */}
+      <g stroke="#90CAF9" strokeWidth="1" opacity="0.3">
+        <line x1="20" y1="60" x2="18" y2="80"/><line x1="45" y1="50" x2="43" y2="70"/>
+        <line x1="70" y1="65" x2="68" y2="85"/><line x1="130" y1="55" x2="128" y2="75"/>
+        <line x1="160" y1="60" x2="158" y2="80"/><line x1="180" y1="50" x2="178" y2="70"/>
+      </g>
+    </g>
+  );
+}
+
+function BgSunset() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#4A148C"/>
+      {/* Gradient sky bands */}
+      <rect x="0" y="100" width="200" height="60" fill="#E65100" opacity="0.5"/>
+      <rect x="0" y="80" width="200" height="40" fill="#FF6F00" opacity="0.3"/>
+      <rect x="0" y="140" width="200" height="40" fill="#880E4F" opacity="0.3"/>
+      {/* Sun */}
+      <circle cx="100" cy="140" r="25" fill="#FF8F00" opacity="0.6"/>
+      <circle cx="100" cy="140" r="18" fill="#FFB300" opacity="0.4"/>
+      {/* Water reflection */}
+      <rect x="0" y="160" width="200" height="120" fill="#0D47A1" opacity="0.3"/>
+      <path d="M0 170 Q50 165 100 170 Q150 175 200 170" fill="none" stroke="#FF8F00" strokeWidth="1" opacity="0.3"/>
+      <path d="M0 185 Q50 180 100 185 Q150 190 200 185" fill="none" stroke="#FF8F00" strokeWidth="0.8" opacity="0.2"/>
+    </g>
+  );
+}
+
+function BgStarfield() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#0D1B2A"/>
+      {/* Stars of various sizes */}
+      <g fill="white">
+        <circle cx="15" cy="20" r="1.5" opacity="0.7"/><circle cx="45" cy="50" r="1" opacity="0.5"/>
+        <circle cx="80" cy="15" r="1.2" opacity="0.6"/><circle cx="120" cy="35" r="0.8" opacity="0.4"/>
+        <circle cx="160" cy="20" r="1.5" opacity="0.7"/><circle cx="185" cy="55" r="1" opacity="0.5"/>
+        <circle cx="30" cy="90" r="0.8" opacity="0.4"/><circle cx="70" cy="70" r="1.2" opacity="0.6"/>
+        <circle cx="140" cy="80" r="1" opacity="0.5"/><circle cx="175" cy="100" r="1.3" opacity="0.6"/>
+        <circle cx="25" cy="130" r="0.8" opacity="0.4"/><circle cx="55" cy="110" r="1" opacity="0.5"/>
+        <circle cx="100" cy="90" r="1.5" opacity="0.7"/><circle cx="155" cy="130" r="0.8" opacity="0.4"/>
+      </g>
+      {/* Shooting star */}
+      <line x1="150" y1="30" x2="120" y2="50" stroke="white" strokeWidth="1.5" opacity="0.4" strokeLinecap="round"/>
+    </g>
+  );
+}
+
+function BgGalaxy() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#0D1B2A"/>
+      {/* Nebula */}
+      <ellipse cx="100" cy="100" rx="80" ry="50" fill="#4A148C" opacity="0.3"/>
+      <ellipse cx="80" cy="80" rx="50" ry="35" fill="#7C4DFF" opacity="0.15"/>
+      <ellipse cx="130" cy="120" rx="40" ry="30" fill="#E040FB" opacity="0.1"/>
+      {/* Spiral arms hint */}
+      <path d="M40 60 Q80 40 120 70 Q160 100 140 140" fill="none" stroke="#7C4DFF" strokeWidth="8" opacity="0.1"/>
+      {/* Stars */}
+      <g fill="white">
+        <circle cx="20" cy="25" r="1" opacity="0.6"/><circle cx="50" cy="40" r="1.5" opacity="0.7" className="anim-galaxy-1"/>
+        <circle cx="90" cy="20" r="1" opacity="0.5"/><circle cx="150" cy="50" r="1.2" opacity="0.6" className="anim-galaxy-2"/>
+        <circle cx="175" cy="30" r="0.8" opacity="0.4"/><circle cx="30" cy="100" r="1.2" opacity="0.6" className="anim-galaxy-3"/>
+        <circle cx="170" cy="90" r="1" opacity="0.5" className="anim-galaxy-1"/>
+        <circle cx="60" cy="130" r="1.5" opacity="0.7"/><circle cx="140" cy="140" r="0.8" opacity="0.4"/>
+      </g>
+    </g>
+  );
+}
+
+function BgNeonCity() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#1A1A2E"/>
+      {/* Buildings */}
+      <rect x="5" y="100" width="28" height="160" fill="#16213E"/>
+      <rect x="38" y="75" width="22" height="185" fill="#0F3460"/>
+      <rect x="65" y="110" width="30" height="150" fill="#16213E"/>
+      <rect x="100" y="65" width="25" height="195" fill="#0F3460"/>
+      <rect x="130" y="85" width="30" height="175" fill="#16213E"/>
+      <rect x="165" y="95" width="28" height="165" fill="#0F3460"/>
+      {/* Neon signs */}
+      <rect x="10" y="120" width="18" height="3" rx="1" fill="#E040FB" opacity="0.8"/>
+      <rect x="42" y="95" width="14" height="3" rx="1" fill="#00E5FF" opacity="0.8"/>
+      <rect x="105" y="85" width="16" height="3" rx="1" fill="#FF4081" opacity="0.8"/>
+      <rect x="135" y="105" width="20" height="3" rx="1" fill="#76FF03" opacity="0.8"/>
+      {/* Window glow */}
+      <g fill="#00E5FF" opacity="0.2">
+        <rect x="12" y="130" width="4" height="5"/><rect x="20" y="140" width="4" height="5"/>
+        <rect x="44" y="100" width="4" height="5"/><rect x="106" y="92" width="4" height="5"/>
+        <rect x="140" y="115" width="4" height="5"/><rect x="172" y="110" width="4" height="5"/>
+      </g>
+      {/* Wet ground reflection */}
+      <rect x="0" y="258" width="200" height="22" fill="#E040FB" opacity="0.05"/>
+    </g>
+  );
+}
+
+function BgEnchanted() {
+  return (
+    <g>
+      <rect x="0" y="0" width="200" height="280" rx="12" fill="#1B5E20"/>
+      {/* Magical mist */}
+      <ellipse cx="100" cy="200" rx="100" ry="60" fill="#00E676" opacity="0.08"/>
+      {/* Tree trunks */}
+      <rect x="15" y="80" width="10" height="180" rx="3" fill="#4E342E"/>
+      <rect x="175" y="90" width="10" height="170" rx="3" fill="#3E2723"/>
+      <rect x="5" y="120" width="8" height="140" rx="2" fill="#5D4037"/>
+      <rect x="185" y="110" width="8" height="150" rx="2" fill="#4E342E"/>
+      {/* Canopy */}
+      <ellipse cx="20" cy="80" rx="25" ry="20" fill="#2E7D32" opacity="0.6"/>
+      <ellipse cx="180" cy="90" rx="22" ry="18" fill="#388E3C" opacity="0.5"/>
+      {/* Glowing mushrooms */}
+      <circle cx="30" cy="245" r="5" fill="#76FF03" opacity="0.3"/>
+      <rect x="28" y="248" width="4" height="8" rx="1" fill="#795548" opacity="0.5"/>
+      <circle cx="170" cy="250" r="4" fill="#00E5FF" opacity="0.25"/>
+      <rect x="168" y="252" width="4" height="7" rx="1" fill="#795548" opacity="0.5"/>
+      {/* Floating sparkles */}
+      <circle cx="50" cy="150" r="1.5" fill="#FFEB3B" opacity="0.4" className="anim-sparkle-1"/>
+      <circle cx="100" cy="120" r="1.2" fill="#FFEB3B" opacity="0.3" className="anim-sparkle-2"/>
+      <circle cx="150" cy="160" r="1.5" fill="#FFEB3B" opacity="0.4" className="anim-sparkle-3"/>
+      {/* Fireflies */}
+      <circle cx="70" cy="180" r="2" fill="#FFEB3B" opacity="0.5" className="anim-sparkle-2"/>
+      <circle cx="130" cy="170" r="1.8" fill="#FFEB3B" opacity="0.4" className="anim-sparkle-1"/>
+    </g>
+  );
+}
+
+function renderBackground(bgId: string) {
+  switch (bgId) {
+    case "meadow": return <BgMeadow />;
+    case "sky": return <BgSky />;
+    case "forest_bg": return <BgForest />;
+    case "beach": return <BgBeach />;
+    case "mountain": return <BgMountain />;
+    case "city": return <BgCity />;
+    case "desert": return <BgDesert />;
+    case "underwater": return <BgUnderwater />;
+    case "volcano": return <BgVolcano />;
+    case "aurora_bg": return <BgAurora />;
+    case "cherry_blossom": return <BgCherryBlossom />;
+    case "storm": return <BgStorm />;
+    case "sunset": return <BgSunset />;
+    case "starfield": return <BgStarfield />;
+    case "galaxy_bg": return <BgGalaxy />;
+    case "neon_city": return <BgNeonCity />;
+    case "enchanted": return <BgEnchanted />;
+    default: return null;
+  }
+}
+
+// ══════════════════════════════════════════════
 // ── Main Component ──
 // ══════════════════════════════════════════════
 
@@ -3469,38 +4518,40 @@ export default function Mascot({
       role="img"
       aria-label="Findy, mascotte SkillFinder"
     >
-      {/* ── Antique map background ── */}
-      <defs>
-        <radialGradient id="mapBg" cx="50%" cy="45%" r="70%">
-          <stop offset="0%" stopColor="#F5ECD7"/>
-          <stop offset="100%" stopColor="#E8DCC8"/>
-        </radialGradient>
-      </defs>
-      <rect x="0" y="0" width="200" height="280" fill="url(#mapBg)"/>
-      {/* Map decorative lines */}
-      <g opacity="0.08" stroke="#8B7355" fill="none">
-        {/* Latitude lines */}
-        <path d="M0 60 Q50 55 100 60 Q150 65 200 60" strokeWidth="0.5"/>
-        <path d="M0 120 Q60 115 120 120 Q160 125 200 118" strokeWidth="0.5"/>
-        <path d="M0 180 Q40 175 100 180 Q160 185 200 178" strokeWidth="0.5"/>
-        {/* Longitude lines */}
-        <path d="M50 0 Q48 70 52 140 Q50 210 48 280" strokeWidth="0.5"/>
-        <path d="M150 0 Q152 70 148 140 Q150 210 152 280" strokeWidth="0.5"/>
-        {/* Continent hints */}
-        <path d="M15 40 Q25 35 35 42 Q40 50 32 55 Q20 52 15 40Z" strokeWidth="0.8" fill="#D4C4A8" opacity="0.5"/>
-        <path d="M160 30 Q175 25 185 35 Q180 48 170 45 Q162 40 160 30Z" strokeWidth="0.8" fill="#D4C4A8" opacity="0.5"/>
-        {/* Compass rose (top right) */}
-        <g transform="translate(175, 25)" strokeWidth="0.6">
-          <circle r="10"/>
-          <line x1="0" y1="-12" x2="0" y2="12"/>
-          <line x1="-12" y1="0" x2="12" y2="0"/>
-          <line x1="-8" y1="-8" x2="8" y2="8" strokeWidth="0.3"/>
-          <line x1="8" y1="-8" x2="-8" y2="8" strokeWidth="0.3"/>
-          <text x="0" y="-14" fontSize="4" textAnchor="middle" fill="#8B7355" opacity="1">N</text>
-        </g>
-      </g>
-      {/* Aged border vignette */}
-      <rect x="0" y="0" width="200" height="280" fill="none" stroke="#C4B498" strokeWidth="1" opacity="0.3" rx="4"/>
+      {/* ── Background ── */}
+      {c.background && c.background !== "none_bg" ? (
+        renderBackground(c.background)
+      ) : (
+        <>
+          {/* Default antique map background */}
+          <defs>
+            <radialGradient id="mapBg" cx="50%" cy="45%" r="70%">
+              <stop offset="0%" stopColor="#F5ECD7"/>
+              <stop offset="100%" stopColor="#E8DCC8"/>
+            </radialGradient>
+          </defs>
+          <rect x="0" y="0" width="200" height="280" fill="url(#mapBg)"/>
+          {/* Map decorative lines */}
+          <g opacity="0.08" stroke="#8B7355" fill="none">
+            <path d="M0 60 Q50 55 100 60 Q150 65 200 60" strokeWidth="0.5"/>
+            <path d="M0 120 Q60 115 120 120 Q160 125 200 118" strokeWidth="0.5"/>
+            <path d="M0 180 Q40 175 100 180 Q160 185 200 178" strokeWidth="0.5"/>
+            <path d="M50 0 Q48 70 52 140 Q50 210 48 280" strokeWidth="0.5"/>
+            <path d="M150 0 Q152 70 148 140 Q150 210 152 280" strokeWidth="0.5"/>
+            <path d="M15 40 Q25 35 35 42 Q40 50 32 55 Q20 52 15 40Z" strokeWidth="0.8" fill="#D4C4A8" opacity="0.5"/>
+            <path d="M160 30 Q175 25 185 35 Q180 48 170 45 Q162 40 160 30Z" strokeWidth="0.8" fill="#D4C4A8" opacity="0.5"/>
+            <g transform="translate(175, 25)" strokeWidth="0.6">
+              <circle r="10"/>
+              <line x1="0" y1="-12" x2="0" y2="12"/>
+              <line x1="-12" y1="0" x2="12" y2="0"/>
+              <line x1="-8" y1="-8" x2="8" y2="8" strokeWidth="0.3"/>
+              <line x1="8" y1="-8" x2="-8" y2="8" strokeWidth="0.3"/>
+              <text x="0" y="-14" fontSize="4" textAnchor="middle" fill="#8B7355" opacity="1">N</text>
+            </g>
+          </g>
+          <rect x="0" y="0" width="200" height="280" fill="none" stroke="#C4B498" strokeWidth="1" opacity="0.3" rx="4"/>
+        </>
+      )}
 
       {/* ── Sandy ground ── */}
       <g>
@@ -3611,69 +4662,48 @@ export default function Mascot({
         );
       })()}
 
-      {/* ── Body / Explorer Jacket ── */}
-      <g>
-        {/* Jacket base */}
-        <ellipse cx="100" cy="190" rx="44" ry="48" fill="#A89070"/>
-        {/* Jacket front */}
-        <ellipse cx="100" cy="190" rx="40" ry="44" fill="#C4AC8A"/>
-        {/* Jacket highlight */}
-        <path d="M65 175 Q70 160 85 155 Q90 165 80 185 Q72 195 65 195Z" fill="#D4BC9A" opacity="0.3"/>
-        {/* Collar */}
-        <path d="M70 148 Q75 142 85 140 L85 152 Q78 154 72 155Z" fill="#B89A72"/>
-        <path d="M130 148 Q125 142 115 140 L115 152 Q122 154 128 155Z" fill="#B89A72"/>
-        {/* Collar shadow */}
-        <path d="M72 150 Q80 145 85 143 L85 148 Q80 150 74 153Z" fill="#9A8060" opacity="0.3"/>
-        <path d="M128 150 Q120 145 115 143 L115 148 Q120 150 126 153Z" fill="#9A8060" opacity="0.3"/>
-        {/* Center seam */}
-        <line x1="100" y1="148" x2="100" y2="210" stroke="#9A8060" strokeWidth="0.8" opacity="0.4"/>
-        {/* Buttons */}
-        <circle cx="100" cy="162" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
-        <circle cx="100" cy="175" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
-        <circle cx="100" cy="188" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
-        <circle cx="100" cy="200" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
-        {/* Button holes */}
-        <line x1="99" y1="162" x2="101" y2="162" stroke="#8A7252" strokeWidth="0.5"/>
-        <line x1="99" y1="175" x2="101" y2="175" stroke="#8A7252" strokeWidth="0.5"/>
-        <line x1="99" y1="188" x2="101" y2="188" stroke="#8A7252" strokeWidth="0.5"/>
-        <line x1="99" y1="200" x2="101" y2="200" stroke="#8A7252" strokeWidth="0.5"/>
-        {/* Left breast pocket */}
-        <rect x="72" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
-        {/* Pocket flap */}
-        <path d="M71 166 L91 166 L91 171 Q82 173 71 171Z" fill="#A89070" stroke="#9A8060" strokeWidth="0.5"/>
-        {/* Pocket button */}
-        <circle cx="81" cy="169" r="1.2" fill="#8A7252"/>
-        {/* Compass in pocket */}
-        <circle cx="81" cy="177" r="4" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
-        <circle cx="81" cy="177" r="2" fill="#E8D5B8"/>
-        <line x1="81" y1="175" x2="81" y2="177" stroke="#C45D3E" strokeWidth="0.6"/>
-        <line x1="81" y1="177" x2="82.5" y2="178" stroke="#333" strokeWidth="0.5"/>
-        {/* Right breast pocket */}
-        <rect x="110" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
-        {/* Pocket flap */}
-        <path d="M109 166 L129 166 L129 171 Q120 173 109 171Z" fill="#A89070" stroke="#9A8060" strokeWidth="0.5"/>
-        {/* Pocket button */}
-        <circle cx="119" cy="169" r="1.2" fill="#8A7252"/>
-        {/* Pen in pocket */}
-        <rect x="122" y="162" width="2" height="12" rx="0.5" fill="#2D2D2D"/>
-        <polygon points="122,174 124,174 123,177" fill="#C0C0C0"/>
-        <rect x="121.5" y="163" width="3" height="2" rx="0.5" fill="#D4A853"/>
-        {/* Belt */}
-        <rect x="60" y="207" width="80" height="9" rx="3" fill="#6B4226"/>
-        {/* Belt stitching */}
-        <line x1="64" y1="209" x2="136" y2="209" stroke="#4A2E1A" strokeWidth="0.4" strokeDasharray="2,1.5" opacity="0.5"/>
-        <line x1="64" y1="214" x2="136" y2="214" stroke="#4A2E1A" strokeWidth="0.4" strokeDasharray="2,1.5" opacity="0.5"/>
-        {/* Belt buckle */}
-        <rect x="92" y="206" width="16" height="11" rx="2" fill="#D4A853" stroke="#B8860B" strokeWidth="1"/>
-        <rect x="95" y="208" width="10" height="7" rx="1" fill="#6B4226"/>
-        {/* Buckle prong */}
-        <line x1="100" y1="207" x2="100" y2="216" stroke="#D4A853" strokeWidth="1.2"/>
-        {/* Belt highlight */}
-        <rect x="60" y="207" width="80" height="3" rx="1.5" fill="#8B5E3C" opacity="0.3"/>
-        {/* Shoulder seams */}
-        <path d="M62 158 Q65 155 70 155" fill="none" stroke="#9A8060" strokeWidth="0.8" opacity="0.5"/>
-        <path d="M138 158 Q135 155 130 155" fill="none" stroke="#9A8060" strokeWidth="0.8" opacity="0.5"/>
-      </g>
+      {/* ── Body / Outfit ── */}
+      {c.outfit === "explorer_jacket" ? (
+        <g>
+          {/* Default Explorer Jacket */}
+          <ellipse cx="100" cy="190" rx="44" ry="48" fill="#A89070"/>
+          <ellipse cx="100" cy="190" rx="40" ry="44" fill="#C4AC8A"/>
+          <path d="M65 175 Q70 160 85 155 Q90 165 80 185 Q72 195 65 195Z" fill="#D4BC9A" opacity="0.3"/>
+          <path d="M70 148 Q75 142 85 140 L85 152 Q78 154 72 155Z" fill="#B89A72"/>
+          <path d="M130 148 Q125 142 115 140 L115 152 Q122 154 128 155Z" fill="#B89A72"/>
+          <path d="M72 150 Q80 145 85 143 L85 148 Q80 150 74 153Z" fill="#9A8060" opacity="0.3"/>
+          <path d="M128 150 Q120 145 115 143 L115 148 Q120 150 126 153Z" fill="#9A8060" opacity="0.3"/>
+          <line x1="100" y1="148" x2="100" y2="210" stroke="#9A8060" strokeWidth="0.8" opacity="0.4"/>
+          <circle cx="100" cy="162" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+          <circle cx="100" cy="175" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+          <circle cx="100" cy="188" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+          <circle cx="100" cy="200" r="2.5" fill="#B89A72" stroke="#8A7252" strokeWidth="0.8"/>
+          <rect x="72" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
+          <path d="M71 166 L91 166 L91 171 Q82 173 71 171Z" fill="#A89070" stroke="#9A8060" strokeWidth="0.5"/>
+          <circle cx="81" cy="169" r="1.2" fill="#8A7252"/>
+          <circle cx="81" cy="177" r="4" fill="#D4A853" stroke="#B8860B" strokeWidth="0.8"/>
+          <circle cx="81" cy="177" r="2" fill="#E8D5B8"/>
+          <line x1="81" y1="175" x2="81" y2="177" stroke="#C45D3E" strokeWidth="0.6"/>
+          <line x1="81" y1="177" x2="82.5" y2="178" stroke="#333" strokeWidth="0.5"/>
+          <rect x="110" y="166" width="18" height="16" rx="2" fill="#B89A72" stroke="#9A8060" strokeWidth="0.8"/>
+          <path d="M109 166 L129 166 L129 171 Q120 173 109 171Z" fill="#A89070" stroke="#9A8060" strokeWidth="0.5"/>
+          <circle cx="119" cy="169" r="1.2" fill="#8A7252"/>
+          <rect x="122" y="162" width="2" height="12" rx="0.5" fill="#2D2D2D"/>
+          <polygon points="122,174 124,174 123,177" fill="#C0C0C0"/>
+          <rect x="121.5" y="163" width="3" height="2" rx="0.5" fill="#D4A853"/>
+          <rect x="60" y="207" width="80" height="9" rx="3" fill="#6B4226"/>
+          <line x1="64" y1="209" x2="136" y2="209" stroke="#4A2E1A" strokeWidth="0.4" strokeDasharray="2,1.5" opacity="0.5"/>
+          <line x1="64" y1="214" x2="136" y2="214" stroke="#4A2E1A" strokeWidth="0.4" strokeDasharray="2,1.5" opacity="0.5"/>
+          <rect x="92" y="206" width="16" height="11" rx="2" fill="#D4A853" stroke="#B8860B" strokeWidth="1"/>
+          <rect x="95" y="208" width="10" height="7" rx="1" fill="#6B4226"/>
+          <line x1="100" y1="207" x2="100" y2="216" stroke="#D4A853" strokeWidth="1.2"/>
+          <rect x="60" y="207" width="80" height="3" rx="1.5" fill="#8B5E3C" opacity="0.3"/>
+          <path d="M62 158 Q65 155 70 155" fill="none" stroke="#9A8060" strokeWidth="0.8" opacity="0.5"/>
+          <path d="M138 158 Q135 155 130 155" fill="none" stroke="#9A8060" strokeWidth="0.8" opacity="0.5"/>
+        </g>
+      ) : (
+        renderOutfit(c.outfit)
+      )}
 
       {/* ── Bow tie / Medal / Badge / Whistle (on body, before scarf) ── */}
       {["bowtie", "medal", "badge_acc", "whistle"].includes(c.accessory) && !isSad && renderAccessory(c.accessory, isSad)}
@@ -3888,6 +4918,9 @@ export default function Mascot({
         <circle cx="135" cy="106" r="1"/>
         <circle cx="132" cy="111" r="0.8"/>
       </g>
+
+      {/* ── Hair ── */}
+      {c.hair && c.hair !== "none_hair" && renderHair(c.hair)}
 
       {/* ── Hat ── */}
       {renderHat(c.hat)}

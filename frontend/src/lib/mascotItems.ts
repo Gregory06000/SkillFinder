@@ -4,7 +4,7 @@
 
 const MASCOT_STORAGE_KEY = "sf_mascot_custom";
 
-export type ItemCategory = "hat" | "scarf" | "accessory" | "boots";
+export type ItemCategory = "hat" | "hair" | "outfit" | "scarf" | "accessory" | "boots" | "background";
 
 export interface MascotItem {
   id: string;
@@ -17,22 +17,56 @@ export interface MascotItem {
 
 export interface MascotCustomization {
   hat: string;
+  hair: string;
+  outfit: string;
   scarf: string;
   accessory: string;
   boots: string;
+  background: string;
 }
 
 export const DEFAULT_CUSTOMIZATION: MascotCustomization = {
   hat: "explorer",
+  hair: "none_hair",
+  outfit: "explorer_jacket",
   scarf: "red",
   accessory: "satchel",
   boots: "brown",
+  background: "none_bg",
 };
 
 // ── Item Catalog ──
 // 3 free items per tier per category + premium items
 
 export const MASCOT_ITEMS: MascotItem[] = [
+  // ══════════════════════════════════════
+  // ── Hair ──
+  // ══════════════════════════════════════
+  // Tier 1
+  { id: "none_hair",    nameKey: "mascot.item.noHair",       category: "hair", tier: 1, preview: "🚫" },
+  { id: "short_messy",  nameKey: "mascot.item.shortMessy",   category: "hair", tier: 1, preview: "💇" },
+  { id: "buzz_cut",     nameKey: "mascot.item.buzzCut",      category: "hair", tier: 1, preview: "👨" },
+  // Tier 2
+  { id: "spiky",        nameKey: "mascot.item.spiky",        category: "hair", tier: 2, preview: "🦔" },
+  { id: "side_part",    nameKey: "mascot.item.sidePart",     category: "hair", tier: 2, preview: "💈" },
+  { id: "curly",        nameKey: "mascot.item.curly",        category: "hair", tier: 2, preview: "🌀" },
+  // Tier 3
+  { id: "ponytail",     nameKey: "mascot.item.ponytail",     category: "hair", tier: 3, preview: "👧" },
+  { id: "mohawk",       nameKey: "mascot.item.mohawk",       category: "hair", tier: 3, preview: "🤘" },
+  { id: "bob_cut",      nameKey: "mascot.item.bobCut",       category: "hair", tier: 3, preview: "💁" },
+  // Tier 4
+  { id: "long_straight",nameKey: "mascot.item.longStraight", category: "hair", tier: 4, preview: "👩" },
+  { id: "afro",         nameKey: "mascot.item.afro",         category: "hair", tier: 4, preview: "🧑‍🦱" },
+  { id: "braids",       nameKey: "mascot.item.braids",       category: "hair", tier: 4, preview: "🫘" },
+  // Tier 5
+  { id: "samurai_bun",  nameKey: "mascot.item.samuraiBun",   category: "hair", tier: 5, preview: "🥋" },
+  { id: "pigtails",     nameKey: "mascot.item.pigtails",     category: "hair", tier: 5, preview: "👱‍♀️" },
+  { id: "wavy",         nameKey: "mascot.item.wavy",         category: "hair", tier: 5, preview: "🌊" },
+  // Premium Hair
+  { id: "flame_hair",   nameKey: "mascot.item.flameHair",    category: "hair", tier: null, price: 1.99, preview: "🔥" },
+  { id: "galaxy_hair",  nameKey: "mascot.item.galaxyHair",   category: "hair", tier: null, price: 1.99, preview: "🌌" },
+  { id: "rainbow_hair", nameKey: "mascot.item.rainbowHair",  category: "hair", tier: null, price: 1.99, preview: "🌈" },
+
   // ══════════════════════════════════════
   // ── Hats ──
   // ══════════════════════════════════════
@@ -252,6 +286,62 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "hologram_boots", nameKey: "mascot.item.bootsHologram",    category: "boots", tier: null, price: 1.99, preview: "🔮" },
   { id: "stardust_boots", nameKey: "mascot.item.bootsStardust",    category: "boots", tier: null, price: 1.99, preview: "🌠" },
   { id: "celestial_boots",nameKey: "mascot.item.bootsCelestial",   category: "boots", tier: null, price: 1.99, preview: "🪐" },
+
+  // ══════════════════════════════════════
+  // ── Outfits ──
+  // ══════════════════════════════════════
+  // Tier 1
+  { id: "explorer_jacket",nameKey: "mascot.item.explorerJacket",category: "outfit", tier: 1, preview: "🧥" },
+  { id: "tshirt",         nameKey: "mascot.item.tshirt",        category: "outfit", tier: 1, preview: "👕" },
+  { id: "hoodie",         nameKey: "mascot.item.hoodie",        category: "outfit", tier: 1, preview: "🧶" },
+  // Tier 2
+  { id: "polo",           nameKey: "mascot.item.polo",          category: "outfit", tier: 2, preview: "👔" },
+  { id: "sweater",        nameKey: "mascot.item.sweater",       category: "outfit", tier: 2, preview: "🧣" },
+  { id: "vest",           nameKey: "mascot.item.vest",          category: "outfit", tier: 2, preview: "🦺" },
+  // Tier 3
+  { id: "leather_jacket", nameKey: "mascot.item.leatherJacket", category: "outfit", tier: 3, preview: "🧥" },
+  { id: "lab_coat",       nameKey: "mascot.item.labCoat",       category: "outfit", tier: 3, preview: "🥼" },
+  { id: "denim_jacket",   nameKey: "mascot.item.denimJacket",   category: "outfit", tier: 3, preview: "👖" },
+  // Tier 4
+  { id: "suit",           nameKey: "mascot.item.suit",          category: "outfit", tier: 4, preview: "🤵" },
+  { id: "kimono",         nameKey: "mascot.item.kimono",        category: "outfit", tier: 4, preview: "👘" },
+  { id: "sport_jersey",   nameKey: "mascot.item.sportJersey",   category: "outfit", tier: 4, preview: "🏅" },
+  // Tier 5
+  { id: "trench_coat",    nameKey: "mascot.item.trenchCoat",    category: "outfit", tier: 5, preview: "🕵️" },
+  { id: "pirate_coat",    nameKey: "mascot.item.pirateCoat",    category: "outfit", tier: 5, preview: "🏴‍☠️" },
+  { id: "military",       nameKey: "mascot.item.military",      category: "outfit", tier: 5, preview: "🎖️" },
+  // Premium Outfits
+  { id: "royal_robe",     nameKey: "mascot.item.royalRobe",     category: "outfit", tier: null, price: 1.99, preview: "👑" },
+  { id: "space_suit",     nameKey: "mascot.item.spaceSuit",     category: "outfit", tier: null, price: 1.99, preview: "🧑‍🚀" },
+  { id: "samurai_armor",  nameKey: "mascot.item.samuraiArmor",  category: "outfit", tier: null, price: 1.99, preview: "⚔️" },
+
+  // ══════════════════════════════════════
+  // ── Backgrounds ──
+  // ══════════════════════════════════════
+  // Tier 1
+  { id: "none_bg",        nameKey: "mascot.item.noBg",          category: "background", tier: 1, preview: "🚫" },
+  { id: "meadow",         nameKey: "mascot.item.meadow",        category: "background", tier: 1, preview: "🌿" },
+  { id: "sky",            nameKey: "mascot.item.sky",           category: "background", tier: 1, preview: "☁️" },
+  // Tier 2
+  { id: "forest_bg",      nameKey: "mascot.item.forestBg",      category: "background", tier: 2, preview: "🌲" },
+  { id: "beach",          nameKey: "mascot.item.beach",         category: "background", tier: 2, preview: "🏖️" },
+  { id: "mountain",       nameKey: "mascot.item.mountain",      category: "background", tier: 2, preview: "🏔️" },
+  // Tier 3
+  { id: "city",           nameKey: "mascot.item.city",          category: "background", tier: 3, preview: "🏙️" },
+  { id: "desert",         nameKey: "mascot.item.desert",        category: "background", tier: 3, preview: "🏜️" },
+  { id: "underwater",     nameKey: "mascot.item.underwater",    category: "background", tier: 3, preview: "🐠" },
+  // Tier 4
+  { id: "volcano",        nameKey: "mascot.item.volcano",       category: "background", tier: 4, preview: "🌋" },
+  { id: "aurora_bg",      nameKey: "mascot.item.auroraBg",      category: "background", tier: 4, preview: "🌌" },
+  { id: "cherry_blossom", nameKey: "mascot.item.cherryBlossom", category: "background", tier: 4, preview: "🌸" },
+  // Tier 5
+  { id: "storm",          nameKey: "mascot.item.storm",         category: "background", tier: 5, preview: "⛈️" },
+  { id: "sunset",         nameKey: "mascot.item.sunset",        category: "background", tier: 5, preview: "🌅" },
+  { id: "starfield",      nameKey: "mascot.item.starfield",     category: "background", tier: 5, preview: "✨" },
+  // Premium Backgrounds
+  { id: "galaxy_bg",      nameKey: "mascot.item.galaxyBg",      category: "background", tier: null, price: 1.99, preview: "🌌" },
+  { id: "neon_city",      nameKey: "mascot.item.neonCity",      category: "background", tier: null, price: 1.99, preview: "🌃" },
+  { id: "enchanted",      nameKey: "mascot.item.enchanted",     category: "background", tier: null, price: 1.99, preview: "🧚" },
 ];
 
 // ── Helpers ──
