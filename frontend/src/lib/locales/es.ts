@@ -149,6 +149,7 @@ const es: Record<string, string> = {
   // -- Mascot Customization --
   "mascot.customize": "Personalizar Findy",
   "mascot.locked": "Nivel {tier} requerido",
+  "mascot.cat.expression": "Cara",
   "mascot.cat.hair": "Pelo",
   "mascot.cat.hat": "Sombrero",
   "mascot.cat.outfit": "Ropa",
@@ -378,6 +379,15 @@ const es: Record<string, string> = {
   "mascot.item.galaxyBg": "Galaxia",
   "mascot.item.neonCity": "Ciudad neon",
   "mascot.item.enchanted": "Encantado",
+  // Expressions
+  "mascot.item.exprDefault": "Sonrisa",
+  "mascot.item.exprHappy": "Feliz",
+  "mascot.item.exprExcited": "Emocionado",
+  "mascot.item.exprProud": "Orgulloso",
+  "mascot.item.exprSurprised": "Sorprendido",
+  "mascot.item.exprThinking": "Pensativo",
+  "mascot.item.exprLove": "Enamorado",
+  "mascot.item.exprWink": "Guino",
   "mascot.preview": "Vista previa",
   "mascot.previewing": "Vista previa...",
 

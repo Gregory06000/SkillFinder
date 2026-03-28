@@ -149,6 +149,7 @@ const fr: Record<string, string> = {
   // -- Mascot Customization --
   "mascot.customize": "Personnaliser Findy",
   "mascot.locked": "Palier {tier} requis",
+  "mascot.cat.expression": "Expression",
   "mascot.cat.hair": "Coiffure",
   "mascot.cat.hat": "Chapeau",
   "mascot.cat.outfit": "Tenue",
@@ -321,6 +322,16 @@ const fr: Record<string, string> = {
   "mascot.item.bootsHologram": "Hologramme",
   "mascot.item.bootsStardust": "Poussiere d'etoiles",
   "mascot.item.bootsCelestial": "Celestes",
+  // Hair
+  // Expressions
+  "mascot.item.exprDefault": "Sourire",
+  "mascot.item.exprHappy": "Joyeux",
+  "mascot.item.exprExcited": "Surexcite",
+  "mascot.item.exprProud": "Fier",
+  "mascot.item.exprSurprised": "Surpris",
+  "mascot.item.exprThinking": "Pensif",
+  "mascot.item.exprLove": "Amoureux",
+  "mascot.item.exprWink": "Clin d'oeil",
   // Hair
   "mascot.item.noHair": "Aucun",
   "mascot.item.shortMessy": "Court ebouriffe",

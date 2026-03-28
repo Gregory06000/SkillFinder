@@ -4,7 +4,7 @@
 
 const MASCOT_STORAGE_KEY = "sf_mascot_custom";
 
-export type ItemCategory = "hat" | "hair" | "outfit" | "scarf" | "accessory" | "boots" | "background";
+export type ItemCategory = "expression" | "hair" | "hat" | "outfit" | "scarf" | "accessory" | "boots" | "background";
 
 export interface MascotItem {
   id: string;
@@ -16,6 +16,7 @@ export interface MascotItem {
 }
 
 export interface MascotCustomization {
+  expression: string;
   hat: string;
   hair: string;
   outfit: string;
@@ -26,6 +27,7 @@ export interface MascotCustomization {
 }
 
 export const DEFAULT_CUSTOMIZATION: MascotCustomization = {
+  expression: "expr_default",
   hat: "explorer",
   hair: "none_hair",
   outfit: "explorer_jacket",
@@ -39,6 +41,18 @@ export const DEFAULT_CUSTOMIZATION: MascotCustomization = {
 // 3 free items per tier per category + premium items
 
 export const MASCOT_ITEMS: MascotItem[] = [
+  // ══════════════════════════════════════
+  // ── Expressions (all free, tier 1) ──
+  // ══════════════════════════════════════
+  { id: "expr_default",   nameKey: "mascot.item.exprDefault",   category: "expression", tier: 1, preview: "😊" },
+  { id: "expr_happy",     nameKey: "mascot.item.exprHappy",     category: "expression", tier: 1, preview: "😄" },
+  { id: "expr_excited",   nameKey: "mascot.item.exprExcited",   category: "expression", tier: 1, preview: "🤩" },
+  { id: "expr_proud",     nameKey: "mascot.item.exprProud",     category: "expression", tier: 1, preview: "😌" },
+  { id: "expr_surprised", nameKey: "mascot.item.exprSurprised", category: "expression", tier: 1, preview: "😮" },
+  { id: "expr_thinking",  nameKey: "mascot.item.exprThinking",  category: "expression", tier: 1, preview: "🤔" },
+  { id: "expr_love",      nameKey: "mascot.item.exprLove",      category: "expression", tier: 1, preview: "😍" },
+  { id: "expr_wink",      nameKey: "mascot.item.exprWink",      category: "expression", tier: 1, preview: "😜" },
+
   // ══════════════════════════════════════
   // ── Hair ──
   // ══════════════════════════════════════

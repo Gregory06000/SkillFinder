@@ -14,6 +14,7 @@ interface MascotCustomizerProps {
 }
 
 const CATEGORIES: { key: ItemCategory; labelKey: string; icon: string }[] = [
+  { key: "expression", labelKey: "mascot.cat.expression", icon: "😊" },
   { key: "hair", labelKey: "mascot.cat.hair", icon: "💇" },
   { key: "hat", labelKey: "mascot.cat.hat", icon: "🎩" },
   { key: "outfit", labelKey: "mascot.cat.outfit", icon: "👕" },

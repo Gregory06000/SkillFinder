@@ -149,6 +149,7 @@ const nl: Record<string, string> = {
   // -- Mascot Customization --
   "mascot.customize": "Findy aanpassen",
   "mascot.locked": "Niveau {tier} vereist",
+  "mascot.cat.expression": "Gezicht",
   "mascot.cat.hair": "Haar",
   "mascot.cat.hat": "Hoed",
   "mascot.cat.outfit": "Outfit",
@@ -378,6 +379,15 @@ const nl: Record<string, string> = {
   "mascot.item.galaxyBg": "Melkweg",
   "mascot.item.neonCity": "Neonstad",
   "mascot.item.enchanted": "Betoverd",
+  // Expressions
+  "mascot.item.exprDefault": "Glimlach",
+  "mascot.item.exprHappy": "Blij",
+  "mascot.item.exprExcited": "Enthousiast",
+  "mascot.item.exprProud": "Trots",
+  "mascot.item.exprSurprised": "Verrast",
+  "mascot.item.exprThinking": "Nadenkend",
+  "mascot.item.exprLove": "Verliefd",
+  "mascot.item.exprWink": "Knipoog",
   "mascot.preview": "Voorbeeld",
   "mascot.previewing": "Voorbeeld bekijken...",
 

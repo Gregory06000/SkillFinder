@@ -4491,6 +4491,7 @@ function renderBackground(bgId: string) {
 // ══════════════════════════════════════════════
 
 const CATEGORY_VIEWBOX: Record<string, string> = {
+  expression: "0 0 32 32",
   hair:       "40 15 120 80",
   hat:        "35 -5 130 85",
   outfit:     "50 138 100 90",
@@ -4517,6 +4518,80 @@ export function MiniItemPreview({ itemId, category, size = 32 }: {
   let content: React.ReactNode = null;
 
   switch (category) {
+    case "expression": {
+      // Mini face icons — circle face with expression-specific eyes + mouth
+      const faces: Record<string, React.ReactNode> = {
+        expr_default: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <circle cx="11" cy="14" r="2.5" fill="#6B4226"/><circle cx="21" cy="14" r="2.5" fill="#6B4226"/>
+          <circle cx="12" cy="13" r="1" fill="white" opacity="0.8"/><circle cx="22" cy="13" r="1" fill="white" opacity="0.8"/>
+          <path d="M11 20 Q16 24 21 20" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+        </g>),
+        expr_happy: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <circle cx="11" cy="14" r="2.5" fill="#6B4226"/><circle cx="21" cy="14" r="2.5" fill="#6B4226"/>
+          <circle cx="12" cy="13" r="1" fill="white" opacity="0.8"/><circle cx="22" cy="13" r="1" fill="white" opacity="0.8"/>
+          <path d="M9 19 Q16 26 23 19" fill="none" stroke="#7A5A3A" strokeWidth="1.8" strokeLinecap="round"/>
+          <path d="M10 20 Q16 25 22 20" fill="#E88080" opacity="0.2"/>
+          <ellipse cx="8" cy="18" rx="3" ry="1.5" fill="#F5A5A5" opacity="0.4"/>
+          <ellipse cx="24" cy="18" rx="3" ry="1.5" fill="#F5A5A5" opacity="0.4"/>
+        </g>),
+        expr_excited: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <circle cx="11" cy="13" r="3" fill="#6B4226"/><circle cx="21" cy="13" r="3" fill="#6B4226"/>
+          <circle cx="12" cy="12" r="1.2" fill="white" opacity="0.9"/><circle cx="22" cy="12" r="1.2" fill="white" opacity="0.9"/>
+          <ellipse cx="16" cy="22" rx="4" ry="3.5" fill="#7A5A3A"/>
+          <path d="M12 19 L20 19" stroke="white" strokeWidth="1.5"/>
+          <ellipse cx="16" cy="24" rx="2.5" ry="1.5" fill="#E88080"/>
+          <path d="M7 8 L9 6 L11 8" fill="none" stroke="#FFD700" strokeWidth="1.2"/>
+          <path d="M21 8 L23 6 L25 8" fill="none" stroke="#FFD700" strokeWidth="1.2"/>
+        </g>),
+        expr_proud: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <path d="M7 14 Q11 11 15 14" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M17 14 Q21 11 25 14" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M10 20 Q16 24 22 20" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+          <ellipse cx="8" cy="18" rx="3" ry="1.5" fill="#F5A5A5" opacity="0.5"/>
+          <ellipse cx="24" cy="18" rx="3" ry="1.5" fill="#F5A5A5" opacity="0.5"/>
+        </g>),
+        expr_surprised: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <circle cx="11" cy="13" r="3.5" fill="white" stroke="#DDBFA0" strokeWidth="0.8"/>
+          <circle cx="21" cy="13" r="3.5" fill="white" stroke="#DDBFA0" strokeWidth="0.8"/>
+          <circle cx="11" cy="13" r="2" fill="#6B4226"/><circle cx="21" cy="13" r="2" fill="#6B4226"/>
+          <circle cx="12" cy="12" r="0.8" fill="white" opacity="0.8"/><circle cx="22" cy="12" r="0.8" fill="white" opacity="0.8"/>
+          <ellipse cx="16" cy="22" rx="3" ry="4" fill="#7A5A3A"/>
+          <ellipse cx="16" cy="21" rx="2" ry="3" fill="#5A3A2A"/>
+        </g>),
+        expr_thinking: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <circle cx="11" cy="14" r="2.5" fill="#6B4226"/><circle cx="21" cy="14" r="2.5" fill="#6B4226"/>
+          <circle cx="12" cy="13" r="1" fill="white" opacity="0.8"/><circle cx="22" cy="13" r="1" fill="white" opacity="0.8"/>
+          <path d="M7 10 Q10 8 13 10" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M19 11 Q22 10 25 11" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M11 21 Q14 20 16 21 Q18 22 21 21" fill="none" stroke="#7A5A3A" strokeWidth="1.2" strokeLinecap="round"/>
+          <path d="M26 11 Q27 8 28 11" fill="#87CEEB" opacity="0.5"/>
+        </g>),
+        expr_love: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <path d="M7 12 Q7 9 9.5 9 Q12 9 12 12 Q12 15 9.5 17 Q7 15 7 12Z" fill="#EC4899"/>
+          <path d="M20 12 Q20 9 22.5 9 Q25 9 25 12 Q25 15 22.5 17 Q20 15 20 12Z" fill="#EC4899"/>
+          <path d="M9 20 Q16 26 23 20" fill="none" stroke="#7A5A3A" strokeWidth="1.8" strokeLinecap="round"/>
+          <ellipse cx="8" cy="18" rx="3" ry="1.5" fill="#F5A5A5" opacity="0.5"/>
+          <ellipse cx="24" cy="18" rx="3" ry="1.5" fill="#F5A5A5" opacity="0.5"/>
+        </g>),
+        expr_wink: (<g>
+          <circle cx="16" cy="16" r="14" fill="#FDDCBD" stroke="#E0C8A0" strokeWidth="1"/>
+          <circle cx="11" cy="14" r="2.5" fill="#6B4226"/>
+          <circle cx="12" cy="13" r="1" fill="white" opacity="0.8"/>
+          <path d="M18 14 Q21 12 24 14" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+          <path d="M9 20 Q16 25 23 20" fill="none" stroke="#7A5A3A" strokeWidth="1.5" strokeLinecap="round"/>
+          <ellipse cx="20" cy="22" rx="2" ry="1.2" fill="#E88080"/>
+        </g>),
+      };
+      content = faces[itemId] || faces.expr_default;
+      break;
+    }
     case "hat":
       content = renderHat(itemId);
       break;
@@ -4599,16 +4674,25 @@ export default function Mascot({
   animate = false,
   customization,
 }: MascotProps) {
-  const isSad = pose === "sad";
-  const isSearch = pose === "search";
-  const isHappy = pose === "happy";
-  const isExcited = pose === "excited";
-  const isProud = pose === "proud";
-  const isSurprised = pose === "surprised";
-  const isThinking = pose === "thinking";
-  const isLove = pose === "love";
-  const isWink = pose === "wink";
   const c = customization || DEFAULT_CUSTOMIZATION;
+
+  // If pose is "default", use the user-chosen expression; otherwise use the programmatic pose
+  const EXPR_TO_POSE: Record<string, MascotPose> = {
+    expr_default: "default", expr_happy: "happy", expr_excited: "excited",
+    expr_proud: "proud", expr_surprised: "surprised", expr_thinking: "thinking",
+    expr_love: "love", expr_wink: "wink",
+  };
+  const effectivePose = pose === "default" ? (EXPR_TO_POSE[c.expression] || "default") : pose;
+
+  const isSad = effectivePose === "sad";
+  const isSearch = effectivePose === "search";
+  const isHappy = effectivePose === "happy";
+  const isExcited = effectivePose === "excited";
+  const isProud = effectivePose === "proud";
+  const isSurprised = effectivePose === "surprised";
+  const isThinking = effectivePose === "thinking";
+  const isLove = effectivePose === "love";
+  const isWink = effectivePose === "wink";
 
   const scarfColor = SCARF_COLORS[c.scarf] || SCARF_COLORS.red;
   const bootColor = BOOT_COLORS[c.boots] || BOOT_COLORS.brown;
