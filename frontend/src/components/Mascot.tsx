@@ -3,7 +3,7 @@
 import type { MascotCustomization } from "@/lib/mascotItems";
 import { SCARF_COLORS, BOOT_COLORS, DEFAULT_CUSTOMIZATION } from "@/lib/mascotItems";
 
-export type MascotPose = "default" | "search" | "sad" | "wave";
+export type MascotPose = "default" | "search" | "sad" | "wave" | "happy" | "excited" | "proud" | "surprised" | "thinking" | "love" | "wink";
 
 interface MascotProps {
   pose?: MascotPose;
@@ -4499,6 +4499,13 @@ export default function Mascot({
 }: MascotProps) {
   const isSad = pose === "sad";
   const isSearch = pose === "search";
+  const isHappy = pose === "happy";
+  const isExcited = pose === "excited";
+  const isProud = pose === "proud";
+  const isSurprised = pose === "surprised";
+  const isThinking = pose === "thinking";
+  const isLove = pose === "love";
+  const isWink = pose === "wink";
   const c = customization || DEFAULT_CUSTOMIZATION;
 
   const scarfColor = SCARF_COLORS[c.scarf] || SCARF_COLORS.red;
@@ -4854,8 +4861,33 @@ export default function Mascot({
           <path d="M72 85 Q80 80 90 87" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
           <path d="M110 87 Q120 80 128 85" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
         </>
+      ) : isSurprised || isExcited ? (
+        <>
+          {/* Raised eyebrows */}
+          <path d="M73 78 Q81 72 92 76" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+          <path d="M108 76 Q119 72 127 78" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+        </>
+      ) : isThinking ? (
+        <>
+          {/* One raised, one furrowed */}
+          <path d="M73 82 Q81 76 92 80" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+          <path d="M108 86 Q116 82 127 86" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+        </>
+      ) : isProud ? (
+        <>
+          {/* Confident, slightly lowered */}
+          <path d="M73 84 Q81 80 92 83" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+          <path d="M108 83 Q119 80 127 84" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+        </>
+      ) : isWink ? (
+        <>
+          {/* Normal left, playful right */}
+          <path d="M73 85 Q81 78 92 83" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+          <path d="M108 82 Q119 77 127 83" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
+        </>
       ) : (
         <>
+          {/* Default / happy / love */}
           <path d="M73 85 Q81 78 92 83" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
           <path d="M108 83 Q119 78 127 85" fill="none" stroke="#7A5A3A" strokeWidth="2.8" strokeLinecap="round"/>
         </>
@@ -4863,31 +4895,77 @@ export default function Mascot({
 
       {/* ── Eyes ── */}
       <g className="mascot-eyes">
-        {/* Left eye */}
-        <ellipse cx="84" cy="100" rx="13" ry="14" fill="white"/>
-        <ellipse cx="84" cy="100" rx="13" ry="14" fill="none" stroke="#DDBFA0" strokeWidth="1.2"/>
-        <g className="mascot-pupils">
-          {/* Iris */}
-          <circle cx={isSearch ? "88" : "85"} cy={isSearch ? "101" : "100"} r="8" fill="#6B4226"/>
-          {/* Pupil */}
-          <circle cx={isSearch ? "88" : "85"} cy={isSearch ? "101" : "100"} r="4.5" fill="#3D2314"/>
-          {/* Iris ring detail */}
-          <circle cx={isSearch ? "88" : "85"} cy={isSearch ? "101" : "100"} r="7" fill="none" stroke="#8B5E3C" strokeWidth="0.5" opacity="0.5"/>
-          {/* Catchlight big */}
-          <circle cx={isSearch ? "89.5" : "86.5"} cy={isSearch ? "97" : "96"} r="3" fill="white" opacity="0.9"/>
-          {/* Catchlight small */}
-          <circle cx={isSearch ? "86" : "83"} cy={isSearch ? "103" : "102"} r="1.5" fill="white" opacity="0.5"/>
-        </g>
-        {/* Right eye */}
-        <ellipse cx="116" cy="100" rx="13" ry="14" fill="white"/>
-        <ellipse cx="116" cy="100" rx="13" ry="14" fill="none" stroke="#DDBFA0" strokeWidth="1.2"/>
-        <g className="mascot-pupils">
-          <circle cx={isSearch ? "120" : "117"} cy={isSearch ? "101" : "100"} r="8" fill="#6B4226"/>
-          <circle cx={isSearch ? "120" : "117"} cy={isSearch ? "101" : "100"} r="4.5" fill="#3D2314"/>
-          <circle cx={isSearch ? "120" : "117"} cy={isSearch ? "101" : "100"} r="7" fill="none" stroke="#8B5E3C" strokeWidth="0.5" opacity="0.5"/>
-          <circle cx={isSearch ? "121.5" : "118.5"} cy={isSearch ? "97" : "96"} r="3" fill="white" opacity="0.9"/>
-          <circle cx={isSearch ? "118" : "115"} cy={isSearch ? "103" : "102"} r="1.5" fill="white" opacity="0.5"/>
-        </g>
+        {isProud ? (
+          <>
+            {/* Proud: closed eyes (happy arcs) */}
+            <path d="M71 100 Q84 90 97 100" fill="none" stroke="#7A5A3A" strokeWidth="2.5" strokeLinecap="round"/>
+            <path d="M103 100 Q116 90 129 100" fill="none" stroke="#7A5A3A" strokeWidth="2.5" strokeLinecap="round"/>
+          </>
+        ) : isLove ? (
+          <>
+            {/* Heart eyes */}
+            <g transform="translate(84, 98)">
+              <path d="M0 -4 Q0 -9 5 -9 Q10 -9 10 -4 Q10 2 5 7 Q0 2 0 -4Z" fill="#EC4899" transform="translate(-5, -1) scale(1.5)"/>
+            </g>
+            <g transform="translate(116, 98)">
+              <path d="M0 -4 Q0 -9 5 -9 Q10 -9 10 -4 Q10 2 5 7 Q0 2 0 -4Z" fill="#EC4899" transform="translate(-5, -1) scale(1.5)"/>
+            </g>
+          </>
+        ) : isWink ? (
+          <>
+            {/* Left eye normal */}
+            <ellipse cx="84" cy="100" rx="13" ry="14" fill="white"/>
+            <ellipse cx="84" cy="100" rx="13" ry="14" fill="none" stroke="#DDBFA0" strokeWidth="1.2"/>
+            <g className="mascot-pupils">
+              <circle cx="85" cy="100" r="8" fill="#6B4226"/>
+              <circle cx="85" cy="100" r="4.5" fill="#3D2314"/>
+              <circle cx="86.5" cy="96" r="3" fill="white" opacity="0.9"/>
+              <circle cx="83" cy="102" r="1.5" fill="white" opacity="0.5"/>
+            </g>
+            {/* Right eye: winking (closed arc) */}
+            <path d="M103 100 Q116 92 129 100" fill="none" stroke="#7A5A3A" strokeWidth="2.5" strokeLinecap="round"/>
+          </>
+        ) : (
+          <>
+            {/* Standard eyes — size varies by expression */}
+            {(() => {
+              const eyeRy = (isSurprised || isExcited) ? 16 : 14;
+              const pupilR = (isSurprised || isExcited) ? 5.5 : isHappy ? 4 : 4.5;
+              const irisR = (isSurprised || isExcited) ? 9 : 8;
+              const lx = isSearch ? 88 : isThinking ? 88 : 85;
+              const ly = isSearch ? 101 : 100;
+              const rx = isSearch ? 120 : isThinking ? 120 : 117;
+              const ry = isSearch ? 101 : 100;
+              return (
+                <>
+                  {/* Left eye */}
+                  <ellipse cx="84" cy="100" rx="13" ry={eyeRy} fill="white"/>
+                  <ellipse cx="84" cy="100" rx="13" ry={eyeRy} fill="none" stroke="#DDBFA0" strokeWidth="1.2"/>
+                  <g className="mascot-pupils">
+                    <circle cx={lx} cy={ly} r={irisR} fill="#6B4226"/>
+                    <circle cx={lx} cy={ly} r={pupilR} fill="#3D2314"/>
+                    <circle cx={lx} cy={ly} r={irisR - 1} fill="none" stroke="#8B5E3C" strokeWidth="0.5" opacity="0.5"/>
+                    <circle cx={lx + 1.5} cy={ly - 4} r="3" fill="white" opacity="0.9"/>
+                    <circle cx={lx - 2} cy={ly + 2} r="1.5" fill="white" opacity="0.5"/>
+                    {/* Sparkle for excited/happy */}
+                    {(isExcited || isHappy) && <circle cx={lx + 3} cy={ly - 2} r="1" fill="white" opacity="0.7"/>}
+                  </g>
+                  {/* Right eye */}
+                  <ellipse cx="116" cy="100" rx="13" ry={eyeRy} fill="white"/>
+                  <ellipse cx="116" cy="100" rx="13" ry={eyeRy} fill="none" stroke="#DDBFA0" strokeWidth="1.2"/>
+                  <g className="mascot-pupils">
+                    <circle cx={rx} cy={ry} r={irisR} fill="#6B4226"/>
+                    <circle cx={rx} cy={ry} r={pupilR} fill="#3D2314"/>
+                    <circle cx={rx} cy={ry} r={irisR - 1} fill="none" stroke="#8B5E3C" strokeWidth="0.5" opacity="0.5"/>
+                    <circle cx={rx + 1.5} cy={ry - 4} r="3" fill="white" opacity="0.9"/>
+                    <circle cx={rx - 2} cy={ry + 2} r="1.5" fill="white" opacity="0.5"/>
+                    {(isExcited || isHappy) && <circle cx={rx + 3} cy={ry - 2} r="1" fill="white" opacity="0.7"/>}
+                  </g>
+                </>
+              );
+            })()}
+          </>
+        )}
       </g>
 
       {/* ── Nose ── */}
@@ -4897,17 +4975,90 @@ export default function Mascot({
       {/* ── Mouth ── */}
       {isSad ? (
         <path d="M90 123 Q100 117 110 123" fill="none" stroke="#7A5A3A" strokeWidth="2.2" strokeLinecap="round"/>
+      ) : isHappy || isLove ? (
+        <>
+          {/* Big open smile */}
+          <path d="M83 118 Q100 136 117 118" fill="none" stroke="#7A5A3A" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M85 120 Q100 134 115 120" fill="#E88080" opacity="0.25"/>
+          {/* Teeth hint */}
+          <path d="M92 122 L108 122" stroke="white" strokeWidth="2" opacity="0.5"/>
+        </>
+      ) : isExcited ? (
+        <>
+          {/* Wide open mouth */}
+          <ellipse cx="100" cy="125" rx="12" ry="9" fill="#7A5A3A"/>
+          <ellipse cx="100" cy="124" rx="10" ry="7" fill="#5A3A2A"/>
+          {/* Tongue */}
+          <ellipse cx="100" cy="129" rx="6" ry="4" fill="#E88080"/>
+          {/* Teeth */}
+          <path d="M90 120 L110 120" stroke="white" strokeWidth="2.5"/>
+        </>
+      ) : isProud ? (
+        <>
+          {/* Smug/content smile */}
+          <path d="M86 120 Q100 130 114 120" fill="none" stroke="#7A5A3A" strokeWidth="2.5" strokeLinecap="round"/>
+          <path d="M88 121 Q100 128 112 121" fill="#E88080" opacity="0.2"/>
+        </>
+      ) : isSurprised ? (
+        <>
+          {/* O-shaped mouth */}
+          <ellipse cx="100" cy="124" rx="8" ry="10" fill="#7A5A3A"/>
+          <ellipse cx="100" cy="123" rx="6" ry="8" fill="#5A3A2A"/>
+        </>
+      ) : isThinking ? (
+        <>
+          {/* Wavy thinking mouth */}
+          <path d="M88 122 Q94 120 100 123 Q106 126 112 122" fill="none" stroke="#7A5A3A" strokeWidth="2" strokeLinecap="round"/>
+        </>
+      ) : isWink ? (
+        <>
+          {/* Cheeky smile */}
+          <path d="M85 119 Q100 132 115 119" fill="none" stroke="#7A5A3A" strokeWidth="2.2" strokeLinecap="round"/>
+          <path d="M87 120 Q100 130 113 120" fill="#E88080" opacity="0.2"/>
+          {/* Tongue peek */}
+          <ellipse cx="108" cy="127" rx="4" ry="3" fill="#E88080"/>
+        </>
       ) : (
         <>
+          {/* Default smile */}
           <path d="M87 120 Q100 131 113 120" fill="none" stroke="#7A5A3A" strokeWidth="2.2" strokeLinecap="round"/>
-          {/* Smile fill */}
           <path d="M89 121 Q100 129 111 121" fill="#E88080" opacity="0.15"/>
         </>
       )}
 
       {/* ── Cheeks ── */}
-      <ellipse cx="68" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity="0.35"/>
-      <ellipse cx="132" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity="0.35"/>
+      <ellipse cx="68" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity={(isHappy || isExcited || isLove || isProud) ? "0.55" : "0.35"}/>
+      <ellipse cx="132" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity={(isHappy || isExcited || isLove || isProud) ? "0.55" : "0.35"}/>
+
+      {/* ── Expression extras ── */}
+      {/* Sweat drop for thinking */}
+      {isThinking && (
+        <g>
+          <path d="M140 82 Q142 76 144 82 Q142 86 140 82Z" fill="#87CEEB" opacity="0.6"/>
+        </g>
+      )}
+      {/* Sparkles around head for excited */}
+      {isExcited && (
+        <g className="anim-sparkle-1">
+          <path d="M52 70 L54 65 L56 70 L54 75Z" fill="#FFD700" opacity="0.6"/>
+          <path d="M145 65 L147 60 L149 65 L147 70Z" fill="#FFD700" opacity="0.6"/>
+          <path d="M100 42 L102 37 L104 42 L102 47Z" fill="#FFD700" opacity="0.5"/>
+        </g>
+      )}
+      {/* Hearts floating for love */}
+      {isLove && (
+        <g>
+          <g className="anim-sparkle-1" transform="translate(50, 62) scale(0.6)">
+            <path d="M0 -4 Q0 -9 5 -9 Q10 -9 10 -4 Q10 2 5 7 Q0 2 0 -4Z" fill="#EC4899" opacity="0.5"/>
+          </g>
+          <g className="anim-sparkle-2" transform="translate(142, 58) scale(0.5)">
+            <path d="M0 -4 Q0 -9 5 -9 Q10 -9 10 -4 Q10 2 5 7 Q0 2 0 -4Z" fill="#EC4899" opacity="0.4"/>
+          </g>
+          <g className="anim-sparkle-3" transform="translate(120, 48) scale(0.45)">
+            <path d="M0 -4 Q0 -9 5 -9 Q10 -9 10 -4 Q10 2 5 7 Q0 2 0 -4Z" fill="#EC4899" opacity="0.35"/>
+          </g>
+        </g>
+      )}
 
       {/* ── Freckles ── */}
       <g opacity="0.2" fill="#C49A6C">

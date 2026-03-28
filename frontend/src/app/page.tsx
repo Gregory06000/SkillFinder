@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, lazy, Suspense, useMemo, useEffect } from "react";
+import { useState, lazy, Suspense, useMemo, useEffect, useCallback, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import SearchBar from "@/components/SearchBar";
 import ResultCard from "@/components/ResultCard";
@@ -21,7 +21,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 import { useTheme } from "@/lib/useTheme";
 import { trackEvent } from "@/lib/analytics";
-import Mascot from "@/components/Mascot";
+import Mascot, { type MascotPose } from "@/components/Mascot";
 import { loadMascotCustomization } from "@/lib/mascotItems";
 import { fetchFriendsFavorites, syncFavorites, getSharingStatus, type FriendFavorites } from "@/lib/api";
 import { useSuggestions } from "@/lib/useSuggestions";
@@ -84,6 +84,13 @@ function Home() {
   );
   const [friendFavs, setFriendFavs] = useState<FriendFavorites[]>([]);
   const [mascotCustom, setMascotCustom] = useState(() => loadMascotCustomization());
+  const [mascotPose, setMascotPose] = useState<MascotPose>("default");
+  const poseTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const flashPose = useCallback((pose: MascotPose, durationMs = 2500) => {
+    clearTimeout(poseTimer.current);
+    setMascotPose(pose);
+    poseTimer.current = setTimeout(() => setMascotPose("default"), durationMs);
+  }, []);
 
   // Load friend favorites on login
   useEffect(() => {
@@ -104,6 +111,22 @@ function Home() {
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [favs.favorites, user]);
+
+  // ── Mascot contextual reactions ──
+  // Tier-up → excited
+  useEffect(() => { if (rewards.tierUp) flashPose("excited", 3500); }, [rewards.tierUp, flashPose]);
+  // Milestone/conversion → proud
+  useEffect(() => { if (rewards.showConversion) flashPose("proud", 3000); }, [rewards.showConversion, flashPose]);
+  // Flying text (points awarded = vote) → happy
+  useEffect(() => { if (rewards.flyingText) flashPose("happy", 2000); }, [rewards.flyingText, flashPose]);
+  // Search results → search pose is already handled inline
+  // No results → sad is already handled inline
+  // Favorites change → love
+  const prevFavCount = useRef(favs.favorites.length);
+  useEffect(() => {
+    if (favs.favorites.length > prevFavCount.current) flashPose("love", 2000);
+    prevFavCount.current = favs.favorites.length;
+  }, [favs.favorites.length, flashPose]);
 
   const verification = useVerification({
     setResults: search.setResults,
@@ -163,7 +186,7 @@ function Home() {
           }}
           className="flex items-center gap-2.5 no-underline"
         >
-          <Mascot pose="default" size={44} customization={mascotCustom} />
+          <Mascot pose={mascotPose} size={44} customization={mascotCustom} />
           <span className="font-serif text-2xl font-bold text-sf-text tracking-tight">
             Skill<span className="text-sf-accent">Finder</span>
           </span>

@@ -476,7 +476,7 @@ export default function ProfilePage() {
                   className="p-8 flex flex-col items-center"
                   style={{ background: "linear-gradient(135deg, var(--sf-gold-light), var(--sf-accent-pale))" }}
                 >
-                  <Mascot size={180} customization={previewCustom || mascotCustom} />
+                  <Mascot size={180} customization={previewCustom || mascotCustom} pose={previewCustom ? "wink" : "default"} />
                   <div className="mt-3 text-sm font-semibold text-sf-text">{pseudo}</div>
                   <div className="text-xs text-sf-gold">{t(rank.titleKey)} &middot; {t("stats.tier", { palier: rank.palier })}</div>
                 </div>
