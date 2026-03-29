@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
 import { getUserRank, getLevel, TIERS, type UserRank } from "@/lib/gamification";
+import { trackEvent } from "@/lib/analytics";
 import { computeBadges, type Badge } from "@/lib/badges";
 import {
   fetchUserProfile,
@@ -224,6 +225,7 @@ export default function ProfilePage() {
   function handleMascotChange(custom: MascotCustomization) {
     setMascotCustom(custom);
     saveMascotCustomization(custom);
+    trackEvent("MascotCustomize");
     if (user) {
       getAccessToken().then((token) => {
         if (token) saveMascotCustom(token, custom);

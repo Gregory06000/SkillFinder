@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
+import { trackEvent } from "@/lib/analytics";
 
 interface ConversionModalProps {
   onClose: () => void;
@@ -41,6 +42,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
   }, [onClose]);
 
   async function handleGoogleSignIn() {
+    trackEvent("Login", { method: "google" });
     await signInWithGoogle();
   }
 
@@ -58,6 +60,7 @@ export default function ConversionModal({ onClose, variant = "milestone", rankTi
     if (result.error) {
       setError(result.error);
     } else {
+      trackEvent(mode === "signup" ? "Signup" : "Login", { method: "email" });
       onClose();
     }
   }

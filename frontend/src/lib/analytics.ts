@@ -1,6 +1,7 @@
-// Plausible Analytics — privacy-first, cookie-free, RGPD compliant
-// Custom events are sent only if the Plausible script is loaded.
-// https://plausible.io/docs/custom-event-goals
+import { track } from "@vercel/analytics";
+
+// Unified event tracker — sends to Vercel Analytics (primary)
+// and Plausible (if loaded, as secondary/future option).
 
 declare global {
   interface Window {
@@ -15,6 +16,14 @@ export function trackEvent(
   event: string,
   props?: Record<string, string | number | boolean>,
 ): void {
+  // Vercel Analytics
+  try {
+    track(event, props);
+  } catch {
+    // Vercel Analytics not loaded (e.g. no consent yet) — silently skip
+  }
+
+  // Plausible (if script loaded)
   if (typeof window !== "undefined" && typeof window.plausible === "function") {
     window.plausible(event, props ? { props } : undefined);
   }

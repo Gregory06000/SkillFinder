@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 const FAVORITES_KEY = "sf_favorites";
 const MAX_FAVORITES = 50;
@@ -52,6 +53,7 @@ export function useFavorites() {
         if (exists) {
           return prev.filter((f) => f.name !== item.name);
         }
+        trackEvent("Favorite", { name: item.name });
         return [{ ...item, addedAt: Date.now() }, ...prev].slice(0, MAX_FAVORITES);
       });
     },
