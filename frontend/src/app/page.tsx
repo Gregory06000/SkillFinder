@@ -23,7 +23,7 @@ import { useTheme } from "@/lib/useTheme";
 import { trackEvent } from "@/lib/analytics";
 import Mascot, { type MascotPose } from "@/components/Mascot";
 import { loadMascotCustomization } from "@/lib/mascotItems";
-import { fetchFriendsFavorites, syncFavorites, getSharingStatus, type FriendFavorites } from "@/lib/api";
+import { fetchFriendsFavorites, fetchPendingRequests, syncFavorites, getSharingStatus, type FriendFavorites } from "@/lib/api";
 import { useSuggestions } from "@/lib/useSuggestions";
 import SuggestionsPanel from "@/components/SuggestionsPanel";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -83,6 +83,7 @@ function Home() {
     favs.isFavorite,
   );
   const [friendFavs, setFriendFavs] = useState<FriendFavorites[]>([]);
+  const [pendingCount, setPendingCount] = useState(0);
   const [mascotCustom, setMascotCustom] = useState(() => loadMascotCustomization());
   const [mascotPose, setMascotPose] = useState<MascotPose>("default");
   const poseTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -98,6 +99,20 @@ function Home() {
     getAccessToken().then((token) => {
       if (token) fetchFriendsFavorites(token).then(setFriendFavs);
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  // Fetch pending friend requests count (poll every 60s)
+  useEffect(() => {
+    if (!user) { setPendingCount(0); return; }
+    const fetchCount = () => {
+      getAccessToken().then((token) => {
+        if (token) fetchPendingRequests(token).then((r) => setPendingCount(r.length));
+      });
+    };
+    fetchCount();
+    const interval = setInterval(fetchCount, 60_000);
+    return () => clearInterval(interval);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -246,11 +261,18 @@ function Home() {
           <button
             onClick={() => router.push("/profile")}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
-            className="hidden sm:flex items-center gap-2.5 border border-sf-gold/25
+            className="relative hidden sm:flex items-center gap-2.5 border border-sf-gold/25
                         rounded-full py-1 pl-1.5 pr-3.5 cursor-pointer transition-shadow
                         hover:shadow-sf-sm"
             style={{ background: "var(--sf-gold-light)" }}
           >
+            {pendingCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full bg-red-500
+                              text-white text-[10px] font-bold flex items-center justify-center px-1 shadow-sm
+                              animate-pulse">
+                {pendingCount}
+              </span>
+            )}
             {rewards.avatarData.avatarPhoto ? (
               <div className="w-[30px] h-[30px] rounded-full overflow-hidden">
                 <img src={rewards.avatarData.avatarPhoto} alt="Avatar" className="w-full h-full object-cover" />
@@ -327,7 +349,7 @@ function Home() {
           <button
             onClick={() => router.push("/profile")}
             aria-label={t("nav.profileAria", { pseudo: rewards.rewards.pseudo })}
-            className="sm:hidden"
+            className="sm:hidden relative"
           >
             {rewards.avatarData.avatarPhoto ? (
               <div className="w-8 h-8 rounded-full overflow-hidden border border-sf-gold/25">
@@ -341,6 +363,13 @@ function Home() {
               >
                 {rewards.rewards.pseudo.charAt(0).toUpperCase()}
               </div>
+            )}
+            {pendingCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] rounded-full bg-red-500
+                              text-white text-[10px] font-bold flex items-center justify-center px-1 shadow-sm
+                              animate-pulse">
+                {pendingCount}
+              </span>
             )}
           </button>
 
