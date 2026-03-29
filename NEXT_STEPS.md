@@ -2,7 +2,7 @@
 
 > Ou en est-on : produit complet, deploye sur skillfinder.fr, toutes les features prevues sont livrees.
 > Ce qui manque : des utilisateurs reels et des donnees pour prendre des decisions.
-> Date : 29 Mars 2026
+> Derniere mise a jour : 29 Mars 2026
 
 ---
 
@@ -13,81 +13,70 @@
 - Carte Google Maps interactive
 - Systeme de vote, favoris, commentaires communautaires
 - Gamification complete (points, tiers, badges, leaderboard)
-- Mascotte Findy personnalisable (11 categories, 150+ items, animations)
-- Systeme d'amis + partage de favoris
+- Mascotte Findy personnalisable (11 categories, 150+ items, animations idle)
+- Couleur de peau (9 tons), lunettes (11 styles), pilosite (10 styles)
+- Mini mascottes dans le leaderboard (visibilite sociale)
+- Systeme d'amis + partage de favoris + badge notification demandes
 - Suggestions intelligentes
 - Mode sombre, partage par lien, historique
 - SEO de base (sitemap, robots.txt, Search Console)
-- Domaine skillfinder.fr + HTTPS
+- 300 landing pages SEO `/ville/[city]/[service]` avec liens internes
+- Domaine skillfinder.fr + HTTPS + redirect www → non-www (308)
 - Notifications email (infrastructure prete)
 - 7 langues (FR, EN, DE, ES, IT, NL, PT)
+- Analytics Vercel (7 evenements : Search, Vote, Compare, Signup, Login, Favorite, MascotCustomize)
+- Onboarding nouveaux visiteurs (quick-start chips + popup PWA install)
 
 ### Ce qui manque
 - **Des utilisateurs** — sans trafic, rien d'autre ne compte
-- **Des metriques** — on ne sait pas combien de gens utilisent l'app ni comment
-- **La beta privee** — jamais faite (etape 5 de ROADMAP_LANCEMENT.md)
+- **La beta elargie** — 5 retours positifs, a elargir a 20-30 personnes
 
 ---
 
 ## Plan d'action — par ordre strict
 
-### Etape 1 : Analytics (1-2h)
-**Pourquoi en premier** : impossible de prendre une decision sans donnees.
+### Etape 1 : Analytics (1-2h) ✅ FAIT
+- [x] Vercel Analytics active et fonctionnel
+- [x] 7 evenements cles dans le code (Search, Vote, Compare, Signup, Login, Favorite, MascotCustomize)
+- [x] Dashboard Vercel Analytics disponible
 
-- [ ] Verifier que Vercel Analytics fonctionne (il est conditionne au cookie consent)
-- [ ] Ajouter des evenements cles dans le code :
-  - Recherche lancee (service + ville)
-  - Vote effectue
-  - Favori ajoute
-  - Inscription / connexion
-  - Personnalisation mascotte
-- [ ] Creer un dashboard simple (Vercel Analytics ou Plausible si besoin de plus)
-- [ ] Documenter les metriques suivies
-
-**Resultat** : tu sais combien de gens font quoi, chaque jour.
+**Resultat** : 15 visiteurs / 87 pages vues / 33% bounce rate sur les 7 derniers jours.
 
 ---
 
-### Etape 2 : Beta privee (1 semaine)
-**Pourquoi** : valider que le produit fonctionne pour de vrais utilisateurs avant de communiquer.
-
-- [ ] Inviter 20-50 personnes (famille, amis, collegues, communautes Discord/Telegram)
-- [ ] Leur donner une mission precise : "Cherche un coiffeur a Nice et dis-moi ce que tu en penses"
+### Etape 2 : Beta privee (1 semaine) — EN COURS
+- [x] Inviter 5 personnes — retours positifs
+- [ ] Elargir a 20-30 personnes (collegues, connaissances, groupes Discord/Telegram)
+- [ ] Leur donner une mission precise : "Cherche un coiffeur a [ta ville] sur skillfinder.fr"
 - [ ] Collecter les retours (formulaire Google Forms ou simple message)
 - [ ] Corriger les bugs bloquants signales
 - [ ] Observer les analytics : ou les gens abandonnent ?
 
-**Resultat** : bugs critiques corriges, premiers retours reels, confiance pour communiquer.
+**Resultat attendu** : bugs critiques corriges, premiers retours reels, confiance pour communiquer.
 
 ---
 
-### Etape 3 : SEO — Landing pages par ville/service (1-2 semaines)
-**Pourquoi** : c'est le canal d'acquisition #1 pour un outil de recherche locale. Gratuit et durable.
+### Etape 3 : SEO — Landing pages par ville/service ✅ FAIT
+- [x] 300 pages statiques `/ville/[city]/[service]` (20 villes x 15 services)
+- [x] Contenu unique par page : titre, meta description, JSON-LD (schema.org)
+- [x] Liens internes depuis la homepage (50 liens visibles + 300 en section depliable)
+- [x] URL canonique sur la homepage (evite les doublons query params)
+- [x] Redirect www → non-www configure (308 permanent)
+- [x] Sitemap soumis a Google Search Console (301 URLs)
+- [x] Indexation demandee manuellement pour 10 pages strategiques
 
-- [ ] Creer des pages statiques `/[service]/[ville]` (ex: `/coiffeur/lyon`, `/plombier/paris`)
-- [ ] 20 villes x 15 services = 300 pages indexables
-- [ ] Contenu unique par page : titre, meta description, FAQ structuree (schema.org)
-- [ ] Lien vers la recherche pre-remplie
-- [ ] Soumettre le nouveau sitemap a Google Search Console
-- [ ] Suivre l'indexation et les positions dans Search Console
-
-**Resultat** : SkillFinder apparait dans Google quand quelqu'un cherche "meilleur coiffeur Lyon".
-
----
-
-### Etape 4 : Onboarding premier utilisateur (2-3 jours)
-**Pourquoi** : un visiteur qui ne comprend pas en 5 secondes part et ne revient jamais.
-
-- [ ] Flow d'accueil pour les nouveaux : "Bienvenue ! Que cherchez-vous ?" → recherche guidee
-- [ ] Popup d'installation PWA sur mobile ("Ajouter a l'ecran d'accueil")
-- [ ] CTA clair sur la homepage pour les visiteurs non-connectes
-- [ ] Tester avec 3-5 personnes qui ne connaissent pas l'app et observer
-
-**Resultat** : meilleur taux de conversion visiteur → utilisateur actif.
+**Etat indexation (24 mars 2026)** : 34 pages indexees, 285 en file d'attente (normal pour un site neuf).
 
 ---
 
-### Etape 5 : Lancement public (quand les etapes 1-4 sont faites)
+### Etape 4 : Onboarding premier utilisateur ✅ FAIT
+- [x] Quick-start chips pour les nouveaux visiteurs (5 recherches rapides)
+- [x] Popup d'installation PWA sur mobile (beforeinstallprompt)
+- [x] Traductions dans les 7 langues
+
+---
+
+### Etape 5 : Lancement public (quand la beta elargie est faite)
 **Pourquoi** : communiquer avant d'etre pret = gaspiller son unique chance de premiere impression.
 
 - [ ] Preparer une video demo courte (30-60 sec) montrant une recherche de A a Z
@@ -129,8 +118,8 @@ Une fois le trafic en place, les metriques te diront quoi faire :
 ## Ce qu'il ne faut PAS faire maintenant
 
 - **Ajouter des features** — le produit est complet, chaque feature ajoutee sans utilisateurs est du temps perdu
+- **Implementer Stripe / les paiements** — les items premium sont visibles mais 0 utilisateur = 0 revenu. A faire quand 500+ utilisateurs actifs
 - **Developper l'app mobile native** — la PWA suffit largement pour les 10 000 premiers utilisateurs
-- **Monétiser** — zero utilisateur = zero revenu. Focus acquisition d'abord
 - **Refactorer le code** — il fonctionne, ne le touche pas tant qu'il n'y a pas de probleme reel
 - **Ajouter d'autres langues** — 7 langues pour 0 utilisateur c'est deja beaucoup
 
@@ -140,9 +129,7 @@ Une fois le trafic en place, les metriques te diront quoi faire :
 
 | Document | Contenu | Statut |
 |---|---|---|
-| `ROADMAP_LANCEMENT.md` | Etapes techniques pre-lancement | ✅ Etapes 1-4 terminees, etape 5 (beta) a faire |
-| `ROADMAP_BUSINESS.md` | Modeles de revenus et strategie de monetisation | 📆 A activer apres 500 utilisateurs actifs/mois |
-| `IDEES_FUTURES.md` | Idees de features | ✅ Tout livre — peut etre supprime |
+| `ROADMAP_BUSINESS.md` | Modeles de revenus et strategie de monetisation | A activer apres 500 utilisateurs actifs/mois |
 
 ---
 
