@@ -392,7 +392,7 @@ const it: Record<string, string> = {
   "mascot.item.exprLove": "Innamorato",
   "mascot.item.exprWink": "Occhiolino",
   // Skin Colors
-  "mascot.item.skinDefault": "Classica",
+  "mascot.item.skinDefault": "Pesca",
   "mascot.item.skinLight": "Chiara",
   "mascot.item.skinFair": "Porcellana",
   "mascot.item.skinMedium": "Media",

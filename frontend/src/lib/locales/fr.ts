@@ -336,7 +336,7 @@ const fr: Record<string, string> = {
   "mascot.item.exprLove": "Amoureux",
   "mascot.item.exprWink": "Clin d'oeil",
   // Skin Colors
-  "mascot.item.skinDefault": "Classique",
+  "mascot.item.skinDefault": "Pêche",
   "mascot.item.skinLight": "Claire",
   "mascot.item.skinFair": "Porcelaine",
   "mascot.item.skinMedium": "Medium",
