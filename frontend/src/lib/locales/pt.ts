@@ -599,6 +599,10 @@ const pt: Record<string, string> = {
   "cookie.accept": "Aceitar",
   "cookie.refuse": "Recusar",
 
+  // -- SEO internal links --
+  "seo.popularCities": "Pesquisas populares por cidade",
+  "seo.allServices": "Todos os servicos",
+
   // -- Footer --
   "footer.privacy": "Privacidade",
   "footer.legal": "Aviso legal",

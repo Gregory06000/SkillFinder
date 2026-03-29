@@ -599,6 +599,10 @@ const nl: Record<string, string> = {
   "cookie.accept": "Accepteren",
   "cookie.refuse": "Weigeren",
 
+  // -- SEO internal links --
+  "seo.popularCities": "Populaire zoekopdrachten per stad",
+  "seo.allServices": "Alle diensten",
+
   // -- Footer --
   "footer.privacy": "Privacy",
   "footer.legal": "Juridische informatie",

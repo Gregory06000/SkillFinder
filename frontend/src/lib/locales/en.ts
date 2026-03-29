@@ -599,6 +599,10 @@ const en: Record<string, string> = {
   "cookie.accept": "Accept",
   "cookie.refuse": "Decline",
 
+  // -- SEO internal links --
+  "seo.popularCities": "Popular searches by city",
+  "seo.allServices": "All services",
+
   // -- Footer --
   "footer.privacy": "Privacy",
   "footer.legal": "Legal notice",

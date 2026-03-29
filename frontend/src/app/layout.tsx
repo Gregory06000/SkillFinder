@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     icon: "/favicon.png",
     apple: "/icons/apple-touch-icon.png",
   },
+  alternates: {
+    canonical: "https://skillfinder.fr",
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",

@@ -600,6 +600,10 @@ const fr: Record<string, string> = {
   "cookie.accept": "J'accepte",
   "cookie.refuse": "Refuser",
 
+  // -- SEO internal links --
+  "seo.popularCities": "Recherches populaires par ville",
+  "seo.allServices": "Tous les services",
+
   // -- Footer --
   "footer.privacy": "Confidentialite",
   "footer.legal": "Mentions legales",

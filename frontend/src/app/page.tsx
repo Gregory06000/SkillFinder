@@ -549,6 +549,77 @@ function Home() {
         </section>
       )}
 
+      {/* ── SEO INTERNAL LINKS (visible when no results) ── */}
+      {!search.hasResults && !search.isLoading && (
+        <section className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-8 pb-4">
+          <h2 className="text-xs font-medium text-sf-text-light uppercase tracking-wider mb-3">
+            {t("seo.popularCities")}
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
+            {[
+              { city: "paris", label: "Paris" },
+              { city: "lyon", label: "Lyon" },
+              { city: "marseille", label: "Marseille" },
+              { city: "toulouse", label: "Toulouse" },
+              { city: "nice", label: "Nice" },
+              { city: "bordeaux", label: "Bordeaux" },
+              { city: "lille", label: "Lille" },
+              { city: "nantes", label: "Nantes" },
+              { city: "strasbourg", label: "Strasbourg" },
+              { city: "montpellier", label: "Montpellier" },
+            ].map(({ city, label }) => (
+              <div key={city} className="space-y-1">
+                <span className="text-xs font-semibold text-sf-text">{label}</span>
+                <div className="flex flex-wrap gap-1">
+                  {["coiffeur", "plombier", "restaurant", "dentiste", "electricien"].map((svc) => (
+                    <a
+                      key={svc}
+                      href={`/ville/${city}/${svc}`}
+                      className="text-[10px] text-sf-text-secondary hover:text-sf-accent transition-colors"
+                    >
+                      {svc.charAt(0).toUpperCase() + svc.slice(1)}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <details className="mt-3">
+            <summary className="text-xs text-sf-text-light cursor-pointer hover:text-sf-accent transition-colors">
+              {t("seo.allServices")}
+            </summary>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 mt-2">
+              {[
+                "coiffeur", "dentiste", "plombier", "electricien", "restaurant",
+                "boulangerie", "garagiste", "veterinaire", "opticien", "pharmacie",
+                "avocat", "osteopathe", "kinesitherapeute", "serrurier", "peintre",
+              ].map((svc) => (
+                <div key={svc} className="space-y-0.5">
+                  <span className="text-[11px] font-semibold text-sf-text">
+                    {svc.charAt(0).toUpperCase() + svc.slice(1)}
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {["paris", "lyon", "marseille", "toulouse", "nice",
+                      "bordeaux", "lille", "nantes", "strasbourg", "montpellier",
+                      "rennes", "grenoble", "dijon", "reims", "toulon",
+                      "angers", "nimes", "clermont-ferrand", "le-havre", "aix-en-provence",
+                    ].map((city) => (
+                      <a
+                        key={city}
+                        href={`/ville/${city}/${svc}`}
+                        className="text-[10px] text-sf-text-secondary hover:text-sf-accent transition-colors"
+                      >
+                        {city.replace(/-/g, " ").replace(/\b\w/g, c => c.toUpperCase())}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </details>
+        </section>
+      )}
+
       {/* ── RESULTS ── */}
       <section aria-live="polite" aria-label={t("results.ariaRegion")} className="max-w-[1400px] mx-auto px-5 sm:px-10 pt-8 pb-16">
         {search.error && (
