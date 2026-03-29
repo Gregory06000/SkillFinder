@@ -15,8 +15,11 @@ interface MascotCustomizerProps {
 
 const CATEGORIES: { key: ItemCategory; labelKey: string; icon: string }[] = [
   { key: "expression", labelKey: "mascot.cat.expression", icon: "😊" },
+  { key: "skinColor", labelKey: "mascot.cat.skinColor", icon: "🎨" },
   { key: "hair", labelKey: "mascot.cat.hair", icon: "💇" },
   { key: "hat", labelKey: "mascot.cat.hat", icon: "🎩" },
+  { key: "glasses", labelKey: "mascot.cat.glasses", icon: "👓" },
+  { key: "facialHair", labelKey: "mascot.cat.facialHair", icon: "🧔" },
   { key: "outfit", labelKey: "mascot.cat.outfit", icon: "👕" },
   { key: "scarf", labelKey: "mascot.cat.scarf", icon: "🧣" },
   { key: "accessory", labelKey: "mascot.cat.accessory", icon: "👜" },
@@ -92,7 +95,7 @@ export default function MascotCustomizer({
       `}</style>
 
       {/* Category tabs */}
-      <div className="flex gap-1 mb-3">
+      <div className="flex gap-1 mb-3 overflow-x-auto pb-1 scrollbar-hide">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.key}
@@ -101,7 +104,7 @@ export default function MascotCustomizer({
               setPreviewingId(null);
               onPreview?.(null);
             }}
-            className={`flex-1 text-center py-1.5 rounded-sf-sm text-xs font-medium transition-colors
+            className={`flex-shrink-0 text-center py-1.5 px-2 rounded-sf-sm text-xs font-medium transition-colors
                         ${activeCategory === cat.key
                           ? "bg-sf-accent text-white"
                           : "bg-sf-bg text-sf-text-secondary hover:bg-sf-border"}`}

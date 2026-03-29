@@ -1,7 +1,7 @@
 "use client";
 
 import type { MascotCustomization } from "@/lib/mascotItems";
-import { SCARF_COLORS, BOOT_COLORS, DEFAULT_CUSTOMIZATION } from "@/lib/mascotItems";
+import { SCARF_COLORS, BOOT_COLORS, SKIN_PALETTE, DEFAULT_CUSTOMIZATION } from "@/lib/mascotItems";
 
 export type MascotPose = "default" | "search" | "sad" | "wave" | "happy" | "excited" | "proud" | "surprised" | "thinking" | "love" | "wink";
 
@@ -4487,13 +4487,215 @@ function renderBackground(bgId: string) {
 }
 
 // ══════════════════════════════════════════════
+// ── Glasses Variants ──
+// ══════════════════════════════════════════════
+
+function renderGlasses(glassesId: string) {
+  const bridge = <path d="M96 98 Q100 96 104 98" fill="none" stroke="#4A4A4A" strokeWidth="1.5"/>;
+  const temples = <>
+    <path d="M68 98 L55 96" stroke="#4A4A4A" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M132 98 L145 96" stroke="#4A4A4A" strokeWidth="1.5" strokeLinecap="round"/>
+  </>;
+  switch (glassesId) {
+    case "round_glasses": return (
+      <g>
+        <circle cx="84" cy="100" r="14" fill="none" stroke="#4A4A4A" strokeWidth="2"/>
+        <circle cx="116" cy="100" r="14" fill="none" stroke="#4A4A4A" strokeWidth="2"/>
+        <circle cx="84" cy="100" r="14" fill="white" opacity="0.05"/>
+        <circle cx="116" cy="100" r="14" fill="white" opacity="0.05"/>
+        {bridge}{temples}
+      </g>
+    );
+    case "square_glasses": return (
+      <g>
+        <rect x="70" y="88" width="28" height="24" rx="3" fill="none" stroke="#4A4A4A" strokeWidth="2"/>
+        <rect x="102" y="88" width="28" height="24" rx="3" fill="none" stroke="#4A4A4A" strokeWidth="2"/>
+        <rect x="70" y="88" width="28" height="24" rx="3" fill="white" opacity="0.05"/>
+        <rect x="102" y="88" width="28" height="24" rx="3" fill="white" opacity="0.05"/>
+        {bridge}{temples}
+      </g>
+    );
+    case "aviator_glasses": return (
+      <g>
+        <path d="M70 94 Q70 88 80 88 L88 88 Q98 88 96 98 Q94 110 82 112 Q70 110 70 94Z" fill="none" stroke="#8B7355" strokeWidth="2"/>
+        <path d="M130 94 Q130 88 120 88 L112 88 Q102 88 104 98 Q106 110 118 112 Q130 110 130 94Z" fill="none" stroke="#8B7355" strokeWidth="2"/>
+        <path d="M70 94 Q70 88 80 88 L88 88 Q98 88 96 98 Q94 110 82 112 Q70 110 70 94Z" fill="#8B7355" opacity="0.08"/>
+        <path d="M130 94 Q130 88 120 88 L112 88 Q102 88 104 98 Q106 110 118 112 Q130 110 130 94Z" fill="#8B7355" opacity="0.08"/>
+        <path d="M96 98 Q100 96 104 98" fill="none" stroke="#8B7355" strokeWidth="1.5"/>
+        <path d="M70 92 L55 90" stroke="#8B7355" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M130 92 L145 90" stroke="#8B7355" strokeWidth="1.5" strokeLinecap="round"/>
+      </g>
+    );
+    case "cat_eye": return (
+      <g>
+        <path d="M68 102 Q68 90 76 88 L92 88 Q98 90 98 98 Q98 110 84 110 Q68 110 68 102Z" fill="none" stroke="#8B3A62" strokeWidth="2"/>
+        <path d="M132 102 Q132 90 124 88 L108 88 Q102 90 102 98 Q102 110 116 110 Q132 110 132 102Z" fill="none" stroke="#8B3A62" strokeWidth="2"/>
+        <path d="M68 102 Q68 90 76 88 L92 88 Q98 90 98 98 Q98 110 84 110 Q68 110 68 102Z" fill="#8B3A62" opacity="0.05"/>
+        <path d="M132 102 Q132 90 124 88 L108 88 Q102 90 102 98 Q102 110 116 110 Q132 110 132 102Z" fill="#8B3A62" opacity="0.05"/>
+        {bridge}{temples}
+      </g>
+    );
+    case "half_rim": return (
+      <g>
+        <path d="M70 100 Q70 92 84 92 Q98 92 98 100" fill="none" stroke="#4A4A4A" strokeWidth="2"/>
+        <path d="M70 100 Q70 108 84 108 Q98 108 98 100" fill="none" stroke="#4A4A4A" strokeWidth="0.8" strokeDasharray="2 2"/>
+        <path d="M102 100 Q102 92 116 92 Q130 92 130 100" fill="none" stroke="#4A4A4A" strokeWidth="2"/>
+        <path d="M102 100 Q102 108 116 108 Q130 108 130 100" fill="none" stroke="#4A4A4A" strokeWidth="0.8" strokeDasharray="2 2"/>
+        {bridge}{temples}
+      </g>
+    );
+    case "monocle": return (
+      <g>
+        <circle cx="116" cy="100" r="15" fill="none" stroke="#D4A853" strokeWidth="2.5"/>
+        <circle cx="116" cy="100" r="15" fill="white" opacity="0.06"/>
+        <line x1="116" y1="115" x2="118" y2="145" stroke="#D4A853" strokeWidth="1.2"/>
+        <path d="M131 98 L145 96" stroke="#D4A853" strokeWidth="1.5" strokeLinecap="round"/>
+      </g>
+    );
+    case "sunglasses": return (
+      <g>
+        <path d="M68 94 Q68 86 84 86 Q98 86 98 96 Q98 110 84 112 Q68 110 68 94Z" fill="#2D2D2D" opacity="0.85" stroke="#1A1A1A" strokeWidth="1.5"/>
+        <path d="M132 94 Q132 86 116 86 Q102 86 102 96 Q102 110 116 112 Q132 110 132 94Z" fill="#2D2D2D" opacity="0.85" stroke="#1A1A1A" strokeWidth="1.5"/>
+        <path d="M72 90 Q78 88 88 90" fill="none" stroke="white" strokeWidth="1" opacity="0.15"/>
+        <path d="M112 90 Q118 88 128 90" fill="none" stroke="white" strokeWidth="1" opacity="0.15"/>
+        <path d="M98 96 Q100 94 102 96" fill="none" stroke="#1A1A1A" strokeWidth="2"/>
+        <path d="M68 92 L52 88" stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M132 92 L148 88" stroke="#1A1A1A" strokeWidth="2.5" strokeLinecap="round"/>
+      </g>
+    );
+    case "sport_glasses": return (
+      <g>
+        <path d="M66 98 Q66 88 84 88 L100 92 L116 88 Q134 88 134 98 Q134 108 116 110 L100 106 L84 110 Q66 108 66 98Z" fill="#FF6B35" opacity="0.3" stroke="#FF6B35" strokeWidth="2"/>
+        <path d="M66 94 L52 90" stroke="#FF6B35" strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M134 94 L148 90" stroke="#FF6B35" strokeWidth="2.5" strokeLinecap="round"/>
+      </g>
+    );
+    case "heart_glasses": return (
+      <g>
+        <path d="M84 92 Q74 82 68 92 Q62 104 84 114 Q106 104 100 92 Q94 82 84 92Z" fill="#FF69B4" opacity="0.7" stroke="#E0559A" strokeWidth="1.5"/>
+        <path d="M116 92 Q106 82 100 92 Q94 104 116 114 Q138 104 132 92 Q126 82 116 92Z" fill="#FF69B4" opacity="0.7" stroke="#E0559A" strokeWidth="1.5"/>
+        {bridge}
+        <path d="M68 92 L55 90" stroke="#E0559A" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M132 92 L145 90" stroke="#E0559A" strokeWidth="1.5" strokeLinecap="round"/>
+      </g>
+    );
+    case "star_glasses": return (
+      <g>
+        <path d="M84 88 L88 96 L96 98 L90 104 L91 112 L84 108 L77 112 L78 104 L72 98 L80 96Z" fill="#FFD700" opacity="0.6" stroke="#DAA520" strokeWidth="1.5"/>
+        <path d="M116 88 L120 96 L128 98 L122 104 L123 112 L116 108 L109 112 L110 104 L104 98 L112 96Z" fill="#FFD700" opacity="0.6" stroke="#DAA520" strokeWidth="1.5"/>
+        {bridge}
+        <path d="M72 98 L55 96" stroke="#DAA520" strokeWidth="1.5" strokeLinecap="round"/>
+        <path d="M128 98 L145 96" stroke="#DAA520" strokeWidth="1.5" strokeLinecap="round"/>
+      </g>
+    );
+    default: return null;
+  }
+}
+
+// ══════════════════════════════════════════════
+// ── Facial Hair Variants ──
+// ══════════════════════════════════════════════
+
+function renderFacialHair(facialHairId: string) {
+  const hairColor = "#5A3A1A";
+  const hairLight = "#7A5A3A";
+  switch (facialHairId) {
+    case "stubble": return (
+      <g opacity="0.3">
+        {/* Scattered dots across lower face */}
+        {[82,86,90,94,98,102,106,110,114,118].map((x, i) =>
+          [122,126,130,134].map((y, j) => {
+            const offset = ((i * 7 + j * 13) % 5) - 2;
+            return <circle key={`${i}-${j}`} cx={x + offset} cy={y + (offset * 0.5)} r="0.8" fill={hairColor}/>;
+          })
+        )}
+      </g>
+    );
+    case "mustache": return (
+      <g>
+        <path d="M80 122 Q86 118 100 120 Q114 118 120 122 Q116 126 100 125 Q84 126 80 122Z" fill={hairColor}/>
+        <path d="M84 121 Q92 119 100 120" fill="none" stroke={hairLight} strokeWidth="0.8" opacity="0.4"/>
+      </g>
+    );
+    case "goatee": return (
+      <g>
+        <path d="M90 130 Q92 128 100 128 Q108 128 110 130 Q112 138 106 144 Q100 148 94 144 Q88 138 90 130Z" fill={hairColor}/>
+        <path d="M94 132 Q100 130 106 132" fill="none" stroke={hairLight} strokeWidth="0.8" opacity="0.3"/>
+      </g>
+    );
+    case "soul_patch": return (
+      <g>
+        <ellipse cx="100" cy="132" rx="4" ry="5" fill={hairColor}/>
+      </g>
+    );
+    case "van_dyke": return (
+      <g>
+        {/* Mustache */}
+        <path d="M82 122 Q88 118 100 120 Q112 118 118 122 Q114 125 100 124 Q86 125 82 122Z" fill={hairColor}/>
+        {/* Pointed goatee */}
+        <path d="M90 128 Q92 126 100 126 Q108 126 110 128 Q112 136 106 144 Q100 150 94 144 Q88 136 90 128Z" fill={hairColor}/>
+        <path d="M96 130 Q100 128 104 130" fill="none" stroke={hairLight} strokeWidth="0.8" opacity="0.3"/>
+      </g>
+    );
+    case "handlebar": return (
+      <g>
+        <path d="M78 122 Q86 116 100 118 Q114 116 122 122 Q120 126 100 124 Q80 126 78 122Z" fill={hairColor}/>
+        {/* Curled ends */}
+        <path d="M78 122 Q72 120 70 124 Q68 128 72 128" fill="none" stroke={hairColor} strokeWidth="2.5" strokeLinecap="round"/>
+        <path d="M122 122 Q128 120 130 124 Q132 128 128 128" fill="none" stroke={hairColor} strokeWidth="2.5" strokeLinecap="round"/>
+      </g>
+    );
+    case "full_beard": return (
+      <g>
+        {/* Mustache */}
+        <path d="M76 122 Q86 116 100 118 Q114 116 124 122 Q120 126 100 124 Q80 126 76 122Z" fill={hairColor}/>
+        {/* Beard body */}
+        <path d="M68 118 Q66 130 70 140 Q76 152 100 156 Q124 152 130 140 Q134 130 132 118 Q128 124 100 126 Q72 124 68 118Z" fill={hairColor}/>
+        {/* Beard texture */}
+        <path d="M80 130 Q90 128 100 130 Q110 128 120 130" fill="none" stroke={hairLight} strokeWidth="1" opacity="0.3"/>
+        <path d="M84 140 Q92 138 100 140 Q108 138 116 140" fill="none" stroke={hairLight} strokeWidth="1" opacity="0.25"/>
+      </g>
+    );
+    case "wizard_beard": return (
+      <g>
+        {/* Long flowing beard */}
+        <path d="M66 118 Q64 135 68 150 Q74 170 90 185 Q100 192 110 185 Q126 170 132 150 Q136 135 134 118 Q128 125 100 127 Q72 125 66 118Z" fill="#C0C0C8"/>
+        <path d="M82 145 Q92 140 100 145 Q108 140 118 145" fill="none" stroke="white" strokeWidth="1.2" opacity="0.3"/>
+        <path d="M86 160 Q94 155 100 160 Q106 155 114 160" fill="none" stroke="white" strokeWidth="1" opacity="0.25"/>
+        <path d="M92 175 Q98 170 104 175" fill="none" stroke="white" strokeWidth="0.8" opacity="0.2"/>
+        {/* Mustache */}
+        <path d="M78 120 Q88 115 100 117 Q112 115 122 120 Q118 124 100 123 Q82 124 78 120Z" fill="#D0D0D8"/>
+      </g>
+    );
+    case "viking_beard": return (
+      <g>
+        {/* Thick braided beard */}
+        <path d="M66 118 Q64 132 68 145 Q72 155 80 160 L78 185 Q80 190 84 188 L86 165 Q94 158 100 158 Q106 158 114 165 L116 188 Q120 190 122 185 L120 160 Q128 155 132 145 Q136 132 134 118 Q128 125 100 127 Q72 125 66 118Z" fill="#8B4513"/>
+        {/* Braid texture */}
+        <path d="M76 148 L80 155 L78 165 L80 175 L78 185" fill="none" stroke="#6B3410" strokeWidth="2" strokeLinecap="round"/>
+        <path d="M124 148 L120 155 L122 165 L120 175 L122 185" fill="none" stroke="#6B3410" strokeWidth="2" strokeLinecap="round"/>
+        {/* Braid rings */}
+        <circle cx="79" cy="172" r="2.5" fill="#D4A853" stroke="#B8860B" strokeWidth="1"/>
+        <circle cx="121" cy="172" r="2.5" fill="#D4A853" stroke="#B8860B" strokeWidth="1"/>
+        {/* Mustache */}
+        <path d="M76 120 Q88 114 100 116 Q112 114 124 120 Q120 125 100 123 Q80 125 76 120Z" fill="#8B4513"/>
+      </g>
+    );
+    default: return null;
+  }
+}
+
+// ══════════════════════════════════════════════
 // ── Mini Item Preview (for shop grid) ──
 // ══════════════════════════════════════════════
 
 const CATEGORY_VIEWBOX: Record<string, string> = {
   expression: "0 0 32 32",
+  skinColor:  "0 0 32 32",
   hair:       "40 15 120 80",
   hat:        "35 -5 130 85",
+  glasses:    "55 80 90 45",
+  facialHair: "65 110 70 50",
   outfit:     "50 138 100 90",
   scarf:      "50 125 100 60",
   accessory:  "20 60 170 170",
@@ -4652,6 +4854,24 @@ export function MiniItemPreview({ itemId, category, size = 32 }: {
       );
       break;
     }
+    case "skinColor": {
+      const sk = SKIN_PALETTE[itemId] || SKIN_PALETTE.skin_default;
+      content = (
+        <g>
+          <circle cx="16" cy="16" r="14" fill={sk.base} stroke={sk.shadow} strokeWidth="1.5"/>
+          <ellipse cx="13" cy="14" rx="2" ry="2.5" fill={sk.shadow} opacity="0.4"/>
+          <ellipse cx="19" cy="14" rx="2" ry="2.5" fill={sk.shadow} opacity="0.4"/>
+          <ellipse cx="16" cy="18" rx="1.5" ry="1" fill={sk.deep} opacity="0.5"/>
+        </g>
+      );
+      break;
+    }
+    case "glasses":
+      content = renderGlasses(itemId);
+      break;
+    case "facialHair":
+      content = renderFacialHair(itemId);
+      break;
   }
 
   if (!content) return null;
@@ -4696,6 +4916,7 @@ export default function Mascot({
 
   const scarfColor = SCARF_COLORS[c.scarf] || SCARF_COLORS.red;
   const bootColor = BOOT_COLORS[c.boots] || BOOT_COLORS.brown;
+  const skin = SKIN_PALETTE[c.skinColor] || SKIN_PALETTE.skin_default;
   const hasCape = c.accessory === "cape" || c.accessory === "galaxy_cloak";
   const hasWings = c.accessory === "wings" || c.accessory === "phoenix_wings" || c.accessory === "demon_wings";
   const hasAura = c.accessory === "aura" || c.accessory === "cosmic_aura" || c.accessory === "stardust";
@@ -4706,7 +4927,7 @@ export default function Mascot({
       viewBox="0 0 200 280"
       width={size}
       height={size}
-      className={`mascot-svg ${animate ? "animate-bounce-slow" : ""} ${className}`}
+      className={`mascot-svg ${animate ? "animate-bounce-slow" : ""} ${!isSad && !isSearch ? "mascot-idle" : ""} ${className}`}
       xmlns="http://www.w3.org/2000/svg"
       role="img"
       aria-label="Findy, mascotte SkillFinder"
@@ -4746,6 +4967,7 @@ export default function Mascot({
         </>
       )}
 
+      <g className="mascot-body-wrap">
       {/* ── Sandy ground ── */}
       <g>
         {/* Sand base */}
@@ -4975,15 +5197,15 @@ export default function Mascot({
           </g>
         )}
         {/* Hand */}
-        {!isSad && <circle cx="45" cy="208" r="8" fill="#FDDCBD"/>}
-        {!isSad && <circle cx="45" cy="208" r="8" fill="#F5C4A5" opacity="0.3"/>}
-        {isSad && <circle cx="48" cy="218" r="8" fill="#FDDCBD"/>}
-        {isSad && <circle cx="48" cy="218" r="8" fill="#F5C4A5" opacity="0.3"/>}
+        {!isSad && <circle cx="45" cy="208" r="8" fill={skin.base}/>}
+        {!isSad && <circle cx="45" cy="208" r="8" fill={skin.shadow} opacity="0.3"/>}
+        {isSad && <circle cx="48" cy="218" r="8" fill={skin.base}/>}
+        {isSad && <circle cx="48" cy="218" r="8" fill={skin.shadow} opacity="0.3"/>}
         {/* Fingers hint */}
         {!isSad && (
           <g opacity="0.4">
-            <path d="M40 212 Q38 215 39 217" fill="none" stroke="#E0B898" strokeWidth="1.5" strokeLinecap="round"/>
-            <path d="M43 213 Q42 216 42 218" fill="none" stroke="#E0B898" strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M40 212 Q38 215 39 217" fill="none" stroke={skin.finger} strokeWidth="1.5" strokeLinecap="round"/>
+            <path d="M43 213 Q42 216 42 218" fill="none" stroke={skin.finger} strokeWidth="1.5" strokeLinecap="round"/>
           </g>
         )}
       </g>
@@ -5009,7 +5231,7 @@ export default function Mascot({
           <circle cx="152" cy="210" r="9" fill="#A89070"/>
           <circle cx="152" cy="210" r="8" fill="#B89A72"/>
           {/* Hand */}
-          <circle cx="152" cy="218" r="8" fill="#FDDCBD"/>
+          <circle cx="152" cy="218" r="8" fill={skin.base}/>
           {/* Dropped magnifying glass */}
           <line x1="152" y1="218" x2="155" y2="233" stroke="#8B6B4F" strokeWidth="4" strokeLinecap="round" opacity="0.5"/>
           <circle cx="158" cy="243" r="12" fill="none" stroke="#C4A050" strokeWidth="3.5" opacity="0.4"/>
@@ -5020,11 +5242,11 @@ export default function Mascot({
       {/* ── Head ── */}
       <g>
         {/* Head base */}
-        <ellipse cx="100" cy="100" rx="48" ry="52" fill="#FDDCBD"/>
+        <ellipse cx="100" cy="100" rx="48" ry="52" fill={skin.base}/>
         {/* Head shading — left */}
-        <path d="M52 100 Q54 70 70 55 Q60 70 56 100 Q54 120 60 140" fill="#F0C8A0" opacity="0.3"/>
+        <path d="M52 100 Q54 70 70 55 Q60 70 56 100 Q54 120 60 140" fill={skin.shading} opacity="0.3"/>
         {/* Head shading — right */}
-        <path d="M148 100 Q146 70 130 55 Q140 70 144 100 Q146 120 140 140" fill="#F0C8A0" opacity="0.3"/>
+        <path d="M148 100 Q146 70 130 55 Q140 70 144 100 Q146 120 140 140" fill={skin.shading} opacity="0.3"/>
         {/* Head highlight */}
         <ellipse cx="90" cy="80" rx="20" ry="15" fill="white" opacity="0.08"/>
       </g>
@@ -5032,13 +5254,13 @@ export default function Mascot({
       {/* ── Ears ── */}
       <g>
         {/* Left ear */}
-        <circle cx="54" cy="105" r="11" fill="#FDDCBD"/>
-        <circle cx="54" cy="105" r="7" fill="#F5C4A5"/>
-        <circle cx="54" cy="105" r="4" fill="#F0B898" opacity="0.4"/>
+        <circle cx="54" cy="105" r="11" fill={skin.base}/>
+        <circle cx="54" cy="105" r="7" fill={skin.shadow}/>
+        <circle cx="54" cy="105" r="4" fill={skin.deep} opacity="0.4"/>
         {/* Right ear */}
-        <circle cx="146" cy="105" r="11" fill="#FDDCBD"/>
-        <circle cx="146" cy="105" r="7" fill="#F5C4A5"/>
-        <circle cx="146" cy="105" r="4" fill="#F0B898" opacity="0.4"/>
+        <circle cx="146" cy="105" r="11" fill={skin.base}/>
+        <circle cx="146" cy="105" r="7" fill={skin.shadow}/>
+        <circle cx="146" cy="105" r="4" fill={skin.deep} opacity="0.4"/>
       </g>
 
       {/* ── Eyebrows ── */}
@@ -5155,8 +5377,8 @@ export default function Mascot({
       </g>
 
       {/* ── Nose ── */}
-      <ellipse cx="100" cy="112" rx="4.5" ry="3.5" fill="#F0B898"/>
-      <ellipse cx="99" cy="111" rx="2" ry="1.5" fill="#FDDCBD" opacity="0.4"/>
+      <ellipse cx="100" cy="112" rx="4.5" ry="3.5" fill={skin.deep}/>
+      <ellipse cx="99" cy="111" rx="2" ry="1.5" fill={skin.base} opacity="0.4"/>
 
       {/* ── Mouth ── */}
       {isSad ? (
@@ -5212,9 +5434,15 @@ export default function Mascot({
         </>
       )}
 
+      {/* ── Glasses ── */}
+      {c.glasses && c.glasses !== "none_glasses" && renderGlasses(c.glasses)}
+
       {/* ── Cheeks ── */}
-      <ellipse cx="68" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity={(isHappy || isExcited || isLove || isProud) ? "0.55" : "0.35"}/>
-      <ellipse cx="132" cy="114" rx="9" ry="6" fill="#F5A5A5" opacity={(isHappy || isExcited || isLove || isProud) ? "0.55" : "0.35"}/>
+      <ellipse cx="68" cy="114" rx="9" ry="6" fill={skin.cheek} opacity={(isHappy || isExcited || isLove || isProud) ? "0.55" : "0.35"}/>
+      <ellipse cx="132" cy="114" rx="9" ry="6" fill={skin.cheek} opacity={(isHappy || isExcited || isLove || isProud) ? "0.55" : "0.35"}/>
+
+      {/* ── Facial Hair ── */}
+      {c.facialHair && c.facialHair !== "none_facial" && renderFacialHair(c.facialHair)}
 
       {/* ── Expression extras ── */}
       {/* Sweat drop for thinking */}
@@ -5272,8 +5500,8 @@ export default function Mascot({
           <circle cx="158" cy="120" r="9" fill="#A89070"/>
           <circle cx="158" cy="120" r="8" fill="#B89A72"/>
           {/* Hand */}
-          <circle cx="158" cy="120" r="8" fill="#FDDCBD"/>
-          <circle cx="158" cy="120" r="7" fill="#F5C4A5" opacity="0.2"/>
+          <circle cx="158" cy="120" r="8" fill={skin.base}/>
+          <circle cx="158" cy="120" r="7" fill={skin.shadow} opacity="0.2"/>
           {/* Magnifying glass handle — wood */}
           <line x1="158" y1="120" x2="168" y2="98" stroke="#6B4226" strokeWidth="6" strokeLinecap="round"/>
           <line x1="158" y1="120" x2="168" y2="98" stroke="#8B5E3C" strokeWidth="3" strokeLinecap="round"/>
@@ -5305,6 +5533,8 @@ export default function Mascot({
         </g>
       )}
 
+      </g>{/* end mascot-body-wrap */}
+
       {/* ── Hover CSS ── */}
       <style>{`
         .mascot-svg .mascot-right-arm {
@@ -5319,6 +5549,30 @@ export default function Mascot({
         }
         .mascot-svg:hover .mascot-pupils {
           transform: translate(5px, 0px);
+        }
+
+        /* ── Idle Animations ── */
+        @keyframes mascot-blink {
+          0%, 90%, 100% { transform: scaleY(1); }
+          94% { transform: scaleY(0.08); }
+          97% { transform: scaleY(1); }
+        }
+        @keyframes mascot-breathe {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-1.5px); }
+        }
+        @keyframes mascot-sway {
+          0%, 100% { transform: rotate(0deg); }
+          30% { transform: rotate(0.4deg); }
+          70% { transform: rotate(-0.4deg); }
+        }
+        .mascot-idle .mascot-eyes {
+          animation: mascot-blink 4.5s ease-in-out infinite;
+          transform-origin: 100px 100px;
+        }
+        .mascot-idle .mascot-body-wrap {
+          animation: mascot-breathe 3.5s ease-in-out infinite, mascot-sway 6s ease-in-out infinite;
+          transform-origin: 100px 260px;
         }
 
         /* ── Item Animations ── */

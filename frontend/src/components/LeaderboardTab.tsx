@@ -342,11 +342,15 @@ export default function LeaderboardTab({
                                ${isFirst ? "lg:-mt-4 lg:pb-6" : ""}
                                ${isUser ? "ring-2 ring-sf-accent/30" : ""}`}
                   >
-                    <div
-                      className={`w-10 h-10 mx-auto rounded-full bg-gradient-to-br ${style.icon}
-                                  text-white text-lg font-bold flex items-center justify-center mb-2`}
-                    >
-                      {podiumIdx + 1}
+                    <div className="relative w-12 h-12 mx-auto mb-2">
+                      <Mascot
+                        size={48}
+                        customization={isUser ? loadMascotCustomization() : (entry.mascotCustom || DEFAULT_CUSTOMIZATION)}
+                      />
+                      <div className={`absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-br ${style.icon}
+                                       text-white text-[10px] font-bold flex items-center justify-center border border-white/50`}>
+                        {podiumIdx + 1}
+                      </div>
                     </div>
                     <p className={`font-semibold text-sm truncate ${isUser ? "text-sf-accent" : "text-sf-text"}`}>
                       {entry.pseudo}
@@ -405,11 +409,11 @@ export default function LeaderboardTab({
 
                       {/* Name + tier */}
                       <div className="flex items-center gap-2 min-w-0">
-                        <div
-                          className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
-                          style={{ background: isUser ? getAvatarData().avatarColor : (entry.avatarColor || "#9CA3AF") }}
-                        >
-                          {entry.pseudo.charAt(0).toUpperCase()}
+                        <div className="w-7 h-7 flex-shrink-0">
+                          <Mascot
+                            size={28}
+                            customization={isUser ? loadMascotCustomization() : (entry.mascotCustom || DEFAULT_CUSTOMIZATION)}
+                          />
                         </div>
                         <div className="min-w-0">
                           <span className={`block truncate ${isUser ? "font-semibold text-sf-accent" : "text-sf-text"}`}>

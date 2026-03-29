@@ -34,8 +34,8 @@ import { loadMascotCustomization, saveMascotCustomization, getItemsByTier, isIte
 
 type Tab = "findy" | "tiers" | "badges" | "friends";
 
-const CATEGORY_ICONS: Record<ItemCategory, string> = { expression: "😊", hair: "💇", hat: "🎩", outfit: "👕", scarf: "🧣", accessory: "🎒", boots: "👢", background: "🖼️" };
-const CATEGORY_KEYS: Record<ItemCategory, string> = { expression: "mascot.cat.expression", hair: "mascot.cat.hair", hat: "mascot.cat.hat", outfit: "mascot.cat.outfit", scarf: "mascot.cat.scarf", accessory: "mascot.cat.accessory", boots: "mascot.cat.boots", background: "mascot.cat.background" };
+const CATEGORY_ICONS: Record<ItemCategory, string> = { expression: "😊", skinColor: "🎨", hair: "💇", hat: "🎩", glasses: "👓", facialHair: "🧔", outfit: "👕", scarf: "🧣", accessory: "🎒", boots: "👢", background: "🖼️" };
+const CATEGORY_KEYS: Record<ItemCategory, string> = { expression: "mascot.cat.expression", skinColor: "mascot.cat.skinColor", hair: "mascot.cat.hair", hat: "mascot.cat.hat", glasses: "mascot.cat.glasses", facialHair: "mascot.cat.facialHair", outfit: "mascot.cat.outfit", scarf: "mascot.cat.scarf", accessory: "mascot.cat.accessory", boots: "mascot.cat.boots", background: "mascot.cat.background" };
 
 const AVATAR_COLORS = [
   "#C45D3E", "#D4A853", "#3A7D5C", "#5B7FC7",

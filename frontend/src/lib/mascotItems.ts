@@ -4,7 +4,7 @@
 
 const MASCOT_STORAGE_KEY = "sf_mascot_custom";
 
-export type ItemCategory = "expression" | "hair" | "hat" | "outfit" | "scarf" | "accessory" | "boots" | "background";
+export type ItemCategory = "expression" | "skinColor" | "hair" | "hat" | "glasses" | "facialHair" | "outfit" | "scarf" | "accessory" | "boots" | "background";
 
 export interface MascotItem {
   id: string;
@@ -17,8 +17,11 @@ export interface MascotItem {
 
 export interface MascotCustomization {
   expression: string;
+  skinColor: string;
   hat: string;
   hair: string;
+  glasses: string;
+  facialHair: string;
   outfit: string;
   scarf: string;
   accessory: string;
@@ -28,8 +31,11 @@ export interface MascotCustomization {
 
 export const DEFAULT_CUSTOMIZATION: MascotCustomization = {
   expression: "expr_default",
+  skinColor: "skin_default",
   hat: "explorer",
   hair: "none_hair",
+  glasses: "none_glasses",
+  facialHair: "none_facial",
   outfit: "explorer_jacket",
   scarf: "red",
   accessory: "satchel",
@@ -52,6 +58,48 @@ export const MASCOT_ITEMS: MascotItem[] = [
   { id: "expr_thinking",  nameKey: "mascot.item.exprThinking",  category: "expression", tier: 1, preview: "🤔" },
   { id: "expr_love",      nameKey: "mascot.item.exprLove",      category: "expression", tier: 1, preview: "😍" },
   { id: "expr_wink",      nameKey: "mascot.item.exprWink",      category: "expression", tier: 1, preview: "😜" },
+
+  // ══════════════════════════════════════
+  // ── Skin Colors (all free, tier 1) ──
+  // ══════════════════════════════════════
+  { id: "skin_default",  nameKey: "mascot.item.skinDefault",  category: "skinColor", tier: 1, preview: "🟠" },
+  { id: "skin_light",    nameKey: "mascot.item.skinLight",    category: "skinColor", tier: 1, preview: "🤍" },
+  { id: "skin_fair",     nameKey: "mascot.item.skinFair",     category: "skinColor", tier: 1, preview: "🩷" },
+  { id: "skin_medium",   nameKey: "mascot.item.skinMedium",   category: "skinColor", tier: 1, preview: "🟤" },
+  { id: "skin_olive",    nameKey: "mascot.item.skinOlive",    category: "skinColor", tier: 1, preview: "🫒" },
+  { id: "skin_tan",      nameKey: "mascot.item.skinTan",      category: "skinColor", tier: 1, preview: "🟡" },
+  { id: "skin_brown",    nameKey: "mascot.item.skinBrown",    category: "skinColor", tier: 1, preview: "🤎" },
+  { id: "skin_dark",     nameKey: "mascot.item.skinDark",     category: "skinColor", tier: 1, preview: "🖤" },
+  { id: "skin_deep",     nameKey: "mascot.item.skinDeep",     category: "skinColor", tier: 1, preview: "⬛" },
+
+  // ══════════════════════════════════════
+  // ── Glasses ──
+  // ══════════════════════════════════════
+  { id: "none_glasses",    nameKey: "mascot.item.noGlasses",    category: "glasses", tier: 1, preview: "🚫" },
+  { id: "round_glasses",   nameKey: "mascot.item.roundGlasses", category: "glasses", tier: 1, preview: "👓" },
+  { id: "square_glasses",  nameKey: "mascot.item.squareGlasses",category: "glasses", tier: 1, preview: "🔲" },
+  { id: "aviator_glasses", nameKey: "mascot.item.aviatorGlasses",category: "glasses", tier: 2, preview: "🕶️" },
+  { id: "cat_eye",         nameKey: "mascot.item.catEye",       category: "glasses", tier: 2, preview: "🐱" },
+  { id: "half_rim",        nameKey: "mascot.item.halfRim",      category: "glasses", tier: 3, preview: "📖" },
+  { id: "monocle",         nameKey: "mascot.item.monocle",      category: "glasses", tier: 3, preview: "🧐" },
+  { id: "sunglasses",      nameKey: "mascot.item.sunglasses",   category: "glasses", tier: 4, preview: "😎" },
+  { id: "sport_glasses",   nameKey: "mascot.item.sportGlasses", category: "glasses", tier: 4, preview: "🏃" },
+  { id: "heart_glasses",   nameKey: "mascot.item.heartGlasses", category: "glasses", tier: null, price: 1.99, preview: "💕" },
+  { id: "star_glasses",    nameKey: "mascot.item.starGlasses",  category: "glasses", tier: null, price: 1.99, preview: "⭐" },
+
+  // ══════════════════════════════════════
+  // ── Facial Hair ──
+  // ══════════════════════════════════════
+  { id: "none_facial",   nameKey: "mascot.item.noFacial",     category: "facialHair", tier: 1, preview: "🚫" },
+  { id: "stubble",       nameKey: "mascot.item.stubble",      category: "facialHair", tier: 1, preview: "🔘" },
+  { id: "mustache",      nameKey: "mascot.item.mustache",     category: "facialHair", tier: 1, preview: "👨" },
+  { id: "goatee",        nameKey: "mascot.item.goatee",       category: "facialHair", tier: 2, preview: "🐐" },
+  { id: "soul_patch",    nameKey: "mascot.item.soulPatch",    category: "facialHair", tier: 2, preview: "🎵" },
+  { id: "van_dyke",      nameKey: "mascot.item.vanDyke",      category: "facialHair", tier: 3, preview: "🎭" },
+  { id: "handlebar",     nameKey: "mascot.item.handlebar",    category: "facialHair", tier: 3, preview: "🤵" },
+  { id: "full_beard",    nameKey: "mascot.item.fullBeard",    category: "facialHair", tier: 4, preview: "🧔" },
+  { id: "wizard_beard",  nameKey: "mascot.item.wizardBeard",  category: "facialHair", tier: null, price: 1.99, preview: "🧙" },
+  { id: "viking_beard",  nameKey: "mascot.item.vikingBeard",  category: "facialHair", tier: null, price: 1.99, preview: "⚔️" },
 
   // ══════════════════════════════════════
   // ── Hair ──
@@ -498,4 +546,16 @@ export const BOOT_COLORS: Record<string, { main: string; sole: string }> = {
   hologram_boots:  { main: "#E0B0FF", sole: "#9370DB" },
   stardust_boots:  { main: "#C5B358", sole: "#A0922D" },
   celestial_boots: { main: "#7B68EE", sole: "#5B48CE" },
+};
+
+export const SKIN_PALETTE: Record<string, { base: string; shadow: string; shading: string; deep: string; finger: string; cheek: string }> = {
+  skin_default: { base: "#FDDCBD", shadow: "#F5C4A5", shading: "#F0C8A0", deep: "#F0B898", finger: "#E0B898", cheek: "#F5A5A5" },
+  skin_light:   { base: "#FFE8D6", shadow: "#F5D5C0", shading: "#F5D0B8", deep: "#F0C4A8", finger: "#E8C0A8", cheek: "#FFBCBC" },
+  skin_fair:    { base: "#F5D0B0", shadow: "#E8B898", shading: "#E0B090", deep: "#D8A080", finger: "#D09878", cheek: "#F0A0A0" },
+  skin_medium:  { base: "#D4A574", shadow: "#C49060", shading: "#BA8858", deep: "#B07848", finger: "#A07040", cheek: "#D08070" },
+  skin_olive:   { base: "#C9956B", shadow: "#B88058", shading: "#B07850", deep: "#A06840", finger: "#986038", cheek: "#C07868" },
+  skin_tan:     { base: "#B07845", shadow: "#A06838", shading: "#986030", deep: "#885028", finger: "#804820", cheek: "#B06858" },
+  skin_brown:   { base: "#8B5E3C", shadow: "#7A4E30", shading: "#724828", deep: "#6A3E20", finger: "#623818", cheek: "#8A5048" },
+  skin_dark:    { base: "#5A3A1A", shadow: "#4A2E12", shading: "#442A10", deep: "#3C220C", finger: "#341C08", cheek: "#5A3228" },
+  skin_deep:    { base: "#3D2510", shadow: "#301C0A", shading: "#2C1808", deep: "#241406", finger: "#1E1004", cheek: "#3D2018" },
 };
