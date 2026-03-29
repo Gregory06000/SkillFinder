@@ -599,6 +599,22 @@ const nl: Record<string, string> = {
   "cookie.accept": "Accepteren",
   "cookie.refuse": "Weigeren",
 
+  // -- Onboarding --
+  "onboarding.trySearch": "Probeer een zoekopdracht",
+  "onboarding.hairdresser": "Kapper",
+  "onboarding.plumber": "Loodgieter",
+  "onboarding.urgent": "Noodgeval",
+  "onboarding.restaurant": "Restaurant",
+  "onboarding.terrace": "Terras",
+  "onboarding.dentist": "Tandarts",
+  "onboarding.electrician": "Elektricien",
+
+  // -- PWA Install --
+  "pwa.title": "SkillFinder installeren",
+  "pwa.description": "Voeg SkillFinder toe aan je startscherm voor snelle toegang.",
+  "pwa.install": "Installeren",
+  "pwa.later": "Later",
+
   // -- SEO internal links --
   "seo.popularCities": "Populaire zoekopdrachten per stad",
   "seo.allServices": "Alle diensten",

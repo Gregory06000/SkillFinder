@@ -401,6 +401,35 @@ function Home() {
           initialCity={urlParams.city}
         />
 
+        {/* Quick-start suggestions for new visitors */}
+        {!search.hasResults && !search.isLoading && search.history.length === 0 && (
+          <div className="mt-4 mb-2">
+            <span className="text-xs font-medium text-sf-text-light uppercase tracking-wider">
+              {t("onboarding.trySearch")}
+            </span>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {[
+                { icon: "\u2702\uFE0F", service: t("onboarding.hairdresser"), keyword: "" },
+                { icon: "\uD83D\uDD27", service: t("onboarding.plumber"), keyword: t("onboarding.urgent") },
+                { icon: "\uD83C\uDF7D\uFE0F", service: t("onboarding.restaurant"), keyword: t("onboarding.terrace") },
+                { icon: "\uD83E\uDDB7", service: t("onboarding.dentist"), keyword: "" },
+                { icon: "\u26A1", service: t("onboarding.electrician"), keyword: "" },
+              ].map(({ icon, service, keyword }) => (
+                <button
+                  key={service}
+                  onClick={() => onSearch(service, keyword, "", 10)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-sf-card border border-sf-border
+                             rounded-full text-xs text-sf-text-secondary hover:border-sf-accent/40
+                             hover:text-sf-accent transition-all cursor-pointer"
+                >
+                  <span>{icon}</span>
+                  {keyword ? `${service} · ${keyword}` : service}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Search history */}
         {!search.hasResults && !search.isLoading && search.history.length > 0 && (
           <div className="mt-4 mb-2">

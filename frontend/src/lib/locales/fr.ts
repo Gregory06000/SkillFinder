@@ -600,6 +600,22 @@ const fr: Record<string, string> = {
   "cookie.accept": "J'accepte",
   "cookie.refuse": "Refuser",
 
+  // -- Onboarding --
+  "onboarding.trySearch": "Essayez une recherche",
+  "onboarding.hairdresser": "Coiffeur",
+  "onboarding.plumber": "Plombier",
+  "onboarding.urgent": "Urgence",
+  "onboarding.restaurant": "Restaurant",
+  "onboarding.terrace": "Terrasse",
+  "onboarding.dentist": "Dentiste",
+  "onboarding.electrician": "Electricien",
+
+  // -- PWA Install --
+  "pwa.title": "Installer SkillFinder",
+  "pwa.description": "Ajoutez SkillFinder a votre ecran d'accueil pour un acces rapide.",
+  "pwa.install": "Installer",
+  "pwa.later": "Plus tard",
+
   // -- SEO internal links --
   "seo.popularCities": "Recherches populaires par ville",
   "seo.allServices": "Tous les services",

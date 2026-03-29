@@ -7,6 +7,7 @@ import I18nProvider from "@/lib/I18nProvider";
 import { ToastProvider } from "@/lib/ToastContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import CookieBanner from "@/components/CookieBanner";
+import PwaInstallBanner from "@/components/PwaInstallBanner";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -78,6 +79,7 @@ export default function RootLayout({
                 <div className="flex-1">{children}</div>
                 <Footer />
                 <CookieBanner />
+                <PwaInstallBanner />
               </ErrorBoundary>
             </AuthProvider>
           </ToastProvider>
