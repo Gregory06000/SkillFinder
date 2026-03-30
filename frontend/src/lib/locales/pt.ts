@@ -567,6 +567,7 @@ const pt: Record<string, string> = {
   "friends.alreadyFriend": "Ja sao amigos",
   "friends.requestSent": "Pedido enviado",
   "friends.requestError": "Erro ao enviar. Tente novamente.",
+  "friends.alreadySent": "Pedido ja enviado.",
   "friends.sent": "Pedidos enviados ({count})",
   "friends.awaitingAccept": "Pendente",
   "friends.addBtn": "Adicionar",

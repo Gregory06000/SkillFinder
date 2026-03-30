@@ -85,10 +85,13 @@ export default function FriendsPanel() {
   async function handleSendRequest(userId: string) {
     const token = await getAccessToken();
     if (!token) return;
-    const ok = await sendFriendRequest(userId, token);
-    if (ok) {
+    const result = await sendFriendRequest(userId, token);
+    if (result === true) {
       setSentIds((prev) => new Set(prev).add(userId));
       loadData();
+    } else if (result === "already") {
+      setSentIds((prev) => new Set(prev).add(userId));
+      setSearchError(t("friends.alreadySent"));
     } else {
       setSearchError(t("friends.requestError"));
     }

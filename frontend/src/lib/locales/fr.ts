@@ -568,6 +568,7 @@ const fr: Record<string, string> = {
   "friends.alreadyFriend": "Deja ami",
   "friends.requestSent": "Demande envoyee",
   "friends.requestError": "Erreur lors de l'envoi. Reessayez.",
+  "friends.alreadySent": "Demande deja envoyee.",
   "friends.sent": "Demandes envoyees ({count})",
   "friends.awaitingAccept": "En attente",
   "friends.addBtn": "Ajouter",

@@ -298,9 +298,13 @@ export default function ProfilePage() {
   async function handleSendRequest(userId: string) {
     const token = await getAccessToken();
     if (!token) { setSearchError(t("friends.requestError")); return; }
-    const ok = await sendFriendRequest(userId, token);
-    if (ok) {
+    const result = await sendFriendRequest(userId, token);
+    if (result === true) {
       setSentIds((prev) => new Set(prev).add(userId));
+      loadFriendsData();
+    } else if (result === "already") {
+      setSentIds((prev) => new Set(prev).add(userId));
+      setSearchError(t("friends.alreadySent"));
       loadFriendsData();
     } else {
       setSearchError(t("friends.requestError"));

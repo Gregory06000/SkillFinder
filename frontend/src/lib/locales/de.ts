@@ -567,6 +567,7 @@ const de: Record<string, string> = {
   "friends.alreadyFriend": "Bereits befreundet",
   "friends.requestSent": "Anfrage gesendet",
   "friends.requestError": "Fehler beim Senden. Versuchen Sie es erneut.",
+  "friends.alreadySent": "Anfrage bereits gesendet.",
   "friends.sent": "Gesendete Anfragen ({count})",
   "friends.awaitingAccept": "Ausstehend",
   "friends.addBtn": "Hinzufugen",

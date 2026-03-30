@@ -383,7 +383,7 @@ export async function searchUsers(query: string, token: string): Promise<FriendU
   }
 }
 
-export async function sendFriendRequest(addresseeId: string, token: string): Promise<boolean> {
+export async function sendFriendRequest(addresseeId: string, token: string): Promise<boolean | "already"> {
   try {
     const res = await fetch(`${API_BASE}/api/friends/request`, {
       method: "POST",
@@ -396,13 +396,15 @@ export async function sendFriendRequest(addresseeId: string, token: string): Pro
     if (!res.ok) {
       const err = await res.text().catch(() => "");
       console.error("[sendFriendRequest]", res.status, err);
+      if (res.status === 409) return "already";
     }
-    return res.ok;
+    return res.ok ? true : false;
   } catch (e) {
     console.error("[sendFriendRequest] network error", e);
     return false;
   }
 }
+
 
 export async function respondFriendRequest(
   friendshipId: string,
