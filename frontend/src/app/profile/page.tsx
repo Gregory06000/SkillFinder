@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import { useT } from "@/lib/i18n";
-import { getUserRank, getLevel, TIERS, type UserRank } from "@/lib/gamification";
+import { getUserRank, getLevel, TIERS, type UserRank, loadRewards, saveRewards } from "@/lib/gamification";
 import { trackEvent } from "@/lib/analytics";
 import { computeBadges, type Badge } from "@/lib/badges";
 import {
@@ -27,6 +27,7 @@ import {
   type Friend,
   type PendingRequest,
   type FriendUser,
+  updateLeaderboard,
 } from "@/lib/api";
 import Mascot, { MiniItemPreview } from "@/components/Mascot";
 import MascotCustomizer from "@/components/MascotCustomizer";
@@ -136,6 +137,8 @@ export default function ProfilePage() {
   const [mascotCustom, setMascotCustom] = useState<MascotCustomization>(loadMascotCustomization);
   const [previewCustom, setPreviewCustom] = useState<MascotCustomization | null>(null);
   const [pseudo, setPseudo] = useState("Guest");
+  const [editingPseudo, setEditingPseudo] = useState(false);
+  const [pseudoDraft, setPseudoDraft] = useState("");
   const [points, setPoints] = useState(0);
   const [weeklyPoints, setWeeklyPoints] = useState(0);
   const [city, setCity] = useState("");
@@ -222,6 +225,26 @@ export default function ProfilePage() {
     });
   }
 
+  function handlePseudoSave() {
+    const trimmed = pseudoDraft.trim();
+    if (!trimmed || trimmed === pseudo) {
+      setEditingPseudo(false);
+      return;
+    }
+    setPseudo(trimmed);
+    setEditingPseudo(false);
+    // Save to localStorage
+    const rewards = loadRewards();
+    rewards.pseudo = trimmed;
+    saveRewards(rewards);
+    // Sync to server
+    if (user) {
+      getAccessToken().then((token) => {
+        updateLeaderboard(trimmed, city, weeklyPoints, points, token);
+      });
+    }
+  }
+
   function handleMascotChange(custom: MascotCustomization) {
     setMascotCustom(custom);
     saveMascotCustomization(custom);
@@ -270,9 +293,14 @@ export default function ProfilePage() {
 
   async function handleSendRequest(userId: string) {
     const token = await getAccessToken();
-    if (!token) return;
+    if (!token) { setSearchError(t("friends.requestError")); return; }
     const ok = await sendFriendRequest(userId, token);
-    if (ok) setSentIds((prev) => new Set(prev).add(userId));
+    if (ok) {
+      setSentIds((prev) => new Set(prev).add(userId));
+      loadFriendsData();
+    } else {
+      setSearchError(t("friends.requestError"));
+    }
   }
 
   async function handleRespond(friendshipId: string, accept: boolean) {
@@ -336,7 +364,40 @@ export default function ProfilePage() {
               </div>
             )}
             <div>
-              <div className="text-sm font-semibold text-sf-text">{pseudo}</div>
+              {editingPseudo ? (
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="text"
+                    value={pseudoDraft}
+                    onChange={(e) => setPseudoDraft(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handlePseudoSave()}
+                    className="text-sm font-semibold bg-sf-bg border border-sf-border rounded px-2 py-0.5
+                               outline-none focus:border-sf-accent text-sf-text w-32"
+                    autoFocus
+                    maxLength={20}
+                  />
+                  <button onClick={handlePseudoSave} className="text-sf-accent hover:text-sf-accent-light transition-colors">
+                    <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  <button onClick={() => setEditingPseudo(false)} className="text-sf-text-light hover:text-sf-text transition-colors">
+                    <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => { setPseudoDraft(pseudo); setEditingPseudo(true); }}
+                  className="text-sm font-semibold text-sf-text hover:text-sf-accent transition-colors flex items-center gap-1 group"
+                >
+                  {pseudo}
+                  <svg className="w-3 h-3 text-sf-text-light group-hover:text-sf-accent transition-colors" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                </button>
+              )}
               <div className="text-xs text-sf-gold font-medium">{t(rank.titleKey)}</div>
             </div>
           </div>

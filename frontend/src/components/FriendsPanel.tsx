@@ -88,6 +88,9 @@ export default function FriendsPanel() {
     const ok = await sendFriendRequest(userId, token);
     if (ok) {
       setSentIds((prev) => new Set(prev).add(userId));
+      loadData();
+    } else {
+      setSearchError(t("friends.requestError"));
     }
   }
 

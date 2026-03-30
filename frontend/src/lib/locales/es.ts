@@ -566,6 +566,7 @@ const es: Record<string, string> = {
   "friends.remove": "Eliminar",
   "friends.alreadyFriend": "Ya sois amigos",
   "friends.requestSent": "Solicitud enviada",
+  "friends.requestError": "Error al enviar. Intentelo de nuevo.",
   "friends.addBtn": "Anadir",
   "friends.empty": "Aun sin amigos. \u00a1Comparte tu codigo para anadir amigos!",
 
