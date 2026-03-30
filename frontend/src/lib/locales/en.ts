@@ -567,6 +567,8 @@ const en: Record<string, string> = {
   "friends.alreadyFriend": "Already friends",
   "friends.requestSent": "Request sent",
   "friends.requestError": "Error sending request. Try again.",
+  "friends.sent": "Sent requests ({count})",
+  "friends.awaitingAccept": "Pending",
   "friends.addBtn": "Add",
   "friends.empty": "No friends yet. Share your code to add friends!",
 

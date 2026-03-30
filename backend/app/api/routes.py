@@ -738,6 +738,27 @@ async def get_pending_requests_endpoint(
         return {"requests": []}
 
 
+@router.get("/friends/sent")
+@limiter.limit("30/minute")
+async def get_sent_requests_endpoint(
+    request: Request,
+    authorization: str | None = Header(default=None),
+):
+    """Get pending friend requests sent by the authenticated user."""
+    from app.services.supabase import get_user_from_token, get_sent_requests
+
+    user_id = await get_user_from_token(authorization)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Authentification requise.")
+
+    try:
+        requests_list = await get_sent_requests(user_id)
+        return {"requests": requests_list}
+    except Exception as e:
+        logger.warning("get_sent_requests failed: %s", e)
+        return {"requests": []}
+
+
 @router.delete("/friends/{friendship_id}")
 @limiter.limit("10/minute")
 async def remove_friend_endpoint(

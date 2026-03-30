@@ -450,6 +450,19 @@ export async function fetchPendingRequests(token: string): Promise<PendingReques
   }
 }
 
+export async function fetchSentRequests(token: string): Promise<PendingRequest[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/friends/sent`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.requests || [];
+  } catch {
+    return [];
+  }
+}
+
 export async function removeFriend(friendshipId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/api/friends/${encodeURIComponent(friendshipId)}`, {

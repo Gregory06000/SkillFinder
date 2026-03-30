@@ -1093,6 +1093,64 @@ async def get_pending_requests(user_id: str) -> list[dict]:
     return results
 
 
+async def get_sent_requests(user_id: str) -> list[dict]:
+    """Get pending friend requests sent by this user."""
+    if not is_enabled():
+        return []
+    client = await _get_client()
+    headers: dict[str, str] = {}
+    if _SERVICE_ROLE_KEY:
+        headers["Authorization"] = f"Bearer {_SERVICE_ROLE_KEY}"
+
+    resp = await client.get(
+        "/rest/v1/friendships",
+        params={
+            "select": "id,addressee_id,created_at",
+            "requester_id": f"eq.{user_id}",
+            "status": "eq.pending",
+            "order": "created_at.desc",
+        },
+        headers=headers,
+    )
+    if resp.status_code != 200:
+        return []
+
+    requests = resp.json()
+    if not requests:
+        return []
+
+    addressee_ids = [r["addressee_id"] for r in requests]
+    ids_filter = ",".join(addressee_ids)
+    profiles_resp = await client.get(
+        "/rest/v1/leaderboard",
+        params={
+            "select": "user_id,pseudo,total_points,city",
+            "user_id": f"in.({ids_filter})",
+            "order": "updated_at.desc",
+        },
+        headers=headers,
+    )
+    profiles: dict[str, dict] = {}
+    if profiles_resp.status_code == 200:
+        for row in profiles_resp.json():
+            uid = row["user_id"]
+            if uid not in profiles:
+                profiles[uid] = row
+
+    results: list[dict] = []
+    for req in requests:
+        p = profiles.get(req["addressee_id"], {})
+        results.append({
+            "friendship_id": req["id"],
+            "user_id": req["addressee_id"],
+            "pseudo": p.get("pseudo", "?"),
+            "total_points": p.get("total_points", 0),
+            "city": p.get("city", ""),
+            "created_at": req["created_at"],
+        })
+    return results
+
+
 # ── Shared Favorites ──────────────────────────────
 
 

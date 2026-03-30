@@ -567,6 +567,8 @@ const nl: Record<string, string> = {
   "friends.alreadyFriend": "Al bevriend",
   "friends.requestSent": "Verzoek verzonden",
   "friends.requestError": "Fout bij het verzenden. Probeer opnieuw.",
+  "friends.sent": "Verzonden verzoeken ({count})",
+  "friends.awaitingAccept": "In afwachting",
   "friends.addBtn": "Toevoegen",
   "friends.empty": "Nog geen vrienden. Deel je code om vrienden toe te voegen!",
 

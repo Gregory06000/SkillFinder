@@ -28,6 +28,7 @@ import {
   type PendingRequest,
   type FriendUser,
   updateLeaderboard,
+  fetchSentRequests,
 } from "@/lib/api";
 import Mascot, { MiniItemPreview } from "@/components/Mascot";
 import MascotCustomizer from "@/components/MascotCustomizer";
@@ -155,6 +156,7 @@ export default function ProfilePage() {
   const [searchError, setSearchError] = useState("");
   const [searching, setSearching] = useState(false);
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
+  const [sentRequests, setSentRequests] = useState<PendingRequest[]>([]);
 
   // Friend profile view
   const [viewingFriend, setViewingFriend] = useState<Friend | null>(null);
@@ -260,13 +262,15 @@ export default function ProfilePage() {
   const loadFriendsData = useCallback(async () => {
     const token = await getAccessToken();
     if (!token) return;
-    const [f, p, code] = await Promise.all([
+    const [f, p, s, code] = await Promise.all([
       fetchFriends(token),
       fetchPendingRequests(token),
+      fetchSentRequests(token),
       fetchFriendCode(token),
     ]);
     setFriends(f);
     setPending(p);
+    setSentRequests(s);
     setFriendCode(code);
   }, [getAccessToken]);
 
@@ -924,6 +928,34 @@ export default function ProfilePage() {
                                 </svg>
                               </button>
                             </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Sent requests (waiting for acceptance) */}
+                  {sentRequests.length > 0 && (
+                    <div className="mb-5">
+                      <div className="text-xs font-medium text-sf-text-light mb-2">
+                        {t("friends.sent", { count: sentRequests.length })}
+                      </div>
+                      <div className="space-y-2">
+                        {sentRequests.map((req) => (
+                          <div
+                            key={req.friendship_id}
+                            className="flex items-center justify-between p-3 rounded-sf-sm bg-sf-bg border border-sf-border"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-9 h-9 rounded-full bg-sf-text-light/20 flex items-center justify-center text-sf-text-light text-sm font-bold flex-shrink-0">
+                                {req.pseudo.charAt(0).toUpperCase()}
+                              </div>
+                              <div className="min-w-0">
+                                <div className="text-sm font-semibold text-sf-text truncate">{req.pseudo}</div>
+                                <div className="text-xs text-sf-text-light">{req.total_points} pts</div>
+                              </div>
+                            </div>
+                            <span className="text-xs text-sf-text-light italic">{t("friends.awaitingAccept")}</span>
                           </div>
                         ))}
                       </div>
