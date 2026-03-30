@@ -667,7 +667,9 @@ async def send_friend_request_endpoint(
     if not result["success"]:
         if result.get("reason") == "already_exists":
             raise HTTPException(status_code=409, detail="Demande deja envoyee ou deja amis.")
-        raise HTTPException(status_code=500, detail="Erreur lors de l'envoi de la demande.")
+        detail = result.get("detail", "Erreur lors de l'envoi de la demande.")
+        logger.error("send_friend_request failed: requester=%s addressee=%s result=%s", user_id, req.addressee_id, result)
+        raise HTTPException(status_code=500, detail=detail)
     return {"success": True}
 
 

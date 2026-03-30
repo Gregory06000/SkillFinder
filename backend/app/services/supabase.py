@@ -912,7 +912,7 @@ async def send_friend_request(requester_id: str, addressee_id: str) -> dict:
         return {"success": False, "reason": "already_exists"}
     if resp.status_code not in (200, 201):
         logger.warning("send_friend_request failed: %s %s", resp.status_code, resp.text)
-        return {"success": False, "reason": "error"}
+        return {"success": False, "reason": "error", "detail": f"Supabase {resp.status_code}: {resp.text[:200]}"}
     return {"success": True}
 
 
