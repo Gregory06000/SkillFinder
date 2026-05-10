@@ -30,7 +30,7 @@ export default function PolitiqueConfidentialite() {
           <section>
             <h2 className="text-xl font-semibold mb-3">1. Responsable du traitement</h2>
             <p className="text-gray-700 leading-relaxed">
-              SkillFinder est édité par <strong>Gregory Semeria</strong>, domicilié au <strong>1 Rue Roger Martin du Gard, 06000 Nice</strong>.
+              SkillFinder est édité par <strong>Jean Dupont</strong>, domicilié au <strong>10 Rue de la République, 75001 Paris</strong>.
               Pour toute question relative à vos données personnelles, vous pouvez nous contacter à l&apos;adresse suivante :{" "}
               <a href="mailto:contact@skillfinder.fr" className="text-[#C45D3E] hover:underline">
                 contact@skillfinder.fr
